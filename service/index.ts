@@ -103,7 +103,7 @@ docChatNamespace.on('connection', async (socket) => {
 
   const vectorStore = await getDocumentVectorStore({ studentId, documentId });
 
-  const docChatChain = (event: string) => {
+  const docChatChain = (event: string, topK: number) => {
     const model = socketAiModel(socket, event);
 
     const llm = new ChatOpenAI({
@@ -112,7 +112,7 @@ docChatNamespace.on('connection', async (socket) => {
 
     const chain = ConversationalRetrievalQAChain.fromLLM(
       model,
-      vectorStore.asRetriever(TOP_K),
+      vectorStore.asRetriever(topK),
       {
         memory: new BufferMemory({
           memoryKey: 'chat_history',
@@ -136,25 +136,58 @@ docChatNamespace.on('connection', async (socket) => {
     const userQuery = wrapForQL('user', message);
     const event = 'chat response';
 
-    const chain = docChatChain(event);
+    let topK = 30;
 
-    const response = await chain.call({ question: message }); //NB: this part is also emitting a message to the client!
+    let chain = docChatChain(event, topK);
 
-    socket.emit(`${event} end`, response?.text);
-    const assistantResponse = wrapForQL('assistant', response?.text);
+    const question = `Using only context from the PDF document supplied, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, exciting and informative. Be charming and have a personality.
+    
+    Suggest follow-up discussions based on the information, and format them in bullet points of three discussions.
+    
+    Make your answers in markdown.
 
-    Promise.all([
-      await createNewChat({
-        studentId,
-        log: userQuery,
-        conversationId
-      }),
-      await createNewChat({
-        studentId,
-        log: assistantResponse,
-        conversationId
-      })
-    ]);
+    Do not discuss with me. If I send you a message that does not seem like  a question about the document, respond with a variation of: 'I'm sorry, that is not a question about this document. Would you like to ask me something about this document?'
+    
+    My question is: ${message}
+    
+    Your answer:`;
+
+    const callChain = async () =>
+      await chain
+        .call({ question })
+        .then(async (response) => {
+          socket.emit(`${event} end`, response?.text);
+          const assistantResponse = wrapForQL('assistant', response?.text);
+
+          Promise.all([
+            await createNewChat({
+              studentId,
+              log: userQuery,
+              conversationId
+            }),
+            await createNewChat({
+              studentId,
+              log: assistantResponse,
+              conversationId
+            })
+          ]);
+        })
+        .catch(async (e: any): Promise<any> => {
+          if (e?.response?.data?.error?.code === 'context_length_exceeded') {
+            topK -= 5;
+            console.log('Error, context length: ', topK);
+            chain = docChatChain(event, topK);
+            return await callChain();
+          }
+
+          console.log(e.message, e?.response?.data?.error?.code);
+          socket.emit(
+            `${event} start`,
+            'I ran into some trouble coming up with an answer. Can you ask me the question again?'
+          );
+        });
+
+    await callChain(); //NB: this part is also emitting a message to the client!
   });
 
   socket.on('generate summary', async () => {
