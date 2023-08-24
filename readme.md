@@ -37,10 +37,3 @@ Password: Fibonacci3.142@@@
 2. Enhanced QA Search — https://arxiv.org/pdf/2210.10584.pdf
 3. Summarization chain — https://js.langchain.com/docs/modules/chains/popular/summarize
 4. Explore MapReduce for `generate-from-notes` for flash-cards.
-
-## To-dos for Justin
-1. Pre-fill empty stage with action step pills (ie, return array of initial questions — max three, pass to frontend — second endpoint?)
-2. Pinned prompts — deliver this.
-3. Generate a sample quiz endpoint.
-4. Basic prompt injection attack protection.
-5. Generate keywords endpoint.
