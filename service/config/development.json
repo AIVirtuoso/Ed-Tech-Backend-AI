@@ -1,0 +1,37 @@
+{
+  "openai": {
+    "apikey": "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",
+    "model": "gpt-3.5-turbo-16k"
+  },
+  "pinecone": {
+    "environment": "us-west4-gcp",
+    "apikey": "7518d875-aade-40dc-8313-36d312e51105",
+    "index": "shepherd",
+    "namespace": "students"
+  },
+  "localAuth": "vunderkind23",
+  "milvus": {
+    "address": "localhost:19530",
+    "username": "shepherd",
+    "password": "WebdsFuQ4w3PHCa3VDJE",
+    "ssl": false
+  },
+  "sqs": {
+    "accessKeyId": "AKIAUWHUFD3XGHIMNLZE",
+    "secretAccessKey": "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",
+    "region": "eu-north-1",
+    "apiVersion": 4,
+    "queueUrl": "https://sqs.eu-north-1.amazonaws.com/322634587886/documentEmbeddingQueue"
+  },
+  "postgres": {
+    "database": "postgres",
+    "username": "postgres",
+    "password": "kP&vj!PG26#CQPiq&HSc",
+    "host": "db.tlmsvrpwnnyiwerunvoo.supabase.co",
+    "dialect" : "postgres"
+  },
+  "unstructured": {
+    "apiKey": "jatZn6MHYLgqFRLylze0ee8qoctsB9",
+    "apiUrl": "http://127.0.0.1:8010"
+  }
+}
