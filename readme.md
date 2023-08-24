@@ -1,7 +1,7 @@
 # WIP
 
 
-## Set uo
+## Set up
 This project depends on two key Docker images: 
 1. Milvus (for vector semantic search)
 2. Unstructured (for document extraction, chunking and sentence transformation)
