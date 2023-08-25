@@ -2,6 +2,8 @@
 
 echo "—————— Logging into the EC2 Instance ———————"
 
+echo $privateKeyPath
+
 ssh -i "$privateKeyPath" $awsUser@$hostname -o "StrictHostKeyChecking no" -tt << EOF
 cd service
 git pull git@github.com:vunderkind/shepherd-ai.git
