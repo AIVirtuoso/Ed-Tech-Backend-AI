@@ -33,13 +33,6 @@ Conversation.hasMany(ChatLog, {
   foreignKey: 'conversationId'
 });
 
-const syncChatsTable = async () => {
-  await ChatLog.sync({ force: true });
-  console.log('Chatlog table was just synchronized!');
-};
-
-// syncChatsTable();
-
 export const createNewChat = async ({
   studentId,
   log,

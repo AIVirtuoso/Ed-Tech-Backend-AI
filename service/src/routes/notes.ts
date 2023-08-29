@@ -4,6 +4,7 @@ import config from 'config';
 import { Request, Response, NextFunction } from 'express';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
+import { uuid } from 'uuidv4';
 // @ts-ignore
 import pdf from 'pdf-parse';
 // @ts-ignore
@@ -13,6 +14,7 @@ import schema from '../validation/schema';
 import { OpenAIConfig } from '../types/configs';
 import Models from '../../db/models';
 import { OpenAI } from 'langchain/llms/openai';
+import { USER_REFERENCE } from '../helpers/constants';
 import {
   retrieveDocument,
   updateDocument,
@@ -78,7 +80,9 @@ notes.get(
     try {
       const { studentId, documentId } = req.query;
 
-      const reference = documentId ? 'document' : 'student';
+      const reference = documentId
+        ? USER_REFERENCE.DOCUMENT
+        : USER_REFERENCE.STUDENT;
 
       const conversationId = await getChatConversationId({
         reference,
@@ -112,7 +116,9 @@ notes.get(
     try {
       const { studentId, documentId } = req.query;
 
-      const reference = documentId ? 'document' : 'student';
+      const reference = documentId
+        ? USER_REFERENCE.DOCUMENT
+        : USER_REFERENCE.STUDENT;
 
       const conversationId = await getChatConversationId({
         reference,
@@ -263,17 +269,8 @@ notes.post(
   validate(blockNotes),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { document, studentId, documentId, courseId, title } = req.body;
-      const documentURL = 'https://shepherd.com';
-      const documentData = {
-        reference: 'student',
-        referenceId: studentId,
-        documentId,
-        courseId,
-        title,
-        documentURL
-      };
-
+      const { document, studentId, documentId, title } = req.body;
+      const documentData = req.body;
       const wrapText = document.map((document: string) => {
         return {
           pageContent: document,
@@ -308,9 +305,9 @@ notes.post(
   validate(ingest),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { documentURL, studentId, title, documentId } = req.body;
+      const { documentURL, studentId, title } = req.body;
 
-      const { apiKey } = res.app.locals.config.get('unstructured');
+      const documentId = uuid(); // Though Postgres is perfectly capable of generating its own uuids, we're generating one optimistically/early so we can use it to set Pinecone's filters.
 
       const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
 
@@ -337,9 +334,11 @@ notes.post(
         namespace: studentId
       }).then(async () => {
         data = await createOrUpdateDocument({
-          reference: 'student',
+          reference: USER_REFERENCE.STUDENT,
           referenceId: studentId,
-          ...req.body
+          documentId,
+          title,
+          documentURL
         });
       });
       fs.unlink(filePath, (err) => {
@@ -348,8 +347,9 @@ notes.post(
       });
 
       res.send({
-        message: `Successfully saved document titled '${title}' for '${studentId}'`,
-        data
+        message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}'`,
+        data,
+        response: data[0]
       });
     } catch (e) {
       next(e);
@@ -361,12 +361,12 @@ notes.delete(
   '/clear',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // SUPER-NUKE all student document records — both on Pinecone and on Postgres. Only useful for debugging.
       const { pineconeIndex } = res.app.locals;
 
       const { studentId } = req.body;
 
-      if (!studentId)
-        throw new Error('You gotta add a studentId in the body, yo.');
+      if (!studentId) throw new Error('sudentId required.');
 
       const deleteRequest = await Promise.all([
         await pineconeIndex.delete1({
@@ -389,5 +389,47 @@ notes.delete(
     }
   }
 );
+
+// notes.get(
+//   '/keywords',
+//   validate(Schema.docsSchema),
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { studentId, documentId } = req.body;
+
+//       const referenceId = studentId;
+//       // @ts-ignore
+//       const document = await retrieveDocument({ referenceId, documentId });
+
+//       const note = document?.document;
+//       const keywords = document?.keywords;
+
+//       if (!!keywords) return res.send(keywords);
+
+//       if (!!note) {
+//         const model = new OpenAI({
+//           temperature: 0,
+//           openAIApiKey: openAIconfig.apikey,
+//           modelName: 'gpt-3.5-turbo-16k-0613'
+//         });
+
+//         const prompt = generateDocumentKeywordsPrompt(note);
+
+//         const keywords = await model.call(prompt);
+
+//         await updateDocument({
+//           referenceId,
+//           documentId,
+//           data: {
+//             keywords
+//           }
+//         }).catch((e) => next(e));
+//         return res.send(JSON.parse(keywords));
+//       } else return res.send([]);
+//     } catch (e: any) {
+//       res.send([]);
+//     }
+//   }
+// );
 
 export default notes;

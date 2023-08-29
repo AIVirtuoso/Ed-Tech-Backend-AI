@@ -38,11 +38,4 @@ export const createOrUpdateHighlight = async (data: Highlight) => {
   return createdHighlight[0]?.dataValues || [];
 };
 
-const syncHighlightsTable = async () => {
-  await Highlight.sync({ force: true });
-  console.log('Highlights table was just synchronized!');
-};
-
-// syncHighlightsTable();
-
 export default Highlight;

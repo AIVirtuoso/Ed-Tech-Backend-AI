@@ -2,8 +2,8 @@
     "development": {
         "database": "postgres",
         "username": "postgres",
-        "password": "kP&vj!PG26#CQPiq&HSc",
-        "host": "db.tlmsvrpwnnyiwerunvoo.supabase.co",
+        "password": "i6d2u9yTEwlpZgOi",
+        "host": "db.bxgzpxgmadtmlboycqgj.supabase.co",
         "dialect" : "postgres"
       }
 }

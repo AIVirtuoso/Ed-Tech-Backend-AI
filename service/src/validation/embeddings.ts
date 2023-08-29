@@ -7,8 +7,7 @@ const ingest = z.object({
     }),
     tags: z.array(z.string()).optional(),
     studentId: z.string({ required_error: 'studentId is required' }),
-    courseId: z.string().optional(),
-    documentId: z.string({ required_error: 'documentId is required' })
+    courseId: z.string().optional()
   })
 });
 
