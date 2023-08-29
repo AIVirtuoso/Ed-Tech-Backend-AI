@@ -8,6 +8,7 @@ import Schema from '../validation/schema';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { OpenAIConfig } from 'src/types/configs';
 import Models from '../../db/models';
+import { OPENAI_MODELS } from '../helpers/constants';
 
 const openAIconfig: OpenAIConfig = config.get('openai');
 
@@ -25,7 +26,7 @@ flashCards.post(
       const model = new OpenAI({
         temperature: 0.9,
         openAIApiKey: openAIconfig.apikey,
-        modelName: 'gpt-3.5-turbo-16k-0613'
+        modelName: OPENAI_MODELS.GPT_3_5_16K
       });
 
       const response = await model.call(
@@ -97,7 +98,7 @@ flashCards.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: 'gpt-3.5-turbo-16k-0613',
+        modelName: OPENAI_MODELS.GPT_3_5_16K,
         maxConcurrency: 10
       });
 

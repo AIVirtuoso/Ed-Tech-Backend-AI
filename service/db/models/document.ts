@@ -114,11 +114,4 @@ export const createOrUpdateDocument = async (data: Document) => {
   return await Document.upsert(data);
 };
 
-// const syncDocsTable = async () => {
-//   await Document.sync({ force: true });
-//   console.log('Docs table was just synchronized!');
-// };
-
-// syncDocsTable();
-
 export default Document;

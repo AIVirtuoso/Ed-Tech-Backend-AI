@@ -14,7 +14,7 @@ import schema from '../validation/schema';
 import { OpenAIConfig } from '../types/configs';
 import Models from '../../db/models';
 import { OpenAI } from 'langchain/llms/openai';
-import { USER_REFERENCE } from '../helpers/constants';
+import { OPENAI_MODELS, USER_REFERENCE } from '../helpers/constants';
 import {
   retrieveDocument,
   updateDocument,
@@ -361,12 +361,18 @@ notes.delete(
   '/clear',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // SUPER-NUKE all student document records — both on Pinecone and on Postgres. Only useful for debugging.
+      // SUPER-NUKE all student chat and document records — both on Pinecone and on Postgres. Only useful for debugging.
       const { pineconeIndex } = res.app.locals;
 
-      const { studentId } = req.body;
+      const { studentId } = req.query;
 
       if (!studentId) throw new Error('sudentId required.');
+
+      const conversationId = await getChatConversationId({
+        reference: USER_REFERENCE.STUDENT,
+        // @ts-ignore
+        referenceId: studentId
+      });
 
       const deleteRequest = await Promise.all([
         await pineconeIndex.delete1({
@@ -377,9 +383,14 @@ notes.delete(
           where: {
             referenceId: studentId
           }
+        }),
+        await chats.destroy({
+          where: {
+            conversationId
+          }
         })
       ]).then((res) => ({
-        message: `All documents cleared for student with id ${studentId}`,
+        message: `Successfully executed request to delete chats, documents and embeddings for student with id ${studentId}`,
         data: res
       }));
 
@@ -410,7 +421,7 @@ notes.delete(
 //         const model = new OpenAI({
 //           temperature: 0,
 //           openAIApiKey: openAIconfig.apikey,
-//           modelName: 'gpt-3.5-turbo-16k-0613'
+// modelName: OPENAI_MODELS.GPT_3_5_16K
 //         });
 
 //         const prompt = generateDocumentKeywordsPrompt(note);

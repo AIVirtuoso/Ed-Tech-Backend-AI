@@ -20,3 +20,16 @@ export const generateDocumentKeywordsPrompt = (
   The shape of the array should be: ["keyword1", "keyword2", "etc"]
   
   Here is the note: ${JSON.stringify(note, null, 2)}`;
+
+export const mnemonicPrompt = (
+  query: string
+) => `You are a mnemonic generator. When you receive input, you try to understand the context, paying attention to the first letters in the input, and then you will come up with a catchy, memorable one-liner that helps with memorizing the input. You will then explain how the one-liner works, and the cognitive shortcuts it helps the user internalize. Your input is: ${query}. Return only A JSON response in this format: 
+        
+        {
+          "status": "200, if you succeeded, or 500 if you couldn't come up with an answer, or 400 if the request made no sense",
+          explainer: {
+            "answer": "The actual mnemonic",
+            "context": "Your exhaustive explanation for how, and why, the mnemonic works",
+          }
+        }
+        `;
