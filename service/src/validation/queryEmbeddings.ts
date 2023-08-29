@@ -10,7 +10,14 @@ const queryEmbeddingsSchema = z.object({
         required_error: 'Subject required'
       }),
       difficulty: z
-        .enum(['kindergarten', 'high school', 'college', 'PhD', 'genius'])
+        .enum([
+          'kindergarten',
+          'high school',
+          'college',
+          'PhD',
+          'genius',
+          'phd'
+        ])
         .optional(),
       count: z.number({
         required_error: 'Number of flash cards to generate required'
