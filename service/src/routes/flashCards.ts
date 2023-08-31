@@ -1,13 +1,18 @@
 import express from 'express';
 import config from 'config';
 import { Request, Response, NextFunction } from 'express';
-import { ai, PORT, server, embedding, pineconeIndex } from '../routes/index';
+import { embedding, pineconeIndex } from '../routes/index';
 import { OpenAI } from 'langchain/llms/openai';
 import validate from '../validation/index';
 import Schema from '../validation/schema';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { OpenAIConfig } from 'src/types/configs';
 import Models from '../../db/models';
+import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
+import {
+  generalFlashcardPrompt,
+  flashCardsFromNotesPrompt
+} from '../helpers/promptTemplates';
 
 const openAIconfig: OpenAIConfig = config.get('openai');
 
@@ -20,30 +25,22 @@ flashCards.post(
     try {
       let { topic, count, subject } = req.body;
 
-      let difficulty = req.body?.difficulty || 'college';
+      let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
 
       const model = new OpenAI({
         temperature: 0.9,
         openAIApiKey: openAIconfig.apikey,
-        modelName: 'gpt-3.5-turbo-16k-0613'
+        modelName: OPENAI_MODELS.GPT_3_5_16K
       });
 
-      const response = await model.call(
-        `Generate ONLY ${count} ${difficulty}-grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} level — no harder or simpler. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
-          {
-            "front": "Flash card question, suitable for a ${difficulty} level",
-          "back": "Answer/completion of the flash card question, also written to be understood by someone at a $difficulty} education level.",
-          "explainer": "helpful explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student. The explanation should be at a ${difficulty} level.",
-          "helpful reading": "related topics and materials pertaining to the topic. Don't include links, just textbook references."
-          }
-           Wrap the total flashcards generated in an object, like this:
-          
-          {
-            flashcards: [
-              // the ${count} flashcards go here
-            ]
-          }`
+      const flashCardPrompt = generalFlashcardPrompt(
+        count,
+        difficulty,
+        subject,
+        topic
       );
+
+      const response = await model.call(flashCardPrompt);
       res.send(JSON.parse(response));
       res.end();
     } catch (e) {
@@ -92,41 +89,37 @@ flashCards.post(
         documentId
       });
 
-      const documents = await vectorStore.similaritySearch(topic, 30);
+      let topK = 50;
+
+      const documents = async (top_K: number = topK) =>
+        await vectorStore.similaritySearch(topic, topK);
 
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: 'gpt-3.5-turbo-16k-0613',
-        maxConcurrency: 10
+        modelName: OPENAI_MODELS.GPT_3_5_16K
       });
 
-      const response = await model.call(
-        `Convert this note ${JSON.stringify(
-          documents
-        )} into ${count} flashcards. If the document has nothing relating to the topic, return a payload with this shape: 
-        {
-          "status": 400,
-          "message": "Your supplied topic is not covered in the note specified."
-        }
-        
-        Only use context from the note in generating the flash cards. Use snippets of the note to formulate both the front and back properties of the JSON object. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
-          {
-            "front": "front of flash card — as a question",
-          "back": "back of flashcard — as an answer to the question from the front",
-          "explainer": "helpful, ELI5-type explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student",
-          "helpful reading": "If there is related reading in the notes, include them. Otherwise omit this field."
-          }
-          Wrap the total flashcards generated in an object, like this:
-          
-          {
-            flashcards: [
-              // the ${count} flashcards go here
-            ]
-          }`
+      let docs = await documents();
+      const flashCardsFromNotes = flashCardsFromNotesPrompt(
+        JSON.stringify(docs),
+        count
       );
-      res.send(JSON.parse(response));
-      res.end();
+
+      const generateCards = async () =>
+        await model
+          .call(flashCardsFromNotes)
+          .then((response) => {
+            res.send(JSON.parse(response));
+            res.end();
+          })
+          .catch(async (e: any): Promise<any> => {
+            if (e?.response?.data?.error?.code === 'context_length_exceeded') {
+              topK -= 10;
+              docs = await documents(topK);
+              return await generateCards();
+            } else throw new Error(JSON.stringify(e));
+          });
     } catch (e) {
       next(e);
     }

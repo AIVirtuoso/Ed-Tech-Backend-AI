@@ -6,7 +6,6 @@ import flashCards from './flashCards';
 import { PineconeClient } from '@pinecone-database/pinecone';
 import mnemonics from './mnemonics';
 import highlights from './highlights';
-import homeworkHelp from './homeworkHelp';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import cors from 'cors';
@@ -89,7 +88,6 @@ ai.use(express.json());
 ai.use('/notes', notes);
 ai.use('/flash-cards', flashCards);
 ai.use('/mnemonics', mnemonics);
-ai.use('/homework-help', homeworkHelp);
 ai.use('/highlights', highlights);
 
 ai.use(error);

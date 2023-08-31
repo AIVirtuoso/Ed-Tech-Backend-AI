@@ -20,13 +20,6 @@ const Conversation = sequelize.define('Conversations', {
   }
 });
 
-const syncConversationTable = async () => {
-  // await Conversation.sync();
-  console.log('Conversation table was just synchronized!');
-};
-
-// syncConversationTable();
-
 export const getChatConversations = async ({
   referenceId,
   reference

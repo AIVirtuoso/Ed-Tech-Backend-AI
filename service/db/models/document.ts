@@ -7,7 +7,7 @@ interface Document {
   referenceId: string;
   documentId: string;
   document?: JSON;
-  courseId: string;
+  courseId?: string;
   summary?: string;
   keywords?: JSON;
   documentURL: string;
@@ -30,9 +30,10 @@ const Document = sequelize.define('Document', {
     type: DataTypes.STRING
   },
   documentId: {
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: false,
-    unique: true
+    unique: true,
+    defaultValue: DataTypes.UUIDV4
   },
   courseId: {
     type: DataTypes.STRING
@@ -112,12 +113,5 @@ export const updateDocument = async ({
 export const createOrUpdateDocument = async (data: Document) => {
   return await Document.upsert(data);
 };
-
-const syncDocsTable = async () => {
-  await Document.sync({ force: true });
-  console.log('Docs table was just synchronized!');
-};
-
-// syncDocsTable();
 
 export default Document;
