@@ -262,19 +262,18 @@ Socrates:`;
 
   const model = socketAiModel(socket, event);
 
-  socket.emit('ready', true);
+  if (conversationId) {
+    // Here I assume lastTenChats contains the chat logs in the order they were sent.
+    const lastChat = lastTenChats[lastTenChats.length - 1];
 
-  // if (conversationId) {
-  //   // Here I assume lastTenChats contains the chat logs in the order they were sent.
-  //   const lastChat = lastTenChats[lastTenChats.length - 1];
-
-  //   // Only emit the ready message if the last message was not from the AI.
-  //   if (lastChat.role !== 'assistant') {
-  //     socket.emit('ready', true);
-  //   }
-  // } else {
-  //   // If no conversation ID is provided, then this is a new conversation.
-  // }
+    // Only emit the ready message if the last message was not from the AI.
+    if (lastChat.role !== 'assistant') {
+      socket.emit('ready', true);
+    }
+  } else {
+    // If no conversation ID is provided, then this is a new conversation.
+    socket.emit('ready', true);
+  }
   const memory = new BufferMemory({
     chatHistory: new ChatMessageHistory(pastMessages)
   });
