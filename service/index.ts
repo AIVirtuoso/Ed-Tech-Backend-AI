@@ -266,7 +266,7 @@ Socrates:`;
 
   if (!isNewChat) {
     // Here I assume lastTenChats contains the chat logs in the order they were sent.
-    const lastChat = lastTenChats[lastTenChats.reverse().length - 1];
+    const lastChat = lastTenChats[lastTenChats.length - 1];
 
     // Only emit the ready message if the last message was not from the AI.
     if (lastChat.role !== 'assistant') {
