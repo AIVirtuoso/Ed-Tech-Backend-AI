@@ -1,4 +1,5 @@
 import express from 'express';
+import * as Sentry from '@sentry/node';
 import { Response } from 'express';
 import Middleware from '../middleware/index';
 import notes from './notes';
@@ -13,6 +14,24 @@ import http from 'http';
 import config from 'config';
 import { VectorOperationsApi } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 
+const ai = express();
+
+Sentry.init({
+  dsn: 'https://4dfb549205c39ec5b438fbcea829986c@o4505637412995072.ingest.sentry.io/4505783448043520',
+  integrations: [
+    new Sentry.Integrations.Http({
+      tracing: true
+    }),
+    new Sentry.Integrations.Express({
+      app: ai
+    })
+  ],
+  tracesSampleRate: 1.0
+});
+
+ai.use(Sentry.Handlers.requestHandler());
+ai.use(Sentry.Handlers.tracingHandler());
+
 const PORT = 3000;
 const SOCKET_PORT = 9000;
 
@@ -23,7 +42,6 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-const ai = express();
 ai.use(cors(corsOptions));
 
 ai.get('/status', (_, res: Response) => {
@@ -53,7 +71,7 @@ const { apikey: openAIApiKey, model: modelName } = config.get('openai');
 const embedding = new OpenAIEmbeddings({
   openAIApiKey,
   batchSize: 2048,
-  stripNewLines: false
+  stripNewLines: true
 });
 
 const model = new OpenAI({
@@ -90,6 +108,7 @@ ai.use('/flash-cards', flashCards);
 ai.use('/mnemonics', mnemonics);
 ai.use('/highlights', highlights);
 
+ai.use(Sentry.Handlers.errorHandler());
 ai.use(error);
 
 export { ai, PORT, server, embedding, config, model, pineconeIndex };

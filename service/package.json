@@ -31,6 +31,7 @@
   "homepage": "https://github.com/vunderkind/shepherd-ai#readme",
   "dependencies": {
     "@pinecone-database/pinecone": "^0.1.6",
+    "@sentry/node": "^7.65.0",
     "aws-sdk": "^2.1403.0",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.12",
