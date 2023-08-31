@@ -9,9 +9,7 @@ export const homeworkHelpPrompt = (topic: string) =>
   Make sure all your answers are in markdown syntax.
   `;
 
-export const summarizeNotePrompt = `Please read the provided note and provide a summary in your own words. Where appropriate, your summary should include the main thesis or argument, the key points or evidence supporting this argument, the author's conclusions, and the implications or significance of these findings. Please also note any important keywords or terminology. In addition to this, and only where applicable, provide a critique of the argument, highlighting any strengths and weaknesses, gaps, or biases. If applicable, identify any areas that need further research or clarification for better understanding. The summary should be concise, clear, and comprehensive, giving a reader who hasn't read the note a good understanding of its content and areas for further learning.
-
-  Try to make your summary at least 500 words minimum. If impossible, disregard this length imperative.`;
+export const summarizeNotePrompt = `Please read the provided note and provide a summary in your own words. Where appropriate, your summary should include the main thesis or argument, the key points or evidence supporting this argument, the author's conclusions, and the implications or significance of these findings. Please also note any important keywords or terminology. In addition to this, and only where applicable, provide a critique of the argument, highlighting any strengths and weaknesses, gaps, or biases. If applicable, identify any areas that need further research or clarification for better understanding. The summary should be concise and clear, giving a reader who hasn't read the note a good understanding of its content and areas for further learning.`;
 
 export const generateDocumentKeywordsPrompt = (
   note: JSON
@@ -40,38 +38,41 @@ export const generalFlashcardPrompt = (
   subject: string,
   topic: string
 ) => `Generate ONLY ${count} ${difficulty}-grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} level — no harder or simpler. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
-          {
-            "front": "Flash card question, suitable for a ${difficulty} level",
-          "back": "Answer/completion of the flash card question, also written to be understood by someone at a $difficulty} education level.",
-          "explainer": "helpful explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student. The explanation should be at a ${difficulty} level.",
-          "helpful reading": "related topics and materials pertaining to the topic. Don't include links, just textbook references."
-          }
-           Wrap the total flashcards generated in an object, like this:
+   {
+    "front": "Flash card question, suitable for a ${difficulty} level",
+    "back": "Answer/completion of the flash card question, also written to be understood by someone at a $difficulty} education level.",
+    "explainer": "helpful explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student. The explanation shobe at a ${difficulty} level.",
+    "helpful reading": "related topics and materials pertaining to the topic. Don't include links, just textbook references."
+  }
           
-          {
-            flashcards: [
-              // the ${count} flashcards go here
-            ]
-          }`;
+  Wrap the total flashcards generated in an object, like this:
+          
+   {
+     flashcards: [
+      // the ${count} flashcards go here
+    ]
+  }`;
 
 export const flashCardsFromNotesPrompt = (docs: string, count: number) =>
-  `Convert this note ${docs} into ${count} flashcards. If the document has nothing relating to the topic, return a payload with this shape: 
-        {
-          "status": 400,
-          "message": "Your supplied topic is not covered in the note specified."
-        }
-        
-        Only use context from the note in generating the flash cards. Use snippets of the note to formulate both the front and back properties of the JSON object. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
-          {
-            "front": "front of flash card — as a question",
-          "back": "back of flashcard — as an answer to the question from the front",
-          "explainer": "helpful, ELI5-type explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student",
-          "helpful reading": "If there is related reading in the notes, include them. Otherwise omit this field."
-          }
-          Wrap the total flashcards generated in an object, like this:
-          
-          {
-            flashcards: [
-              // the ${count} flashcards go here
-            ]
-          }`;
+  `Convert this note ${docs} into ${count} flashcards. If the document has nothing relating to the topic, return a payload with this shape:
+  
+  {
+    "status": 400,
+    "message": "Your supplied topic is not covered in the note specified."
+  }
+  
+  Only use context from the note in generating the flash cards. Use snippets of the note to formulate both the front and back properties of the JSON object. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
+  
+  {
+    "front": "front of flash card — as a question",
+    "back": "back of flashcard — as an answer to the question from the front",
+    "explainer": "helpful, ELI5-type explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student",
+    "helpful reading": "If there is related reading in the notes, include them. Otherwise omit this field."
+  }
+  
+  Wrap the total flashcards generated in an object, like this:
+  {
+    flashcards: [
+      // the ${count} flashcards go here
+      ]
+  }`;

@@ -1,4 +1,4 @@
-import { createOrUpdateDocument } from './../../db/models/document';
+import { createOrUpdateDocument } from '../../db/models/document';
 import express from 'express';
 import config from 'config';
 import { Request, Response, NextFunction } from 'express';
