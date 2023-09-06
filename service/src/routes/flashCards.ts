@@ -106,20 +106,25 @@ flashCards.post(
         count
       );
 
-      const generateCards = async () =>
-        await model
-          .call(flashCardsFromNotes)
-          .then((response) => {
-            res.send(JSON.parse(response));
-            res.end();
-          })
-          .catch(async (e: any): Promise<any> => {
-            if (e?.response?.data?.error?.code === 'context_length_exceeded') {
-              topK -= 10;
-              docs = await documents(topK);
-              return await generateCards();
-            } else throw new Error(JSON.stringify(e));
-          });
+      const generateCards = async (): Promise<any> => {
+        console.debug('Generating Cards');
+        try {
+          const response = await model.call(flashCardsFromNotes);
+          res.json(JSON.parse(response));
+          res.end();
+        } catch (e: any) {
+          console.debug('Error in generateCards', e);
+          if (e?.response?.data?.error?.code === 'context_length_exceeded') {
+            topK -= 10;
+            docs = await documents();
+            return await generateCards();
+          } else {
+            throw new Error(JSON.stringify(e));
+          }
+        }
+      };
+
+      await generateCards();
     } catch (e) {
       next(e);
     }
