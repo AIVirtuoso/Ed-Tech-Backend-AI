@@ -82,3 +82,27 @@ export const flashCardsFromNotesPrompt = (note: string, count: number) =>
       // the ${count} flashcards are placed here
       ]
   }`;
+
+export const flashCardsFromDocsPrompt = (docs: string, count: number) =>
+  `Convert this note ${docs} into ${count} flashcards. If the document has nothing relating to the topic, return a payload with this shape:
+  
+  {
+    "status": 400,
+    "message": "Your supplied topic is not covered in the note specified."
+  }
+  
+  Only use context from the note in generating the flash cards. Use snippets of the note to formulate both the front and back properties of the JSON object. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
+  
+  {
+    "front": "front of flash card — as a question",
+    "back": "back of flashcard — as an answer to the question from the front",
+    "explainer": "helpful, ELI5-type explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student",
+    "helpful reading": "If there is related reading in the notes, include them. Otherwise omit this field."
+  }
+  
+  Wrap the total flashcards generated in an object, like this:
+  {
+    flashcards: [
+      // the ${count} flashcards go here
+      ]
+  }`;

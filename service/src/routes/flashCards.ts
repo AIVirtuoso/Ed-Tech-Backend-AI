@@ -11,7 +11,8 @@ import Models from '../../db/models';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalFlashcardPrompt,
-  flashCardsFromNotesPrompt
+  flashCardsFromNotesPrompt,
+  flashCardsFromDocsPrompt
 } from '../helpers/promptTemplates';
 
 const openAIconfig: OpenAIConfig = config.get('openai');
@@ -50,7 +51,7 @@ flashCards.post(
 );
 
 flashCards.post(
-  '/generate-from-notes',
+  '/generate-from-plain-notes',
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -102,6 +103,88 @@ flashCards.post(
           console.debug('Error in generateCards', e);
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
             topK -= 10;
+            return await generateCards();
+          } else {
+            throw new Error(JSON.stringify(e));
+          }
+        }
+      };
+
+      await generateCards();
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+flashCards.post(
+  '/generate-from-notes',
+  validate(Schema.generateFromNotesSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let { topic, count, studentId, documentId } = req.body;
+
+      let additionalTopicContext = '';
+
+      if (topic) additionalTopicContext = ` based on this topic: ${topic}`;
+
+      const document = await Models.DocumentModel.findOne({
+        where: {
+          referenceId: studentId,
+          documentId
+        }
+      });
+
+      if (!document)
+        res.send('No student document for the specified document Id');
+
+      const getDocumentVectorStore = async ({
+        studentId,
+        documentId
+      }: {
+        studentId: string;
+        documentId: string;
+      }) => {
+        return await PineconeStore.fromExistingIndex(embedding, {
+          pineconeIndex,
+          namespace: studentId,
+          filter: { documentId: { $eq: `${documentId}` } }
+        });
+      };
+
+      const vectorStore = await getDocumentVectorStore({
+        studentId,
+        documentId
+      });
+
+      let topK = 50;
+
+      const documents = async (top_K: number = topK) =>
+        await vectorStore.similaritySearch(topic, topK);
+
+      const model = new OpenAI({
+        temperature: 0,
+        openAIApiKey: openAIconfig.apikey,
+        modelName: OPENAI_MODELS.GPT_3_5_16K
+      });
+
+      let docs = await documents();
+      const flashCardsFromNotes = flashCardsFromDocsPrompt(
+        JSON.stringify(docs),
+        count
+      );
+
+      const generateCards = async (): Promise<any> => {
+        console.debug('Generating Cards');
+        try {
+          const response = await model.call(flashCardsFromNotes);
+          res.json(JSON.parse(response));
+          res.end();
+        } catch (e: any) {
+          console.debug('Error in generateCards', e);
+          if (e?.response?.data?.error?.code === 'context_length_exceeded') {
+            topK -= 10;
+            docs = await documents();
             return await generateCards();
           } else {
             throw new Error(JSON.stringify(e));
