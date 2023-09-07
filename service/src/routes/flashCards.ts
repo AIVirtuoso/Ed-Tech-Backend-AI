@@ -54,57 +54,17 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { topic, count, studentId, documentId } = req.body;
+      let { count, note } = req.body;
 
-      let additionalTopicContext = '';
-
-      if (topic) additionalTopicContext = ` based on this topic: ${topic}`;
-
-      const document = await Models.DocumentModel.findOne({
-        where: {
-          referenceId: studentId,
-          documentId
-        }
-      });
-
-      if (!document)
-        res.send('No student document for the specified document Id');
-
-      const getDocumentVectorStore = async ({
-        studentId,
-        documentId
-      }: {
-        studentId: string;
-        documentId: string;
-      }) => {
-        return await PineconeStore.fromExistingIndex(embedding, {
-          pineconeIndex,
-          namespace: studentId,
-          filter: { documentId: { $eq: `${documentId}` } }
-        });
-      };
-
-      const vectorStore = await getDocumentVectorStore({
-        studentId,
-        documentId
-      });
+      const flashCardsFromNotes = flashCardsFromNotesPrompt(note, count);
 
       let topK = 50;
-
-      const documents = async (top_K: number = topK) =>
-        await vectorStore.similaritySearch(topic, topK);
 
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
         modelName: OPENAI_MODELS.GPT_3_5_16K
       });
-
-      let docs = await documents();
-      const flashCardsFromNotes = flashCardsFromNotesPrompt(
-        JSON.stringify(docs),
-        count
-      );
 
       const generateCards = async (): Promise<any> => {
         console.debug('Generating Cards');
@@ -116,7 +76,6 @@ flashCards.post(
           console.debug('Error in generateCards', e);
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
             topK -= 10;
-            docs = await documents();
             return await generateCards();
           } else {
             throw new Error(JSON.stringify(e));

@@ -98,6 +98,7 @@ const preparePinecone = async () => {
 
 preparePinecone();
 console.log(`\n🤖 Vector store OK \n`);
+
 ai.locals.embeddingAI = embedding;
 ai.locals.chatModel = model;
 

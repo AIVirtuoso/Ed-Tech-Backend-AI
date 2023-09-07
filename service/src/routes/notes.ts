@@ -98,6 +98,7 @@ notes.get(
         },
         { limit: 50 }
       );
+      console.log(chatHistory);
 
       const mappedChatHistory = chatHistory
         .map((history: Chats) => history.log)
