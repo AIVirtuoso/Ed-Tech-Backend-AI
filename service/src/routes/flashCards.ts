@@ -75,11 +75,11 @@ flashCards.post(
       );
 
       if (!hasContent) {
-        return {
-          status: 400,
+        res.status(400).json({
           message:
             'Cannot create questions for this note because the content is empty or null.'
-        };
+        });
+        res.end();
       }
 
       const flashCardsFromNotes = flashCardsFromNotesPrompt(note, count);
