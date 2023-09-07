@@ -54,30 +54,31 @@ export const generalFlashcardPrompt = (
   }`;
 
 export const flashCardsFromNotesPrompt = (note: string, count: number) =>
-  `Given the JSON structured note:
+  `You will be provided with a structured text data in JSON format. Your primary task is to extract and focus solely on the raw 'text' values within each 'content' field of the data.
+
+  JSON String to Parse:
   ${note}
-  
-  Extract and focus solely on the text values contained within to understand the context and information. Do not consider other properties like "id", "type", or "props"; only the "text" values are pertinent. 
 
-  Convert this content into ${count} flashcards. If the document does not contain relevant information relating to the topic, return a payload with this structure:
-
+  Generate ${count} flashcards from this data. Remember:
+  1. Do not use or get influenced by metadata like 'textColor', 'backgroundColor', etc. Only use these for noting new lines or important content.
+  2. Your primary source of information is the 'text' property inside each 'content' field.
+  3. If the note doesn't have relevant content , return a payload in the following shape:
   {
     "status": 400,
     "message": "Your supplied topic is not covered in the note specified."
   }
   
-  Use the content from the note to formulate both the front and back properties of each flashcard. Ensure the flashcards are based on snippets from the note. Do not include any external explanations. Provide an RFC8259 compliant JSON response strictly adhering to this format:
-
+  Convert the parsed text into flashcards, using the following format:
   {
     "front": "front of flash card — as a question",
     "back": "back of flashcard — as an answer to the question from the front",
-    "explainer": "helpful, ELI5-type explanation of the answer (i.e., back of flashcard) that further clarifies the topic for the student",
-    "helpful reading": "If there are related readings in the notes, include them. Otherwise, omit this field."
+    "explainer": "ELI5-type explanation of the answer that disambiguates the topic further",
+    "helpful reading": "If there's related reading in the notes, include them. If not, omit this field."
   }
   
-  Bundle the total flashcards produced into an object structured as:
+  Finally, wrap the generated flashcards in an object:
   {
     flashcards: [
-      // the ${count} flashcards go here
-    ]
+      // the ${count} flashcards are placed here
+      ]
   }`;
