@@ -119,7 +119,7 @@ flashCards.post(
 
 flashCards.post(
   '/generate-from-notes',
-  validate(Schema.generateFromNotesSchema),
+  validate(Schema.generateFromDocsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { topic, count, studentId, documentId } = req.body;

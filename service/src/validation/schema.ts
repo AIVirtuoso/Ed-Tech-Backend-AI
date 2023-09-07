@@ -7,6 +7,7 @@ import summary from './summary';
 import chatHistory from './chatHistory';
 import mnemonicsSchema from './mnemonics';
 import generateFromNotesSchema from './generateFromNotes';
+import generateFromDocsSchema from './generateFromDocs';
 import homeworkHelpSchema from './homeworkHelp';
 import blockNotes from './blockNotes';
 import highlights from './highlights';
@@ -21,6 +22,7 @@ export default {
   mnemonicsSchema,
   generateFromNotesSchema,
   homeworkHelpSchema,
+  generateFromDocsSchema,
   chatHistory,
   blockNotes,
   summary,
