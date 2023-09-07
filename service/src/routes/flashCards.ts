@@ -56,6 +56,32 @@ flashCards.post(
     try {
       let { count, note } = req.body;
 
+      // First, parse the note to check if it's valid JSON and if content is empty or null
+      let parsedNote;
+
+      try {
+        parsedNote = JSON.parse(note);
+      } catch (e) {
+        throw new Error('The provided note is not a valid JSON string.');
+      }
+
+      const hasContent = parsedNote.some(
+        (item: any) =>
+          item.content &&
+          item.content.length > 0 &&
+          item.content.some(
+            (segment: any) => segment.text && segment.text.trim()
+          )
+      );
+
+      if (!hasContent) {
+        return {
+          status: 400,
+          message:
+            'Cannot create questions for this note because the content is empty or null.'
+        };
+      }
+
       const flashCardsFromNotes = flashCardsFromNotesPrompt(note, count);
 
       let topK = 50;
