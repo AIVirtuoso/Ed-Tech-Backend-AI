@@ -23,11 +23,19 @@ import {
 import fs from 'fs';
 import paginatedFind from '../helpers/pagination';
 import { summarizeNotePrompt } from '../helpers/promptTemplates/';
-import { getChatConversationId } from '../../db/models/conversation';
+import {
+  chatHasTitle,
+  deleteConversation,
+  getChatConversationId,
+  storeChatTitle
+} from '../../db/models/conversation';
 import {
   fetchAllStudentChats,
   fetchSpecificStudentChat
 } from '../../db/models/conversationLog';
+import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
+import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
+import llmCreateConversationTitle from 'src/helpers/llmActions.ts/createConversationTitle';
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
@@ -98,7 +106,6 @@ notes.get(
         },
         { limit: 50 }
       );
-      console.log(chatHistory);
 
       const mappedChatHistory = chatHistory
         .map((history: Chats) => history.log)
@@ -147,13 +154,76 @@ notes.get(
     try {
       const { conversationId } = req.params;
 
-      const chatHistory = await fetchSpecificStudentChat(conversationId);
+      let chatHistory = await fetchSpecificStudentChat(conversationId);
+
+      const hasTitle = await chatHasTitle(conversationId);
+      if (!hasTitle) {
+        const pastMessages: any[] = [];
+
+        const mappedChatHistory = chatHistory
+          .map((history: Chats) => history.log)
+          .reverse();
+
+        mappedChatHistory.forEach((message: any) => {
+          if (message.role === 'assistant')
+            pastMessages.push(new AIChatMessage(message.content));
+          if (message.role === 'user')
+            pastMessages.push(new HumanChatMessage(message.content));
+        });
+
+        const memory = new BufferMemory({
+          chatHistory: new ChatMessageHistory(pastMessages)
+        });
+        const title = await llmCreateConversationTitle('', undefined, memory);
+        await storeChatTitle(conversationId, title);
+        chatHistory = await fetchSpecificStudentChat(conversationId);
+      }
 
       // const mappedChatHistory = chatHistory
       //   .map((history: Chats) => history.log)
       //   .reverse();
 
       res.send(chatHistory);
+    } catch (e: any) {
+      next(e);
+    }
+  }
+);
+
+notes.delete(
+  '/conversations/:conversationId',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { conversationId } = req.params;
+
+      // Assuming you have a function to delete the chat conversation in your database
+      await deleteConversation(conversationId);
+
+      res.send({
+        message: `Successfully deleted conversation with id ${conversationId}`
+      });
+    } catch (e: any) {
+      next(e);
+    }
+  }
+);
+
+notes.patch(
+  '/conversations/:conversationId',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { conversationId } = req.params;
+      const { newTitle } = req.body; // Assuming you are sending the new title in the request body
+
+      if (!newTitle) throw new Error('New title not provided!');
+
+      // Assuming you have a function to update the title of the chat conversation in your database
+      await storeChatTitle(conversationId, newTitle);
+
+      res.send({
+        message: `Successfully updated title for conversation with id ${conversationId}`,
+        updatedTitle: newTitle
+      });
     } catch (e: any) {
       next(e);
     }

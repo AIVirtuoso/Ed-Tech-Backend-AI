@@ -19,11 +19,14 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { updateDocument } from './db/models/document';
 import {
   getChatConversationId,
-  createNewConversation
+  createNewConversation,
+  chatHasTitle,
+  storeChatTitle
 } from './db/models/conversation';
 import { getChatLogs } from './db/models/conversationLog';
-import config from 'config';
+import config, { has } from 'config';
 import paginatedFind from './src/helpers/pagination';
+import llmCreateConversationTitle from 'src/helpers/llmActions.ts/createConversationTitle';
 
 // Setting up some general shit for global AI assistant usage
 const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
@@ -95,6 +98,7 @@ const homeworkHelpNamespace = io.of('/homework-help');
 
 docChatNamespace.on('connection', async (socket) => {
   const { studentId, documentId } = socket.handshake.auth;
+  console.log(socket.handshake.auth);
 
   const conversationId = await getChatConversationId({
     referenceId: documentId,
@@ -295,6 +299,13 @@ Socrates:`;
   socket.on('chat message', async (message) => {
     const answer = await chain.call({ input: message });
     socket.emit(`${event} end`, answer?.response);
+
+    const hasTitle = await chatHasTitle(conversationId);
+
+    if (!hasTitle) {
+      const title = await llmCreateConversationTitle(message, topic, memory);
+      storeChatTitle(conversationId, title);
+    }
 
     const userQuery = wrapForQL('user', message);
     const assistantResponse = wrapForQL('assistant', answer?.response);
