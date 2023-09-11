@@ -26,7 +26,7 @@ import {
 import { getChatLogs } from './db/models/conversationLog';
 import config, { has } from 'config';
 import paginatedFind from './src/helpers/pagination';
-import llmCreateConversationTitle from 'src/helpers/llmActions.ts/createConversationTitle';
+import llmCreateConversationTitle from './src/helpers/llmActions/createConversationTitle';
 
 // Setting up some general shit for global AI assistant usage
 const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
