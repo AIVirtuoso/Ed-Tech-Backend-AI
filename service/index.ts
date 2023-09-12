@@ -246,6 +246,8 @@ Socrates:`;
     }).then((convo) => convo?.id);
     isNewChat = true;
   }
+
+  console.log(conversationId);
   const chats = await paginatedFind(
     ChatLog,
     {
@@ -254,6 +256,8 @@ Socrates:`;
     },
     { limit: 10 }
   );
+
+  console.log(chats);
 
   const lastTenChats = chats.map((chat: any) => chat.log).reverse();
 
@@ -266,20 +270,11 @@ Socrates:`;
       pastMessages.push(new HumanChatMessage(message.content));
   });
 
+  console.log(lastTenChats);
+
   const model = socketAiModel(socket, event);
 
-  if (!isNewChat) {
-    // Here I assume lastTenChats contains the chat logs in the order they were sent.
-    const lastChat = lastTenChats[lastTenChats.length - 1];
-    console.log(lastChat);
-
-    // Only emit the ready message if the last message was not from the AI.
-    if (lastChat.role !== 'assistant') {
-      socket.emit('ready', true);
-    }
-  } else {
-    socket.emit('ready', true);
-  }
+  socket.emit('ready', true);
 
   const memory = new BufferMemory({
     chatHistory: new ChatMessageHistory(pastMessages)
@@ -298,6 +293,7 @@ Socrates:`;
 
   socket.on('chat message', async (message) => {
     const answer = await chain.call({ input: message });
+    console.log(lastTenChats);
     socket.emit(`${event} end`, answer?.response);
 
     const hasTitle = await chatHasTitle(conversationId);

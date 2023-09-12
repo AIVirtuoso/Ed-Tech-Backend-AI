@@ -215,7 +215,8 @@ notes.patch(
       const { conversationId } = req.params;
       const { newTitle } = req.body; // Assuming you are sending the new title in the request body
 
-      if (!newTitle) throw new Error('New title not provided!');
+      if (!newTitle)
+        throw new Error(`New title not provided! ${JSON.stringify(req.body)}`);
 
       // Assuming you have a function to update the title of the chat conversation in your database
       await storeChatTitle(conversationId, newTitle);
