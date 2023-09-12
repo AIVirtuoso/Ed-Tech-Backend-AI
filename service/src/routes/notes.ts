@@ -39,7 +39,14 @@ import llmCreateConversationTitle from '../helpers/llmActions/createConversation
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
-const { ingest, summary, blockNotes, chatHistory, patchSummary } = schema;
+const {
+  ingest,
+  summary,
+  blockNotes,
+  chatHistory,
+  patchSummary,
+  editHistoryTitle
+} = schema;
 
 interface Chats {
   log: Array<any>;
@@ -210,6 +217,7 @@ notes.delete(
 
 notes.patch(
   '/conversations/:conversationId',
+  validate(editHistoryTitle),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { conversationId } = req.params;

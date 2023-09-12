@@ -10,6 +10,7 @@ import generateFromNotesSchema from './generateFromNotes';
 import generateFromDocsSchema from './generateFromDocs';
 import homeworkHelpSchema from './homeworkHelp';
 import blockNotes from './blockNotes';
+import editHistoryTitle from './editHistoryTitle';
 import highlights from './highlights';
 import patchSummary from './patchSummary';
 
@@ -27,5 +28,6 @@ export default {
   blockNotes,
   summary,
   highlights,
-  patchSummary
+  patchSummary,
+  editHistoryTitle
 };
