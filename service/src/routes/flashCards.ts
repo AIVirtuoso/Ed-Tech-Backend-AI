@@ -175,14 +175,15 @@ flashCards.post(
       );
 
       const generateCards = async (): Promise<any> => {
-        console.debug('Generating Cards');
         try {
           const response = await model.call(flashCardsFromNotes);
           res.json(JSON.parse(response));
           res.end();
         } catch (e: any) {
-          console.debug('Error in generateCards', e);
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
+            if (topK === 0) {
+              throw new Error('Top K can not go lower than zero');
+            }
             topK -= 10;
             docs = await documents();
             return await generateCards();
