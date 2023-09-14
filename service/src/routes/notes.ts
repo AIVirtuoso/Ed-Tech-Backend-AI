@@ -216,7 +216,7 @@ notes.delete(
 );
 
 notes.post(
-  '/conversations/update/:conversationId',
+  '/conversations/:conversationId/update',
   validate(editHistoryTitle),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
