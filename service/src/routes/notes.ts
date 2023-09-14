@@ -215,8 +215,8 @@ notes.delete(
   }
 );
 
-notes.patch(
-  '/conversations/:conversationId',
+notes.post(
+  '/conversations/update/:conversationId',
   validate(editHistoryTitle),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
