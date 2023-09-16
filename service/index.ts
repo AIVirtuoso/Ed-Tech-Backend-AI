@@ -296,7 +296,7 @@ Socrates:`;
     const isFirstConvo = lastTenChats.length === 0;
     if (
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
-      (isFirstConvo && message !== CONVERSATION_STARTER_TEXT)
+      (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
     ) {
       const answer = await chain.call({ input: message });
       console.log(lastTenChats);
