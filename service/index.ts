@@ -28,6 +28,7 @@ import config, { has } from 'config';
 import paginatedFind from './src/helpers/pagination';
 import llmCreateConversationTitle from './src/helpers/llmActions/createConversationTitle';
 
+const CONVERSATION_STARTER_TEXT = 'Shall we begin, Socrates?';
 // Setting up some general shit for global AI assistant usage
 const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
   role,
@@ -233,7 +234,7 @@ My homework is ${topic}.
 
 Our current conversation so far: {history}
 
-Human: {input}
+Student: {input}
 Socrates:`;
 
   let conversationId = convoId;
@@ -292,34 +293,40 @@ Socrates:`;
   });
 
   socket.on('chat message', async (message) => {
-    const answer = await chain.call({ input: message });
-    console.log(lastTenChats);
-    socket.emit(`${event} end`, answer?.response);
+    const isFirstConvo = lastTenChats.length === 0;
+    if (
+      (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
+      (isFirstConvo && message !== CONVERSATION_STARTER_TEXT)
+    ) {
+      const answer = await chain.call({ input: message });
+      console.log(lastTenChats);
+      socket.emit(`${event} end`, answer?.response);
 
-    const hasTitle = await chatHasTitle(conversationId);
+      const hasTitle = await chatHasTitle(conversationId);
 
-    if (!hasTitle) {
-      const title = await llmCreateConversationTitle(message, topic, memory);
-      storeChatTitle(conversationId, title);
+      if (!hasTitle) {
+        const title = await llmCreateConversationTitle(message, topic, memory);
+        storeChatTitle(conversationId, title);
+      }
+
+      const userQuery = wrapForQL('user', message);
+      const assistantResponse = wrapForQL('assistant', answer?.response);
+
+      pastMessages.push(new HumanChatMessage(message));
+      pastMessages.push(new AIChatMessage(answer?.response));
+
+      Promise.all([
+        await createNewChat({
+          studentId,
+          log: userQuery,
+          conversationId
+        }),
+        await createNewChat({
+          studentId,
+          log: assistantResponse,
+          conversationId
+        })
+      ]);
     }
-
-    const userQuery = wrapForQL('user', message);
-    const assistantResponse = wrapForQL('assistant', answer?.response);
-
-    pastMessages.push(new HumanChatMessage(message));
-    pastMessages.push(new AIChatMessage(answer?.response));
-
-    Promise.all([
-      await createNewChat({
-        studentId,
-        log: userQuery,
-        conversationId
-      }),
-      await createNewChat({
-        studentId,
-        log: assistantResponse,
-        conversationId
-      })
-    ]);
   });
 });
