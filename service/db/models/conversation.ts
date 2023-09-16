@@ -75,7 +75,7 @@ export const getChatConversationId = async (
     convoId = await Conversation.create({ reference, referenceId });
   }
 
-  return convoId.id;
+  return convoId?.id;
 };
 
 export const createNewConversation = async ({
