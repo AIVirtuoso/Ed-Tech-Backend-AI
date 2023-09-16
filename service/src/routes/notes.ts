@@ -99,11 +99,18 @@ notes.get(
         ? USER_REFERENCE.DOCUMENT
         : USER_REFERENCE.STUDENT;
 
-      const conversationId = await getChatConversationId({
-        reference,
-        // @ts-ignore
-        referenceId: documentId || studentId
-      });
+      const conversationId = await getChatConversationId(
+        {
+          reference,
+          // @ts-ignore
+          referenceId: documentId || studentId
+        },
+        false
+      );
+
+      if (!conversationId) {
+        res.send([]);
+      }
 
       const chatHistory = await paginatedFind(
         chats,

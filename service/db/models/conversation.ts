@@ -53,13 +53,16 @@ export const getChatConversations = async ({
   return chats;
 };
 
-export const getChatConversationId = async ({
-  referenceId,
-  reference
-}: {
-  referenceId: string;
-  reference: string;
-}) => {
+export const getChatConversationId = async (
+  {
+    referenceId,
+    reference
+  }: {
+    referenceId: string;
+    reference: string;
+  },
+  createNew = true
+) => {
   let convoId = await Conversation.findOne({
     where: {
       referenceId,
@@ -67,7 +70,7 @@ export const getChatConversationId = async ({
     }
   });
 
-  if (!convoId) {
+  if (!convoId && createNew) {
     console.log('created a new link');
     convoId = await Conversation.create({ reference, referenceId });
   }
