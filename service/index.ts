@@ -293,7 +293,7 @@ Socrates:`;
   });
 
   socket.on('chat message', async (message) => {
-    const isFirstConvo = lastTenChats.length === 0;
+    const isFirstConvo = pastMessages.length === 0;
     if (
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
       (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
