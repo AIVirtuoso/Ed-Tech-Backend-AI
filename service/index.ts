@@ -226,7 +226,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
   const systemPrompt = `Let's dive into a learning session. You're a tutor skilled in guiding students towards understanding through insightful questions. Your approach is modern, concise, and engaging. I'm a student looking to grasp a topic.
   Your guidelines are:
-  
+
   - Maintain a friendly and helpful tone without being overly formal or patronizing.
   - Always end your responses with a relevant question, even if I indicate understanding. This keeps the conversation open-ended.
   - Be attentive to any confusion and adjust the discussion accordingly.
@@ -243,7 +243,10 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   if (!convoId) {
     conversationId = await createNewConversation({
       referenceId: studentId,
-      reference: 'student'
+      reference: 'student',
+      topic,
+      subject,
+      level
     }).then((convo) => convo?.id);
     isNewChat = true;
   }

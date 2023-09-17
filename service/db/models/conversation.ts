@@ -15,6 +15,19 @@ const Conversation = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true
     },
+    topic: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    subject: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    level: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
     reference: {
       type: DataTypes.ENUM('student', 'document'),
       allowNull: false,
@@ -56,10 +69,16 @@ export const getChatConversations = async ({
 export const getChatConversationId = async (
   {
     referenceId,
-    reference
+    reference,
+    topic,
+    subject,
+    level
   }: {
     referenceId: string;
     reference: string;
+    topic?: string; // Adding the optional parameters
+    subject?: string;
+    level?: string;
   },
   createNew = true
 ) => {
@@ -72,7 +91,13 @@ export const getChatConversationId = async (
 
   if (!convoId && createNew) {
     console.log('created a new link');
-    convoId = await Conversation.create({ reference, referenceId });
+    convoId = await Conversation.create({
+      reference,
+      referenceId,
+      topic,
+      subject,
+      level
+    }); // Including the new values in create method
   }
 
   return convoId?.id;
@@ -81,13 +106,26 @@ export const getChatConversationId = async (
 export const createNewConversation = async ({
   referenceId,
   reference,
-  title
+  title,
+  topic,
+  subject,
+  level
 }: {
   reference: string;
   referenceId: string;
   title?: string;
+  topic?: string; // Adding the optional parameters
+  subject?: string;
+  level?: string;
 }) => {
-  const newChat = await Conversation.create({ reference, referenceId, title });
+  const newChat = await Conversation.create({
+    reference,
+    referenceId,
+    title,
+    topic,
+    subject,
+    level
+  }); // Including the new values in create method
   return newChat;
 };
 
