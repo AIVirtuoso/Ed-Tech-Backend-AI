@@ -36,7 +36,7 @@ import {
 import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import llmCreateConversationTitle from '../helpers/llmFunctions/createConversationTitle';
-import generateConversationDescription from 'src/helpers/llmFunctions/getConversationDescription';
+import generateConversationDescription from '../helpers/llmFunctions/getConversationDescription';
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
