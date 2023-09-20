@@ -26,7 +26,7 @@ import {
 import { getChatLogs } from './db/models/conversationLog';
 import config, { has } from 'config';
 import paginatedFind from './src/helpers/pagination';
-import llmCreateConversationTitle from './src/helpers/llmActions/createConversationTitle';
+import llmCreateConversationTitle from './src/helpers/llmFunctions/createConversationTitle';
 
 const CONVERSATION_STARTER_TEXT = 'Shall we begin, Socrates?';
 // Setting up some general shit for global AI assistant usage

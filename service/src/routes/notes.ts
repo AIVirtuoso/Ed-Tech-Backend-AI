@@ -35,7 +35,8 @@ import {
 } from '../../db/models/conversationLog';
 import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import llmCreateConversationTitle from '../helpers/llmActions/createConversationTitle';
+import llmCreateConversationTitle from '../helpers/llmFunctions/createConversationTitle';
+import generateConversationDescription from 'src/helpers/llmFunctions/getConversationDescription';
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
@@ -283,6 +284,40 @@ notes.post(
       });
 
       res.send({ summary });
+    } catch (e: any) {
+      next(e);
+    }
+  }
+);
+
+notes.get(
+  '/conversation/:conversationId/description',
+  validate(summary),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { conversationId } = req.params;
+
+      const pastMessages: any[] = [];
+
+      let chatHistory = await fetchSpecificStudentChat(conversationId);
+
+      const mappedChatHistory = chatHistory
+        .map((history: Chats) => history.log)
+        .reverse();
+
+      mappedChatHistory.forEach((message: any) => {
+        if (message.role === 'user')
+          pastMessages.push(new HumanChatMessage(message.content));
+      });
+
+      const memory = new BufferMemory({
+        chatHistory: new ChatMessageHistory(pastMessages)
+      });
+      const description = await generateConversationDescription('', memory);
+
+      res.send({
+        data: description
+      });
     } catch (e: any) {
       next(e);
     }

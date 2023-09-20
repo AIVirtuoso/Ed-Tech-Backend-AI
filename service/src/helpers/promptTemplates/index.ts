@@ -11,6 +11,8 @@ export const homeworkHelpPrompt = (topic: string) =>
 
 export const summarizeNotePrompt = `Please read the provided note and provide a summary in your own words. Where appropriate, your summary should include the main thesis or argument, the key points or evidence supporting this argument, the author's conclusions, and the implications or significance of these findings. Please also note any important keywords or terminology. In addition to this, and only where applicable, provide a critique of the argument, highlighting any strengths and weaknesses, gaps, or biases. If applicable, identify any areas that need further research or clarification for better understanding. The summary should be concise and clear, giving a reader who hasn't read the note a good understanding of its content and areas for further learning.`;
 
+export const conversationDescriptionPrompt = `Can you structure a very concise but precise takeaway on our discussion using these headers 1. What student needs help with 2. What student understands`;
+
 export const generateDocumentKeywordsPrompt = (
   note: JSON
 ) => `Condense the supplied note into an array of keywords. The keywords are the most crucial words or phrases that you think is worth discussing with me, and capture the essence of the note. Each keyword should be no longer than five words.
