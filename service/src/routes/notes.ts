@@ -312,7 +312,10 @@ notes.get(
       const memory = new BufferMemory({
         chatHistory: new ChatMessageHistory(pastMessages)
       });
-      const description = await generateConversationDescription('', memory);
+      const description = await generateConversationDescription(
+        pastMessages.join('-'),
+        memory
+      );
 
       res.send({
         data: description

@@ -10,6 +10,7 @@ Can you structure a very concise but precise takeaway on our discussion using th
 1. What student needs help with
 2. What student understands
 here is the history of the conversation: {history}
+here is the input of all chats each conversation seperated by a dash(-): {input}
 `;
 
 const generateConversationDescription = async (
