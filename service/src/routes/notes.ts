@@ -291,8 +291,7 @@ notes.post(
 );
 
 notes.get(
-  '/conversation/:conversationId/description',
-  validate(summary),
+  '/conversations/:conversationId/description',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { conversationId } = req.params;
