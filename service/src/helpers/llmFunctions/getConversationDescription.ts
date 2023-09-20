@@ -5,7 +5,10 @@ import config from 'config';
 import { ConversationChain } from 'langchain/chains';
 
 const promptTemplate = `
-Can you structure a very concise but precise takeaway on our discussion using these headers 1. What student needs help with 2. What student understands
+Can you structure a very concise but precise takeaway on our discussion using these headers 
+
+1. What student needs help with
+2. What student understands
 here is the history of the conversation: {history}
 `;
 
