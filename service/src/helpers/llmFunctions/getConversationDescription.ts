@@ -9,7 +9,7 @@ Can you structure a very concise but precise takeaway on our discussion using th
 here is the history of the conversation: {history}
 `;
 
-const llmCreateConversationTitle = async (
+const generateConversationDescription = async (
   message: string,
   memory?: BufferMemory
 ) => {
@@ -34,4 +34,4 @@ const llmCreateConversationTitle = async (
   return answer.response;
 };
 
-export default llmCreateConversationTitle;
+export default generateConversationDescription;
