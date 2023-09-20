@@ -51,10 +51,10 @@ const getDocumentVectorStore = async ({
   });
 };
 
-const socketAiModel = (socket: any, event: string) => {
+const socketAiModel = (socket: any, event: string, model?: string) => {
   return new ChatOpenAI({
     openAIApiKey: apikey,
-    modelName,
+    modelName: model || modelName,
     streaming: true,
     callbacks: [
       {
@@ -276,7 +276,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
   console.log(lastTenChats);
 
-  const model = socketAiModel(socket, event);
+  const model = socketAiModel(socket, event, 'gpt-4-0613');
 
   socket.emit('ready', true);
 
