@@ -56,12 +56,8 @@ export const generalFlashcardPrompt = (
   }`;
 
 export const flashCardsFromNotesPrompt = (note: string, count: number) =>
-  `You will be provided with a structured text data in JSON format. Your primary task is to extract and focus solely on the raw 'text' values within each 'content' field of the data.
-
-  JSON String to Parse:
-  ${note}
-
-  Generate ${count} flashcards from this data. Remember:
+  `
+  Generate ${count} flashcards from the data within the square brackets: [${note}]. Remember:
   1. Do not use or get influenced by metadata like 'textColor', 'backgroundColor', etc. Only use these for noting new lines or important content.
   2. Your primary source of information is the 'text' property inside each 'content' field.
   3. If the note doesn't have relevant content , return a payload in the following shape:

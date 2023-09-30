@@ -14,6 +14,8 @@ import {
   flashCardsFromNotesPrompt,
   flashCardsFromDocsPrompt
 } from '../helpers/promptTemplates';
+import extractTextFromJson from '../helpers/parseNote';
+import fetchNote from '../helpers/getNote';
 
 const openAIconfig: OpenAIConfig = config.get('openai');
 
@@ -55,36 +57,25 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { count, note } = req.body;
+      const { count, noteId } = req.body;
 
-      // First, parse the note to check if it's valid JSON and if content is empty or null
-      let parsedNote;
+      // Fetch the note structure from the backend
+      const note = await fetchNote(noteId);
+      console.log(note);
 
-      try {
-        parsedNote = JSON.parse(note);
-      } catch (e) {
-        throw new Error('The provided note is not a valid JSON string.');
-      }
-
-      const hasContent = parsedNote.some(
-        (item: any) =>
-          item.content &&
-          item.content.length > 0 &&
-          item.content.some(
-            (segment: any) => segment.text && segment.text.trim()
-          )
-      );
+      const hasContent = Boolean(note?.note);
 
       if (!hasContent) {
         res.status(400).json({
           message:
             'Cannot create questions for this note because the content is empty or null.'
         });
-        res.end();
+        return;
       }
 
-      const flashCardsFromNotes = flashCardsFromNotesPrompt(note, count);
+      const noteData = extractTextFromJson(note.note);
 
+      const flashCardsFromNotes = flashCardsFromNotesPrompt(noteData, count);
       let topK = 50;
 
       const model = new OpenAI({
@@ -94,11 +85,9 @@ flashCards.post(
       });
 
       const generateCards = async (): Promise<any> => {
-        console.debug('Generating Cards');
         try {
           const response = await model.call(flashCardsFromNotes);
           res.json(JSON.parse(response));
-          res.end();
         } catch (e: any) {
           console.debug('Error in generateCards', e);
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
@@ -112,6 +101,7 @@ flashCards.post(
 
       await generateCards();
     } catch (e) {
+      console.log(e);
       next(e);
     }
   }
