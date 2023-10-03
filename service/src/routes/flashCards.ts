@@ -150,7 +150,7 @@ flashCards.post(
       let topK = 50;
 
       const documents = async (top_K: number = topK) =>
-        await vectorStore.similaritySearch(topic, topK);
+        await vectorStore.similaritySearch(topic || '', topK);
 
       const model = new OpenAI({
         temperature: 0,
