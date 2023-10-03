@@ -243,6 +243,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       level
     }).then((convo) => convo?.id);
     isNewChat = true;
+    socket.emit('new_conversation', conversationId);
   }
 
   console.log(conversationId);
