@@ -202,14 +202,21 @@ docChatNamespace.on('connection', async (socket) => {
       vectorStore.asRetriever(TOP_K)
     );
 
-    const answer = await chain.call({ query: summarizeNotePrompt });
-    await updateDocument({
-      data: {
-        summary: answer?.text
-      },
-      referenceId: studentId,
-      documentId
-    });
+    try {
+      const answer = await chain.call({ query: summarizeNotePrompt });
+      await updateDocument({
+        data: {
+          summary: answer?.text
+        },
+        referenceId: studentId,
+        documentId
+      });
+    } catch (error: any) {
+      socket.emit('summary_generation_error', {
+        message: 'Failed to generate summary',
+        error: error.message
+      });
+    }
   });
 });
 
