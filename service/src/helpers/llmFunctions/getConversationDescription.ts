@@ -32,7 +32,7 @@ const generateConversationDescription = async (
   });
 
   const prompt = new PromptTemplate({
-    template: promptTemplate,
+    template: 'what is this conversation about' || promptTemplate,
     inputVariables: ['history', 'input']
   });
 
