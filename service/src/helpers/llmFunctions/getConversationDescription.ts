@@ -5,13 +5,15 @@ import config from 'config';
 import { ConversationChain } from 'langchain/chains';
 
 const promptTemplate = `
-Given the context and transcript of a conversation between a tutor and a Student, can you generate a very concise but precise set of statements using these headers. You are the student in this conversation
-1. What The student needs help with
-2. What the student understands
+Given the context and transcript of a conversation between a tutor and a Student, can you generate a very concise but precise set of statements using these headers. You are the will be playing the role of the student this conversation
+1. What I need help with
+2. What I understand
 
 Some rules to this game:
 - Don't state your identity.
+- You will be playing the role of the student and you will be ansewering in first person
 - Don't break character.
+- Your response should be between 50 and 200 words.
 - Speak in first person only.
 - Speak like you need help
 - Go straight to the two statements. Don't provide a preamble
