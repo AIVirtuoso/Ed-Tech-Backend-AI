@@ -300,20 +300,27 @@ notes.get(
 
       let chatHistory = await fetchSpecificStudentChat(conversationId);
 
+      const chatInfo: any[] = [];
+
       const mappedChatHistory = chatHistory
         .map((history: Chats) => history.log)
         .reverse();
 
       mappedChatHistory.forEach((message: any) => {
-        if (message.role === 'user')
+        if (message.role === 'user') {
+          chatInfo.push(`student: ${message.content}`);
           pastMessages.push(new HumanChatMessage(message.content));
+        } else {
+          chatInfo.push(`tutor: ${message.content}`);
+          pastMessages.push(new AIChatMessage(message.content));
+        }
       });
 
       const memory = new BufferMemory({
         chatHistory: new ChatMessageHistory(pastMessages)
       });
       const description = await generateConversationDescription(
-        pastMessages.join('-'),
+        chatInfo.join('-'),
         memory
       );
 

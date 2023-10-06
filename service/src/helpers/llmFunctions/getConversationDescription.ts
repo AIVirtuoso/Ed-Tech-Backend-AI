@@ -5,11 +5,11 @@ import config from 'config';
 import { ConversationChain } from 'langchain/chains';
 
 const promptTemplate = `
-Given the context and conversation above, can you generate a very concise but precise set of statements using these headers .
-1. What I need help with
-2. What I understand
-Context: In this conversation, a student is stating what their problems learning a topic.
-Some rules:
+Given the context and transcript of a conversation between a tutor and a Student, can you generate a very concise but precise set of statements using these headers. You are the student in this conversation
+1. What The student needs help with
+2. What the student understands
+
+Some rules to this game:
 - Don't state your identity.
 - Don't break character.
 - Speak in first person only.
