@@ -318,7 +318,8 @@ notes.get(
       );
 
       res.send({
-        data: description
+        data: description,
+        pastMessages
       });
     } catch (e: any) {
       next(e);
