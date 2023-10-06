@@ -32,9 +32,7 @@ const generateConversationDescription = async (
   });
 
   const prompt = new PromptTemplate({
-    template:
-      'Please repeat back the context you have about this conversation' ||
-      promptTemplate,
+    template: promptTemplate,
     inputVariables: ['history', 'input']
   });
 
