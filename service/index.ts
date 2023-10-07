@@ -250,8 +250,9 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       level
     }).then((convo) => convo?.id);
     isNewChat = true;
-    socket.emit('new_conversation', conversationId);
+    // socket.emit('new_conversation', conversationId);
   }
+  socket.emit('current_conversation', conversationId);
 
   console.log(conversationId);
   const chats = await paginatedFind(
