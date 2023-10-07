@@ -331,7 +331,8 @@ homeworkHelpNamespace.on('connection', async (socket) => {
           studentId,
           log: assistantResponse,
           conversationId
-        })
+        }),
+        () => Promise.resolve(socket.emit('saved conversation', true))
       ]);
     }
   });
