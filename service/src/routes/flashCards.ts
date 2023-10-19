@@ -58,9 +58,16 @@ flashCards.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { count, noteId } = req.body;
-
-      // Fetch the note structure from the backend
-      const note = await fetchNote(noteId);
+      let note;
+      try {
+        note = await fetchNote(noteId);
+      } catch (error: any) {
+        res.status(400).json({
+          error: error.message,
+          stack: error.stack,
+          response: error.response
+        });
+      }
       console.log(note);
 
       const hasContent = Boolean(note?.note);
