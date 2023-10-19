@@ -62,7 +62,8 @@ flashCards.post(
       try {
         note = await fetchNote(noteId);
       } catch (error: any) {
-        res.status(400).json({
+        return res.status(400).json({
+          data: 'Fix Error',
           error: error.message,
           stack: error.stack,
           response: error.response
