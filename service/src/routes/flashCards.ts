@@ -62,13 +62,9 @@ flashCards.post(
       try {
         note = await fetchNote(noteId);
       } catch (error: any) {
-        return res.status(400).json({
-          data: 'Fix Error',
-          error: error.message,
-          stack: error.stack,
-          response: error.response
-        });
+        throw new Error(JSON.stringify(error.response));
       }
+
       console.log(note);
 
       const hasContent = Boolean(note?.note);
