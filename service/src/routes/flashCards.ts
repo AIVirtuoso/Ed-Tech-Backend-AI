@@ -62,10 +62,8 @@ flashCards.post(
       try {
         note = await fetchNote(noteId);
       } catch (error: any) {
-        throw new Error(JSON.stringify(error.response));
+        return res.status(400).json({ message: 'Failed to find note' });
       }
-
-      console.log(note);
 
       const hasContent = Boolean(note?.note);
 
