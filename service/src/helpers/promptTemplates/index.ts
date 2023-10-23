@@ -1,3 +1,10 @@
+type QuizType =
+  | 'multipleChoiceSingle'
+  | 'multipleChoiceMulti'
+  | 'trueFalse'
+  | 'openEnded'
+  | 'mixed';
+
 export const systemPrompt = `You are a friendly, enthusiastic and pleasant study helper receives context from things I'm reading and uses that context to answer my questions. Your tone is conversational, and even when you're not sure what the answer to a question is, you are never terse, but helpful. You can also draw from our previous conversations to make recommendations if you're uncertain how to answer my questions. Do not break character by mentioning that you're an AI model, do not talk about your limitations — only figure out ways to help within the context of the snippets I send you and our previous conversations. To create the impression that you're a friendly and lively helper, include human elements in your response, such as commenting on my question (eg: 'that's an interesting question!') or suggesting a better question to ask.
 Don't say things about 'provided context' either. If you don't have enough context to answer a question, helpfully suggest thay they rephrase the question as sometimes a differently-phrased question can help you find the answer.
   Make sure all your answers are in markdown syntax.
@@ -104,3 +111,69 @@ export const flashCardsFromDocsPrompt = (docs: string, count: number) =>
       // the ${count} flashcards go here
       ]
   }`;
+
+const promptStructures = {
+  multipleChoiceSingle: `Each question should have multiple options, with only one being correct. Return options in the format:
+  {
+    "content": "Option content",
+    "isCorrect": true/false
+  }`,
+  multipleChoiceMulti: `Each question should have multiple options, where one or more could be correct. Return options in the format:
+  {
+    "content": "Option content",
+    "isCorrect": true/false
+  }`,
+  trueFalse: `Each question should have two options: true and false. Return options in the format:
+  {
+    "content": "true/false",
+    "isCorrect": true/false
+  }`,
+  openEnded: `Each question requires a concise answer without options. Return in the format:
+  {
+    "question": "The open-ended question",
+    "answer": "Direct answer to the question",
+    "explanation": "Explanation of the answer"
+  }`
+};
+
+const generateOptionsStructure = (type: QuizType) => {
+  if (type === 'mixed') {
+    return `Generate a mix of question types: multiple choice (single and multiple answers), true/false, and open-ended. Use the appropriate formats:
+  Multiple Choice (Single Answer): 
+  ${promptStructures.multipleChoiceSingle}
+  
+  Multiple Choice (Multiple Answers): 
+  ${promptStructures.multipleChoiceMulti}
+  
+  True/False:
+  ${promptStructures.trueFalse}
+  
+  Open-Ended:
+  ${promptStructures.openEnded}`;
+  }
+
+  return promptStructures[type] || '';
+};
+
+export const generalQuizPrompt = (
+  type: QuizType,
+  count: string,
+  level: string,
+  subject: string,
+  topic: string
+) => {
+  const optionsStructure = generateOptionsStructure(type);
+
+  const basePrompt = `You are a quiz creator of highly diagnostic quizzes. You will make good low-stakes tests and diagnostics. 
+    You will then ask ${count} questions for the ${topic} topic under ${subject}. Ensure the questions quiz the college student at a ${level} on that topic and are highly relevant, going beyond just facts.
+   At the end of the quiz, provide an answer key and explain the right answer. `;
+
+  return `${basePrompt} 
+    ${optionsStructure}
+    Wrap the total flashcards generated in an object, like this:
+  {
+    quizzes: [
+      // the ${count} quizzes go here
+      ]
+  }`;
+};
