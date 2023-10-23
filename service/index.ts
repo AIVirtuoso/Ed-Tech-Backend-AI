@@ -136,10 +136,14 @@ docChatNamespace.on('connection', async (socket) => {
   // Done with setting up the chat AI requirements, so we can tell the client we're ready to discuss.
   socket.emit('ready', true);
 
-  const chats = await paginatedFind(ChatLog, {
-    studentId,
-    conversationId
-  }); // Remove any limits to get all chats
+  const chats = await paginatedFind(
+    ChatLog,
+    {
+      studentId,
+      conversationId
+    },
+    { limit: 20 }
+  );
 
   // Use the full chat history (all messages)
   const pastMessages: any[] = chats.map((chat: any) => {
