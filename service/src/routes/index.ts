@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/node';
 import { Response } from 'express';
 import Middleware from '../middleware/index';
 import notes from './notes';
+import quizzes from './quizzes';
 import flashCards from './flashCards';
 import { PineconeClient } from '@pinecone-database/pinecone';
 import mnemonics from './mnemonics';
@@ -108,6 +109,7 @@ ai.use('/notes', notes);
 ai.use('/flash-cards', flashCards);
 ai.use('/mnemonics', mnemonics);
 ai.use('/highlights', highlights);
+ai.use('/quizzes', quizzes);
 
 ai.use(Sentry.Handlers.errorHandler());
 ai.use(error);
