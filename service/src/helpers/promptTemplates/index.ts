@@ -156,7 +156,7 @@ const generateOptionsStructure = (type: QuizType) => {
 };
 
 export const generalQuizPrompt = (
-  type: QuizType,
+  type: QuizType = 'mixed',
   count: string,
   level: string,
   subject: string,
