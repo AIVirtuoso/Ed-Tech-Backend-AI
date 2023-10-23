@@ -136,6 +136,18 @@ docChatNamespace.on('connection', async (socket) => {
   // Done with setting up the chat AI requirements, so we can tell the client we're ready to discuss.
   socket.emit('ready', true);
 
+  const chats = await paginatedFind(ChatLog, {
+    studentId,
+    conversationId
+  }); // Remove any limits to get all chats
+
+  // Use the full chat history (all messages)
+  const pastMessages: any[] = chats.map((chat: any) => {
+    if (chat.log.role === 'assistant')
+      return new AIChatMessage(chat.log.content);
+    if (chat.log.role === 'user') return new HumanChatMessage(chat.log.content);
+  });
+
   // Client sends us a chat message
   socket.on('chat message', async (message) => {
     const userQuery = wrapForQL('user', message);
@@ -154,6 +166,8 @@ docChatNamespace.on('connection', async (socket) => {
     Do not discuss with me. If I send you a message that does not seem like  a question about the document, respond with a variation of: 'I'm sorry, that is not a question about this document. Would you like to ask me something about this document?'
     
     My question is: ${message}
+
+    this is the history of the chat so far ${pastMessages}
     
     Your answer:`;
 
@@ -163,6 +177,9 @@ docChatNamespace.on('connection', async (socket) => {
         .then(async (response) => {
           socket.emit(`${event} end`, response?.text);
           const assistantResponse = wrapForQL('assistant', response?.text);
+
+          pastMessages.push(new HumanChatMessage(message));
+          pastMessages.push(new AIChatMessage(response?.text));
 
           Promise.all([
             await createNewChat({
