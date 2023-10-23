@@ -13,7 +13,7 @@ import blockNotes from './blockNotes';
 import editHistoryTitle from './editHistoryTitle';
 import highlights from './highlights';
 import patchSummary from './patchSummary';
-import { quizRequestSchema } from 'src/validation/quizzes';
+import { quizRequestSchema } from './quizzes';
 
 export default {
   eli5Schema,
