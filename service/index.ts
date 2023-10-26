@@ -124,6 +124,7 @@ docChatNamespace.on('connection', async (socket) => {
           inputKey: 'question',
           outputKey: 'text'
         }),
+
         questionGeneratorChainOptions: {
           llm
         }
@@ -170,7 +171,7 @@ docChatNamespace.on('connection', async (socket) => {
     Do not discuss with me. If I send you a message that does not seem like  a question about the document or from the history of the chat so far, respond with a variation of: 'I'm sorry, that is not a question about this document. Would you like to ask me something about this document?'
     
     If the user asks for more information use chat history and the information in document to provide more information. 
-    
+
     this is the history of the chat so far: ${pastMessages}
     
     My question is: ${message}

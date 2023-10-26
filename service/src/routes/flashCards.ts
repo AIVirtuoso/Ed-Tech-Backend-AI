@@ -26,7 +26,7 @@ flashCards.post(
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { topic, count, subject } = req.body;
+      let { topic, count, subject, existingQuestions } = req.body;
 
       let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
 
@@ -57,7 +57,7 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { count, noteId } = req.body;
+      const { count, noteId, existingQuestions } = req.body;
       let note;
       try {
         note = await fetchNote(noteId);
@@ -77,7 +77,11 @@ flashCards.post(
 
       const noteData = extractTextFromJson(note.note);
 
-      const flashCardsFromNotes = flashCardsFromNotesPrompt(noteData, count);
+      const flashCardsFromNotes = flashCardsFromNotesPrompt(
+        noteData,
+        count,
+        existingQuestions
+      );
       let topK = 50;
 
       const model = new OpenAI({
@@ -114,7 +118,7 @@ flashCards.post(
   validate(Schema.generateFromDocsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { topic, count, studentId, documentId } = req.body;
+      let { topic, count, studentId, documentId, existingQuestions } = req.body;
 
       let additionalTopicContext = '';
 
@@ -163,7 +167,8 @@ flashCards.post(
       let docs = await documents();
       const flashCardsFromNotes = flashCardsFromDocsPrompt(
         JSON.stringify(docs),
-        count
+        count,
+        existingQuestions
       );
 
       const generateCards = async (): Promise<any> => {

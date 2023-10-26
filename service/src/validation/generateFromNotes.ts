@@ -6,7 +6,8 @@ const docsSchema = z.object({
     count: z.number({
       required_error: 'number of flash cards to generate must be specified'
     }),
-    topic: z.string().optional()
+    topic: z.string().optional(),
+    existingQuestions: z.array(z.string()).optional()
   })
 });
 

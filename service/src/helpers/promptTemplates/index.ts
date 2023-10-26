@@ -45,8 +45,15 @@ export const generalFlashcardPrompt = (
   count: string,
   difficulty: string,
   subject: string,
-  topic: string
-) => `Generate ONLY ${count} ${difficulty}-grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} level — no harder or simpler. Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation:
+  topic: string,
+  blacklistedQuestions?: string[]
+) => {
+  const promptForMoreQuestions =
+    blacklistedQuestions && blacklistedQuestions.length > 0
+      ? `Do not ask any of these questions: [${blacklistedQuestions || ''}]`
+      : '';
+  return `Generate ONLY ${count} ${difficulty}-grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} level — no harder or simpler. 
+  Do not include any explanations, ${promptForMoreQuestions}. Only provide a RFC8259 compliant JSON response following this format without deviation:
    {
     "front": "Flash card question, suitable for a ${difficulty} level",
     "back": "Answer/completion of the flash card question, also written to be understood by someone at a $difficulty} education level.",
@@ -61,10 +68,21 @@ export const generalFlashcardPrompt = (
       // the ${count} flashcards go here
     ]
   }`;
+};
 
-export const flashCardsFromNotesPrompt = (note: string, count: number) =>
-  `
-  Generate ${count} flashcards from the data within the square brackets: [${note}]. Remember:
+export const flashCardsFromNotesPrompt = (
+  note: string,
+  count: number,
+  blacklistedQuestions?: string[]
+) => {
+  const promptForMoreQuestions =
+    blacklistedQuestions && blacklistedQuestions.length > 0
+      ? `Avoid creating flashcards from these existing questions: [${blacklistedQuestions.join(
+          ', '
+        )}].`
+      : '';
+  return `
+  Generate ${count} flashcards from the data within the square brackets: [${note}]. ${promptForMoreQuestions}Remember:
   1. Do not use or get influenced by metadata like 'textColor', 'backgroundColor', etc. Only use these for noting new lines or important content.
   2. Your primary source of information is the 'text' property inside each 'content' field.
   3. If the note doesn't have relevant content , return a payload in the following shape:
@@ -87,9 +105,20 @@ export const flashCardsFromNotesPrompt = (note: string, count: number) =>
       // the ${count} flashcards are placed here
       ]
   }`;
+};
 
-export const flashCardsFromDocsPrompt = (docs: string, count: number) =>
-  `Convert this note ${docs} into ${count} flashcards. If the document has nothing relating to the topic, return a payload with this shape:
+export const flashCardsFromDocsPrompt = (
+  docs: string,
+  count: number,
+  blacklistedQuestions: string[]
+) => {
+  const promptForMoreQuestions =
+    blacklistedQuestions && blacklistedQuestions.length > 0
+      ? `Avoid creating flashcards from these existing questions: [${blacklistedQuestions.join(
+          ', '
+        )}].`
+      : '';
+  return `Convert this note ${docs} into ${count} flashcards. ${promptForMoreQuestions}. If the document has nothing relating to the topic, return a payload with this shape:
   
   {
     "status": 400,
@@ -111,6 +140,7 @@ export const flashCardsFromDocsPrompt = (docs: string, count: number) =>
       // the ${count} flashcards go here
       ]
   }`;
+};
 
 const promptStructures = {
   multipleChoiceSingle: `Each question should have multiple options, with only one being correct. Return options in the format:
