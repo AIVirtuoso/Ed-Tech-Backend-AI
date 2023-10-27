@@ -40,7 +40,8 @@ flashCards.post(
         count,
         difficulty,
         subject,
-        topic
+        topic,
+        existingQuestions
       );
 
       const response = await model.call(flashCardPrompt);
