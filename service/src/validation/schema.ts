@@ -13,6 +13,7 @@ import blockNotes from './blockNotes';
 import editHistoryTitle from './editHistoryTitle';
 import highlights from './highlights';
 import patchSummary from './patchSummary';
+import highlightComment from './highlightComment';
 import { quizRequestSchema } from './quizzes';
 
 export default {
@@ -31,5 +32,6 @@ export default {
   highlights,
   patchSummary,
   editHistoryTitle,
-  quizRequestSchema
+  quizRequestSchema,
+  highlightComment
 };

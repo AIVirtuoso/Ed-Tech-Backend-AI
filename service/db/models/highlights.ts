@@ -32,6 +32,15 @@ export const getHighlights = async (documentId: string): Promise<Highlight> => {
   return highlight || [];
 };
 
+export const getHighlight = async (highlightId: string): Promise<Highlight> => {
+  const highlight = await Highlight.findOne({
+    where: {
+      id: highlightId
+    }
+  });
+  return highlight;
+};
+
 export const createOrUpdateHighlight = async (data: Highlight) => {
   const createdHighlight = await Highlight.upsert(data);
 
