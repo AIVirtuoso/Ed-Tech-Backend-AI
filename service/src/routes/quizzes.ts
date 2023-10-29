@@ -34,7 +34,7 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0.9,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_3_5_16K
+        modelName: OPENAI_MODELS.GPT_4
       });
 
       // Replace with your quiz generation logic based on the flashcard logic.

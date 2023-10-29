@@ -110,7 +110,7 @@ export const flashCardsFromNotesPrompt = (
 export const flashCardsFromDocsPrompt = (
   docs: string,
   count: number,
-  blacklistedQuestions: string[]
+  blacklistedQuestions?: string[]
 ) => {
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
