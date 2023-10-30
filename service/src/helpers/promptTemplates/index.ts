@@ -145,22 +145,35 @@ export const flashCardsFromDocsPrompt = (
 const promptStructures = {
   multipleChoiceSingle: `Each question should have multiple options, with only one being correct. Return options in the format:
   {
-    "content": "Option content",
-    "isCorrect": true/false
+    "question": "The open-ended question",
+     "type": trueFalse,
+    "options":  [{
+      "content": "Option content",
+      "isCorrect": true/false
+    }]
   }`,
   multipleChoiceMulti: `Each question should have multiple options, where one or more could be correct. Return options in the format:
   {
-    "content": "Option content",
-    "isCorrect": true/false
+    "question": "The open-ended question",
+     "type": trueFalse,
+    "options":  [{
+      "content": "Option content",
+      "isCorrect": true/false
+    }]
   }`,
   trueFalse: `Each question should have two options: true and false. Return options in the format:
   {
-    "content": "true/false",
-    "isCorrect": true/false
+    "question": "The open-ended question",
+    type: trueFalse,
+    "options":  {
+      "content": "true/false",
+      "isCorrect": true/false
+    }
   }`,
   openEnded: `Each question requires a concise answer without options. Return in the format:
   {
     "question": "The open-ended question",
+     type: openEnded,
     "answer": "Direct answer to the question",
     "explanation": "Explanation of the answer"
   }`
@@ -206,4 +219,42 @@ export const generalQuizPrompt = (
       // the ${count} quizzes go here
       ]
   }`;
+};
+
+export const quizzesFromDocsPrompt = (
+  docs: string,
+  count: number,
+  type: QuizType = 'mixed',
+  blacklistedQuestions?: string[]
+) => {
+  const optionsStructure = generateOptionsStructure(type);
+
+  const promptForMoreQuestions =
+    blacklistedQuestions && blacklistedQuestions.length > 0
+      ? `Avoid creating quizzes from these existing questions: [${blacklistedQuestions.join(
+          ', '
+        )}].`
+      : '';
+
+  return `Using the provided document, create ${count} quizzes of type ${type} about the content within the document. ${promptForMoreQuestions}
+  
+  Make sure to formulate questions and options (if applicable) based on the information present in the document. Ensure that the quizzes are relevant, clear, and concise.
+
+  Use the following structures for each quiz type:
+
+  ${optionsStructure}
+
+  Wrap the total quizzes generated in an object, like this:
+  {
+    quizzes: [
+      // the ${count} quizzes go here
+      ]
+  }
+
+  If the document does not have enough information to generate ${count} quizzes of type ${type}, return a payload with this shape:
+  {
+    "status": 400,
+    "message": "Insufficient information in the document to generate the requested number of quizzes."
+  }
+`;
 };

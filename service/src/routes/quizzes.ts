@@ -12,6 +12,7 @@ import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalFlashcardPrompt,
   generalQuizPrompt,
+  quizzesFromDocsPrompt,
   flashCardsFromNotesPrompt,
   flashCardsFromDocsPrompt
 } from '../helpers/promptTemplates';
@@ -119,7 +120,7 @@ quizzes.post(
   validate(Schema.generateFromDocsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { topic, count, studentId, documentId } = req.body;
+      let { topic, count, studentId, documentId, type } = req.body;
 
       let additionalTopicContext = '';
 
@@ -167,9 +168,10 @@ quizzes.post(
 
       let docs = await documents();
       // Replace with your quiz generation logic based on the flashcard logic.
-      const quizzesFromDocs = flashCardsFromDocsPrompt(
+      const quizzesFromDocs = quizzesFromDocsPrompt(
         JSON.stringify(docs),
-        count
+        count,
+        type
       );
 
       const generateQuizzes = async (): Promise<any> => {

@@ -14,7 +14,7 @@ import editHistoryTitle from './editHistoryTitle';
 import highlights from './highlights';
 import patchSummary from './patchSummary';
 import highlightComment from './highlightComment';
-import { quizRequestSchema } from './quizzes';
+import { quizRequestSchema, quizzesFromDocs } from './quizzes';
 
 export default {
   eli5Schema,
@@ -33,5 +33,6 @@ export default {
   patchSummary,
   editHistoryTitle,
   quizRequestSchema,
-  highlightComment
+  highlightComment,
+  quizzesFromDocs
 };
