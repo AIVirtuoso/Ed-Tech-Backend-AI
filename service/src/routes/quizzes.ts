@@ -117,7 +117,7 @@ quizzes.post(
 
 quizzes.post(
   '/generate-from-notes',
-  validate(Schema.generateFromDocsSchema),
+  validate(Schema.quizzesFromDocs),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { topic, count, studentId, documentId, type } = req.body;
