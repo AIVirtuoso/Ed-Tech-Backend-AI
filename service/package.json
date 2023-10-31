@@ -7,7 +7,7 @@
   "type": "commonjs",
   "scripts": {
     "test": "ava",
-    "start": "node build/index.js",
+    "start": "node build/src/index.js",
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
