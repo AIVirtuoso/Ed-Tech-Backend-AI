@@ -4,7 +4,7 @@
   "description": "ai endpoint driving the intelligence features on the shepherd tutors platform",
   "main": "index.js",
   "module": "es2022",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "ava",
     "start": "node build/index.js",

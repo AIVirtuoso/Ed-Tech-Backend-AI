@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["DOM"],
-    "module": "ES2020",
+    "module": "CommonJS",
     "rootDir": ".",
     "moduleResolution": "node",
     "baseUrl": ".",
@@ -18,6 +18,6 @@
   "include": [
     "./config/*.json",
     "src/routes/temp/placeholder.ts",
-    "."
+    ".",
  ]
 }
