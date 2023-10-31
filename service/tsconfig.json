@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["DOM"],
-    "module": "nodenext",
+    "module": "ES6",
     "rootDir": ".",
+    "moduleResolution": "node",
     "baseUrl": ".",
     "resolveJsonModule": true,
     "allowJs": true,
