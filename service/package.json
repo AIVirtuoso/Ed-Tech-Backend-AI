@@ -4,10 +4,10 @@
   "description": "ai endpoint driving the intelligence features on the shepherd tutors platform",
   "main": "index.js",
   "module": "es2022",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "ava",
-    "start": "node build/src/index.js",
+    "start": "node build/index.js",
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
