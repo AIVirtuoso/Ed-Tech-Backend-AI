@@ -7,7 +7,7 @@
   "type": "commonjs",
   "scripts": {
     "test": "ava",
-    "start": "node build/src/index.js",
+    "start": "node build/index.js",
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
@@ -22,6 +22,9 @@
     "hooks": {
       "pre-commit": "npm run prettier-format && npm run lint"
     }
+  },
+  "engines": {
+    "node": "18.x"
   },
   "author": "justin irabor",
   "license": "ISC",
