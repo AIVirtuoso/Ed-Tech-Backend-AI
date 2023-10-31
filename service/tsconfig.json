@@ -4,7 +4,6 @@
     "lib": ["DOM"],
     "module": "nodenext",
     "rootDir": ".",
-    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "resolveJsonModule": true,
     "allowJs": true,
@@ -19,5 +18,5 @@
     "./config/*.json",
     "src/routes/temp/placeholder.ts",
     "."
-  ]
+ ]
 }
