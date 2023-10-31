@@ -31,7 +31,8 @@ import {
 } from '../../db/models/conversation';
 import {
   fetchAllStudentChats,
-  fetchSpecificStudentChat
+  fetchSpecificStudentChat,
+  handleReaction
 } from '../../db/models/conversationLog';
 import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
@@ -328,6 +329,21 @@ notes.get(
         data: description,
         pastMessages
       });
+    } catch (e: any) {
+      next(e);
+    }
+  }
+);
+
+notes.get(
+  '/conversations/:conversationId/toggle_reaction',
+  validate(chatHistory),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { chatId, reactionType } = req.body;
+
+      const chat = await handleReaction(chatId, reactionType as 'like');
+      res.send({ chat });
     } catch (e: any) {
       next(e);
     }

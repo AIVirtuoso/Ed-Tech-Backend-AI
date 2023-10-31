@@ -21,6 +21,14 @@ const ChatLog = sequelize.define('ConversationLog', {
   log: {
     type: DataTypes.JSON,
     allowNull: false
+  },
+  liked: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  disliked: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 });
 
@@ -101,6 +109,56 @@ export const fetchSpecificStudentChat = async (conversationId: string) => {
   });
 
   return studentChat[0]?.ConversationLogs || [];
+};
+
+export const toggleLike = async (chatLogId: string) => {
+  const chatLog = await ChatLog.findOne({
+    where: {
+      id: chatLogId
+    }
+  });
+
+  if (!chatLog) throw new Error('ChatLog not found!');
+
+  // Toggle like
+  chatLog.liked = !chatLog.liked;
+
+  // If the chat was liked, we ensure it's not disliked
+  if (chatLog.liked) chatLog.disliked = false;
+
+  return await chatLog.save();
+};
+
+export const toggleDislike = async (chatLogId: string) => {
+  const chatLog = await ChatLog.findOne({
+    where: {
+      id: chatLogId
+    }
+  });
+
+  if (!chatLog) throw new Error('ChatLog not found!');
+
+  // Toggle dislike
+  chatLog.disliked = !chatLog.disliked;
+
+  // If the chat was disliked, we ensure it's not liked
+  if (chatLog.disliked) chatLog.liked = false;
+
+  return await chatLog.save();
+};
+
+export const handleReaction = async (
+  chatLogId: string,
+  reactionType: 'like' | 'dislike'
+) => {
+  switch (reactionType) {
+    case 'like':
+      return await toggleLike(chatLogId);
+    case 'dislike':
+      return await toggleDislike(chatLogId);
+    default:
+      throw new Error('Invalid reaction type!');
+  }
 };
 
 export default ChatLog;
