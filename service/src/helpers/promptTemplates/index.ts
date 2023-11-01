@@ -213,7 +213,7 @@ export const generalQuizPrompt = (
 
   return `${basePrompt} 
     ${optionsStructure}
-    Wrap the total flashcards generated in an object, like this:
+    Wrap the total flashcards generated in an object, Only provide a RFC8259 compliant JSON response following this format without deviation::
   {
     quizzes: [
       // the ${count} quizzes go here
