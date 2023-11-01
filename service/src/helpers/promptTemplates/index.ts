@@ -147,7 +147,9 @@ const promptStructures = {
   {
     "question": "The open-ended question",
      "type": trueFalse,
-    "options":  [{
+    "options":  [
+      // Options should be an Array of objects
+      {
       "content": "Option content",
       "isCorrect": true/false
     }]
@@ -156,7 +158,9 @@ const promptStructures = {
   {
     "question": "The open-ended question",
      "type": trueFalse,
-    "options":  [{
+    "options":  [
+      // Options should be an Array of objects
+      {
       "content": "Option content",
       "isCorrect": true/false
     }]
@@ -165,7 +169,9 @@ const promptStructures = {
   {
     "question": "The open-ended question",
     type: trueFalse,
-    "options":  [{
+    "options":  [
+      // Options should be an Array of objects
+      {
       "content": "true/false",
       "isCorrect": true/false
     }]
