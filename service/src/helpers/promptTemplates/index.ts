@@ -213,6 +213,8 @@ export const generalQuizPrompt = (
 ) => {
   const optionsStructure = generateOptionsStructure(type);
 
+  console.log('In here get type biatchhhhh', type);
+
   const basePrompt = `You are a quiz creator of highly diagnostic quizzes. You will make good low-stakes tests and diagnostics. 
     You will then ask ${count} questions for the ${topic} topic under ${subject}. Ensure the questions quiz the college student at a ${level} on that topic and are highly relevant, going beyond just facts.
    At the end of the quiz, provide an answer key and explain the right answer. `;
