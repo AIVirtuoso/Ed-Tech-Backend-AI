@@ -19,9 +19,9 @@ export const quizRequestSchema = z.object({
 });
 
 export const quizzesFromDocs = z.object({
-  topic: z.string(),
+  topic: z.string().optional(),
   count: z.number(),
-  subject: z.string(),
+  subject: z.string().optional(),
   existingQuestions: z.array(z.string()).optional(),
   documentId: z.string({ required_error: 'documentId is required' }),
   type: z
