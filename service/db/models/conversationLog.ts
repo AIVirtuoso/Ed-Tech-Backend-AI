@@ -29,6 +29,10 @@ const ChatLog = sequelize.define('ConversationLog', {
   disliked: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  isPinned: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 });
 

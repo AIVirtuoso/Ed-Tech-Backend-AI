@@ -124,7 +124,7 @@ notes.get(
       );
 
       const mappedChatHistory = chatHistory
-        .map((history: Chats) => history.log)
+        .map((history: Chats) => history)
         .reverse();
 
       res.send(mappedChatHistory);
@@ -336,8 +336,8 @@ notes.get(
 );
 
 notes.get(
-  '/conversations/:conversationId/toggle_reaction',
-  validate(chatHistory),
+  '/chat/toggle_reaction',
+  validate(schema.reaction),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { chatId, reactionType } = req.body;

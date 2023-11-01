@@ -165,10 +165,10 @@ const promptStructures = {
   {
     "question": "The open-ended question",
     type: trueFalse,
-    "options":  {
+    "options":  [{
       "content": "true/false",
       "isCorrect": true/false
-    }
+    }]
   }`,
   openEnded: `Each question requires a concise answer without options. Return in the format:
   {
