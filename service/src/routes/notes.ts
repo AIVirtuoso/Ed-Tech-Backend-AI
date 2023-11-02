@@ -364,11 +364,14 @@ notes.get(
 
 notes.post(
   '/chat/toggle_reaction',
-  validate(schema.reaction),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { chatId, reactionType } = req.body;
+      if (!chatId || !reactionType)
+        throw new Error('chatId and reactionType required!');
 
+      if (!['like', 'dislike'].includes(reactionType))
+        throw new Error('reactionType must be either "like" or "dislike"');
       const chat = await handleReaction(chatId, reactionType as 'like');
       res.send({ chat });
     } catch (e: any) {
