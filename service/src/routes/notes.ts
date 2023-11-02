@@ -239,7 +239,7 @@ notes.post(
 );
 
 notes.get(
-  '/pinnedChats',
+  '/pinned_chat',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { studentId } = req.query;
