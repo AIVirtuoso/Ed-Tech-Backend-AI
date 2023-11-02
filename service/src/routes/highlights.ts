@@ -119,7 +119,7 @@ highlight.post(
     try {
       let { highlightId, content, studentId, highlight, documentId } = req.body;
 
-      if (highlightId) {
+      if (!highlightId) {
         if (!highlight) {
           throw new Error('Either Highlight or highlightId is required.');
         }
@@ -144,7 +144,8 @@ highlight.post(
 
       res.send({
         status: 'Comment successfully saved!',
-        data: savedComment
+        data: savedComment,
+        highlight
       });
     } catch (e: any) {
       console.log(e);
