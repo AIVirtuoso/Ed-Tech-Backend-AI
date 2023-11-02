@@ -165,4 +165,62 @@ export const handleReaction = async (
   }
 };
 
+export const pinChat = async (chatId: string, studentId: string) => {
+  const conversation = await ChatLog.findOne({
+    where: {
+      id: chatId,
+      studentId
+    }
+  });
+
+  if (!conversation) throw new Error('Conversation not found!');
+
+  conversation.isPinned = true;
+  await conversation.save();
+};
+
+export const toggleChatPin = async (chatId: string, studentId: string) => {
+  const conversation = await Conversation.findOne({
+    where: {
+      id: chatId,
+      studentId
+    }
+  });
+
+  if (!conversation) throw new Error('Conversation not found!');
+
+  conversation.isPinned = !conversation.isPinned;
+  await conversation.save();
+};
+
+export const unpinChat = async (chatId: string, studentId: string) => {
+  const conversation = await ChatLog.findOne({
+    where: {
+      id: chatId,
+      studentId
+    }
+  });
+
+  if (!conversation) throw new Error('Conversation not found!');
+
+  conversation.isPinned = false;
+  await conversation.save();
+};
+
+export const getPinnedChats = async (studentId: string) => {
+  const pinnedChats = await Conversation.findAll({
+    where: {
+      referenceId: studentId,
+      isPinned: true
+    },
+    include: [
+      {
+        model: ChatLog
+      }
+    ]
+  });
+
+  return pinnedChats;
+};
+
 export default ChatLog;

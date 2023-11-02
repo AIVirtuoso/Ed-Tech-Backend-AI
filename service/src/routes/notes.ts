@@ -2,6 +2,7 @@ import { createOrUpdateDocument } from '../../db/models/document';
 import express from 'express';
 import config from 'config';
 import { Request, Response, NextFunction } from 'express';
+import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
 import { uuid } from 'uuidv4';
@@ -220,6 +221,32 @@ notes.delete(
       });
     } catch (e: any) {
       next(e);
+    }
+  }
+);
+
+notes.post(
+  '/toggle_pin',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { chatId, studentId } = req.body;
+      await toggleChatPin(chatId, studentId);
+      res.status(200).send({ message: 'Chat pinned successfully!' });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+notes.get(
+  '/pinnedChats',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { studentId } = req.query;
+      const pinnedChats = await getPinnedChats(studentId as string);
+      res.status(200).send({ data: pinnedChats });
+    } catch (error) {
+      next(error);
     }
   }
 );

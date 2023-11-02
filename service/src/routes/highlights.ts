@@ -1,5 +1,6 @@
 import express from 'express';
 import config from 'config';
+import { saveHighlightComment } from '../../db/models/highlights';
 import { Request, Response, NextFunction } from 'express';
 import { embedding, pineconeIndex } from '../routes/index';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
@@ -13,7 +14,7 @@ import {
   getHighlight
 } from '../../db/models/highlights';
 
-const { highlights } = Schema;
+const { highlights, commentGenerateSchema, commentSaveSchema } = Schema;
 const highlight = express.Router();
 
 interface Query {
@@ -42,7 +43,8 @@ highlight.post(
 );
 
 highlight.post(
-  '/comment',
+  '/comment/generate',
+  validate(commentGenerateSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { documentId, highlightText, studentId } = req.body;
@@ -105,6 +107,37 @@ highlight.post(
       next({
         message:
           "Failed to generate comment. Make sure you're correctly supplying the highlight text or highlight ID, document ID, and student ID."
+      });
+    }
+  }
+);
+
+highlight.post(
+  '/comment/save',
+  validate(commentSaveSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { highlightId, content, studentId } = req.body;
+
+      if (!highlightId || !content) {
+        throw new Error('Highlight ID and comment are required.');
+      }
+
+      const savedComment = await saveHighlightComment({
+        highlightId,
+        content,
+        studentId
+      });
+
+      res.send({
+        status: 'Comment successfully saved!',
+        data: savedComment
+      });
+    } catch (e: any) {
+      console.log(e);
+      next({
+        message:
+          'Failed to save the comment. Please make sure you are correctly supplying the highlightId and the comment.'
       });
     }
   }
