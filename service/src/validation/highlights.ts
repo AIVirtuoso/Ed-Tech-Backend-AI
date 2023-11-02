@@ -25,12 +25,16 @@ export const commentGenerateSchema = z.object({
 
 export const commentSaveSchema = z.object({
   body: z.object({
-    highlightId: z.string({
-      required_error: 'highlightId is required'
-    }),
+    highlightId: z
+      .string({
+        required_error: 'highlightId is required'
+      })
+      .optional(),
+    highlight: z.unknown().optional(),
     content: z.string({
       required_error: 'Comment content is required'
     }),
+    documentId: z.string().optional(),
     studentId: z.string().optional() // if studentId is optional; otherwise, remove .optional()
   })
 });

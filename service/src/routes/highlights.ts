@@ -117,7 +117,20 @@ highlight.post(
   validate(commentSaveSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { highlightId, content, studentId } = req.body;
+      let { highlightId, content, studentId, highlight, documentId } = req.body;
+
+      if (highlightId) {
+        if (!highlight) {
+          throw new Error('Either Highlight or highlightId is required.');
+        }
+        if (!documentId) {
+          throw new Error(
+            'documentId is required if you are saving a new highlight.'
+          );
+        }
+      }
+      highlight = await createOrUpdateHighlight({ highlight, documentId });
+      highlightId = highlight.id;
 
       if (!highlightId || !content) {
         throw new Error('Highlight ID and comment are required.');
