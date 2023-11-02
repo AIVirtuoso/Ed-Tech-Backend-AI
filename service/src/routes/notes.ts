@@ -362,7 +362,7 @@ notes.get(
   }
 );
 
-notes.get(
+notes.post(
   '/chat/toggle_reaction',
   validate(schema.reaction),
   async (req: Request, res: Response, next: NextFunction) => {
