@@ -180,7 +180,7 @@ export const pinChat = async (chatId: string, studentId: string) => {
 };
 
 export const toggleChatPin = async (chatId: string, studentId: string) => {
-  const conversation = await Conversation.findOne({
+  const conversation = await ChatLog.findOne({
     where: {
       id: chatId,
       studentId
