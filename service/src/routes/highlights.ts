@@ -44,10 +44,14 @@ highlight.post(
 
 highlight.post(
   '/comment/generate',
-  validate(commentGenerateSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { documentId, highlightText, studentId } = req.body;
+      if (!documentId || !highlightText || !studentId) {
+        throw new Error(
+          'documentId, highlightText, and studentId are required.'
+        );
+      }
 
       const getDocumentVectorStore = async ({
         studentId,

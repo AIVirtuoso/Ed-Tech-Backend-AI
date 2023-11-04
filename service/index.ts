@@ -2,13 +2,13 @@ import { ai, PORT, server, embedding, pineconeIndex } from './src/routes/index';
 import { Server } from 'socket.io';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { PromptTemplate } from 'langchain/prompts';
+import { chatWithNotePrompt } from './src/helpers/promptTemplates/index';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
+import ChatManager from 'src/helpers/chatManager';
+import fetchNote from 'src/helpers/getNote';
+import extractTextFromJson from 'src/helpers/parseNote';
 import ChatLog, { createNewChat } from './db/models/conversationLog';
-import {
-  HumanChatMessage,
-  AIChatMessage,
-  SystemChatMessage
-} from 'langchain/schema';
+import { HumanChatMessage, AIChatMessage } from 'langchain/schema';
 import { summarizeNotePrompt } from './src/helpers/promptTemplates/index';
 import {
   ConversationChain,
@@ -23,8 +23,7 @@ import {
   chatHasTitle,
   storeChatTitle
 } from './db/models/conversation';
-import { getChatLogs } from './db/models/conversationLog';
-import config, { has } from 'config';
+import config from 'config';
 import paginatedFind from './src/helpers/pagination';
 import llmCreateConversationTitle from './src/helpers/llmFunctions/createConversationTitle';
 
@@ -50,6 +49,53 @@ const getDocumentVectorStore = async ({
     filter: { documentId: { $eq: `${documentId}` } }
   });
 };
+
+async function chatWithModel(
+  systemPrompt: string,
+  conversationId: string,
+  studentId: string,
+  socket: any,
+  event: string
+) {
+  const chats = await paginatedFind(
+    ChatLog,
+    {
+      studentId,
+      conversationId
+    },
+    { limit: 10 }
+  );
+
+  const lastTenChats = chats.map((chat: any) => chat.log).reverse();
+
+  const pastMessages: any[] = [];
+
+  lastTenChats.forEach((message: any) => {
+    if (message.role === 'assistant')
+      pastMessages.push(new AIChatMessage(message.content));
+    if (message.role === 'user')
+      pastMessages.push(new HumanChatMessage(message.content));
+  });
+
+  const model = socketAiModel(socket, event, 'gpt-4-0613');
+
+  const memory = new BufferMemory({
+    chatHistory: new ChatMessageHistory(pastMessages)
+  });
+
+  const prompt = new PromptTemplate({
+    template: systemPrompt,
+    inputVariables: ['history', 'input']
+  });
+
+  const chain = new ConversationChain({
+    llm: model,
+    memory,
+    prompt
+  });
+
+  return { chain, model, prompt };
+}
 
 const socketAiModel = (socket: any, event: string, model?: string) => {
   return new ChatOpenAI({
@@ -96,6 +142,8 @@ io.use(async (socket, next) => {
 const docChatNamespace = io.of('/doc-chat');
 
 const homeworkHelpNamespace = io.of('/homework-help');
+
+const noteWorkspaceNamespace = io.of('/note-workspace');
 
 docChatNamespace.on('connection', async (socket) => {
   const { studentId, documentId } = socket.handshake.auth;
@@ -359,6 +407,105 @@ homeworkHelpNamespace.on('connection', async (socket) => {
         }),
         () => Promise.resolve(socket.emit('saved conversation', true))
       ]);
+    }
+  });
+});
+
+noteWorkspaceNamespace.on('connection', async (socket) => {
+  const { studentId, noteId, conversationId: convoId } = socket.handshake.auth;
+  const event = 'chat response';
+  let conversationId = convoId;
+
+  if (!noteId) {
+    socket.emit('error', 'Note id is required');
+  }
+
+  let note = await fetchNote(noteId);
+
+  if (!convoId) {
+    conversationId = await createNewConversation({
+      referenceId: studentId,
+      reference: 'student'
+    }).then((convo) => convo?.id);
+  }
+
+  socket.emit('current_conversation', conversationId);
+
+  const hasContent = Boolean(note?.note);
+
+  if (!hasContent) {
+    socket.emit('error', 'Note has no content');
+  }
+
+  const noteData = extractTextFromJson(note.note);
+
+  const systemPrompt = chatWithNotePrompt(noteData);
+
+  const chatManager = new ChatManager(
+    socket,
+    event,
+    systemPrompt,
+    studentId,
+    conversationId
+  );
+
+  await chatManager.loadChats();
+
+  let { chain, model, pastMessages } = await chatManager.loadModel();
+
+  socket.on('chat message', async (message) => {
+    const isFirstConvo = pastMessages.length === 0;
+    if (
+      (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
+      (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
+    ) {
+      const answer = await chain.call({
+        input: message,
+        history: pastMessages
+      });
+      socket.emit(`${event} end`, answer?.response);
+
+      const userQuery = wrapForQL('user', message);
+      const assistantResponse = wrapForQL('assistant', answer?.response);
+
+      chatManager.addChat(new HumanChatMessage(message));
+      chatManager.addChat(new AIChatMessage(answer?.response));
+
+      Promise.all([
+        await createNewChat({
+          studentId,
+          log: userQuery,
+          conversationId
+        }),
+        await createNewChat({
+          studentId,
+          log: assistantResponse,
+          conversationId
+        }),
+        () => Promise.resolve(socket.emit('saved conversation', true))
+      ]);
+    }
+  });
+
+  socket.on('refresh_note', async () => {
+    try {
+      socket.emit('refresh_status', { status: 'REFRESH_LOADING' });
+      note = await fetchNote(noteId);
+
+      const prompt = chatWithNotePrompt(extractTextFromJson(note.note));
+      chatManager.setSystemPrompt(prompt);
+
+      // Load model with updated information
+      const data = await chatManager.loadModel();
+      pastMessages = data.pastMessages;
+      chain = data.chain;
+      model = data.model;
+      socket.emit('refresh_status', { status: 'REFRESH_DONE' });
+    } catch (error: any) {
+      socket.emit('refresh_status', {
+        status: 'REFRESH_ERROR',
+        error: error.message
+      });
     }
   });
 });
