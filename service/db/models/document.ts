@@ -9,7 +9,7 @@ interface Document {
   document?: JSON;
   courseId?: string;
   summary?: string;
-  keywords?: JSON;
+  keywords?: string[];
   documentURL: string;
 }
 

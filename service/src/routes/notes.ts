@@ -50,7 +50,10 @@ const {
   patchSummary,
   editHistoryTitle
 } = schema;
-
+const TextRazor = require('textrazor');
+const textRazorClient = new TextRazor(
+  '81f7f4e691b88e45ddec8fa3336a42d306e37930c745aefd33b6e835'
+);
 interface Chats {
   log: Array<any>;
 }
@@ -503,29 +506,71 @@ notes.post(
         chunkOverlap: 500
       });
 
+      const textRazorOptions = {
+        extractors: 'entities'
+      };
+
+      let keywords: string[];
+
+      // Fetch keywords using textRazorClient
+      try {
+        const res = await textRazorClient.exec(text, textRazorOptions);
+        keywords = [
+          ...new Set(
+            res.response.entities
+              //@ts-ignore: petty type check
+              .map((entity) => entity.entityId)
+              .filter(
+                (keyword: string) =>
+                  !/^\d+$|^\d+\.\d+|^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?\+00:00$/.test(
+                    keyword
+                  )
+              )
+          )
+        ] as string[];
+      } catch (err) {
+        console.error('textRazorClient ERROR', err);
+        return res.status(500).send({
+          message: 'Error fetching keywords from TextRazor.'
+        });
+      }
+
       const chunks = await splitter.createDocuments([text], [{ documentId }]);
 
       let data: any = [];
 
+      // Create or update the document using keywords
       await PineconeStore.fromDocuments(chunks, embedding, {
         pineconeIndex,
         namespace: studentId
       }).then(async () => {
-        data = await createOrUpdateDocument({
-          reference: USER_REFERENCE.STUDENT,
-          referenceId: studentId,
-          documentId,
-          title,
-          documentURL
-        });
+        try {
+          data = await createOrUpdateDocument({
+            reference: USER_REFERENCE.STUDENT,
+            referenceId: studentId,
+            keywords: keywords ? keywords : [],
+            documentId,
+            title,
+            documentURL
+          });
+        } catch (err) {
+          console.error('createOrUpdateDocument ERROR', err);
+          return res.status(500).send({
+            message: 'Error creating or updating the document.'
+          });
+        }
       });
+
       fs.unlink(filePath, (err) => {
-        err && console.log('failed to delete file along path ', filePath);
-        !err && console.log('successfully deleted');
+        if (err) {
+          console.log('Failed to delete file along path ', filePath);
+        } else {
+          console.log('Successfully deleted');
+        }
       });
 
       res.send({
-        message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}'`,
+        message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}`,
         data,
         response: data[0]
       });

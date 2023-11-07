@@ -54,6 +54,7 @@
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.2",
     "socket.io-stream": "^0.9.1",
+    "textrazor": "^2.1.0",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
