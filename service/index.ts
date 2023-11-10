@@ -533,7 +533,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
     console.log('Refreshing note...');
     try {
       socket.emit('refresh_status', { status: 'REFRESH_LOADING' });
-      note = await fetchNote(noteId);
+      note = await fetchNote(noteId, isDevelopment);
 
       const prompt = chatWithNotePrompt(extractTextFromJson(note.note));
       chatManager.setSystemPrompt(prompt);
