@@ -469,10 +469,8 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   }
 
   const noteData = extractTextFromJson(note.note);
-  console.log(`Extracted text from note: ${noteData}`);
 
   const systemPrompt = chatWithNotePrompt(noteData);
-  console.log(`Generated system prompt`);
 
   const chatManager = new ChatManager(
     socket,
@@ -495,44 +493,39 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   socket.on('chat message', async (message) => {
     console.log(`Received chat message: ${message}`);
-    const isFirstConvo = pastMessages.length === 0;
-    if (
-      (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
-      (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
-    ) {
-      try {
-        const answer = await chain.call({
-          input: message,
-          history: pastMessages
-        });
-        console.log(`AI response: ${answer?.response}`);
-        socket.emit(`${event} end`, answer?.response);
 
-        // Logging and persisting chat in the database
-        const userQuery = wrapForQL('user', message);
-        const assistantResponse = wrapForQL('assistant', answer?.response);
+    try {
+      const answer = await chain.call({
+        input: message,
+        history: pastMessages
+      });
+      console.log(`AI response: ${answer?.response}`);
+      socket.emit(`${event} end`, answer?.response);
 
-        chatManager.addChat(new HumanChatMessage(message));
-        chatManager.addChat(new AIChatMessage(answer?.response));
+      // Logging and persisting chat in the database
+      const userQuery = wrapForQL('user', message);
+      const assistantResponse = wrapForQL('assistant', answer?.response);
 
-        await Promise.all([
-          createNewChat({
-            studentId,
-            log: userQuery,
-            conversationId
-          }),
-          createNewChat({
-            studentId,
-            log: assistantResponse,
-            conversationId
-          })
-        ]);
-        console.log('Chats saved to database');
-        socket.emit('saved conversation', true);
-      } catch (error: any) {
-        console.error(`Error during chat message processing: ${error.message}`);
-        socket.emit('error', error.message);
-      }
+      chatManager.addChat(new HumanChatMessage(message));
+      chatManager.addChat(new AIChatMessage(answer?.response));
+
+      await Promise.all([
+        createNewChat({
+          studentId,
+          log: userQuery,
+          conversationId
+        }),
+        createNewChat({
+          studentId,
+          log: assistantResponse,
+          conversationId
+        })
+      ]);
+      console.log('Chats saved to database');
+      socket.emit('saved conversation', true);
+    } catch (error: any) {
+      console.error(`Error during chat message processing: ${error.message}`);
+      socket.emit('error', error.message);
     }
   });
 
