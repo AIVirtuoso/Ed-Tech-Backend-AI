@@ -10,11 +10,18 @@
     "namespace": "students"
   },
   "localAuth": "vunderkind23",
+
   "postgres": {
     "database": "postgres",
     "username": "postgres",
     "password": "i6d2u9yTEwlpZgOi",
     "host": "db.bxgzpxgmadtmlboycqgj.supabase.co",
-    "dialect" : "postgres"
+    "dialect": "postgres"
+  },
+  "textExtractor": {
+    "bucketName": "shepherd-document-upload",
+    "outputBucketName": "stage-for-ocr-output",
+    "snsTopicArn": "arn:aws:sns:us-east-2:322634587886:ocr",
+    "snsRoleArn": "arn:aws:iam::322634587886:role/textract-sns-async"
   }
 }

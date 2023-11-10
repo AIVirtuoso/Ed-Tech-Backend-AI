@@ -2,6 +2,7 @@ import { createOrUpdateDocument } from '../../db/models/document';
 import express from 'express';
 import config from 'config';
 import { Request, Response, NextFunction } from 'express';
+import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
@@ -59,6 +60,13 @@ interface Chats {
 }
 
 const openAIconfig: OpenAIConfig = config.get('openai');
+
+const {
+  bucketName,
+  outputBucketName,
+  snsRoleArn,
+  snsTopicArn
+}: { [key: string]: string } = config.get('textExtractor');
 
 const createDocumentAndReturnFilePath = async (
   documentURL: string,
@@ -490,8 +498,30 @@ notes.post(
 
       const documentId = uuid(); // Though Postgres is perfectly capable of generating its own uuids, we're generating one optimistically/early so we can use it to set Pinecone's filters.
 
+      const pdfTextExtractor = new PDFTextExtractor(
+        bucketName,
+        outputBucketName,
+        studentId,
+        snsTopicArn,
+        snsRoleArn
+      );
+
+      const jobId = await pdfTextExtractor.extractTextFromPDF(
+        documentURL,
+        studentId,
+        documentId
+      );
+
+      if (!jobId) {
+        throw new Error('Failed to extract text from PDF');
+      }
+
+      // let text = await pdfTextExtractor.getTextFromJob(jobId);
+      // console.log(text);
+
       const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
 
+      // text = text.slice(0, 50);
       const filePath = await createDocumentAndReturnFilePath(
         documentURL,
         studentId
@@ -502,8 +532,8 @@ notes.post(
       const text = await pdf(pdfdata).then((data: any) => data.text);
 
       const splitter = new CharacterTextSplitter({
-        chunkSize: 1536,
-        chunkOverlap: 500
+        chunkSize: 2000,
+        chunkOverlap: 300
       });
 
       const textRazorOptions = {
@@ -537,44 +567,42 @@ notes.post(
 
       const chunks = await splitter.createDocuments([text], [{ documentId }]);
 
+      console.log(chunks);
       let data: any = [];
+      // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;
 
       // Create or update the document using keywords
       await PineconeStore.fromDocuments(chunks, embedding, {
         pineconeIndex,
         namespace: studentId
-      }).then(async () => {
-        try {
+      })
+        .then(async () => {
+          console.log('inside pinecone store');
           data = await createOrUpdateDocument({
             reference: USER_REFERENCE.STUDENT,
             referenceId: studentId,
-            keywords: keywords ? keywords : [],
             documentId,
             title,
             documentURL
           });
-        } catch (err) {
-          console.error('createOrUpdateDocument ERROR', err);
-          return res.status(500).send({
-            message: 'Error creating or updating the document.'
-          });
-        }
-      });
-
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log('Failed to delete file along path ', filePath);
-        } else {
-          console.log('Successfully deleted');
-        }
-      });
+        })
+        .catch((e) => {
+          console.log('erroror ====? ', e.stack);
+          return next(Error(e.stack));
+        });
+      // fs.unlink(filePath, (err) => {
+      //   err && console.log('failed to delete file along path ', filePath);
+      //   !err && console.log('successfully deleted');
+      // });
 
       res.send({
         message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}`,
         data,
         response: data[0]
       });
-    } catch (e) {
+    } catch (e: any) {
+      console.log(e.message);
+      console.log(e.stack);
       next(e);
     }
   }

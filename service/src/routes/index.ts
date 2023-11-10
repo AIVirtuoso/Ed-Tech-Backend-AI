@@ -94,10 +94,13 @@ const preparePinecone = async () => {
 
   const vectorIndex = pinecone.Index(index);
   ai.locals.pineconeIndex = vectorIndex;
+
+  console.log(vectorIndex);
   pineconeIndex = vectorIndex;
 };
 
 preparePinecone();
+
 console.log(`\n🤖 Vector store OK \n`);
 
 ai.locals.embeddingAI = embedding;

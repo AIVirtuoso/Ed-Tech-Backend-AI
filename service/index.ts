@@ -325,6 +325,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     isNewChat = true;
     // socket.emit('new_conversation', conversationId);
   }
+
   socket.emit('current_conversation', conversationId);
 
   console.log(conversationId);
@@ -412,34 +413,58 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 });
 
 noteWorkspaceNamespace.on('connection', async (socket) => {
+  console.log('Socket connected');
+
   const { studentId, noteId, conversationId: convoId } = socket.handshake.auth;
   const event = 'chat response';
   let conversationId = convoId;
 
   if (!noteId) {
+    console.error('Note id is required');
     socket.emit('error', 'Note id is required');
+    return;
   }
 
-  let note = await fetchNote(noteId);
+  let note;
+
+  try {
+    console.log(`Fetching note for noteId: ${noteId}`);
+    note = await fetchNote(noteId);
+  } catch (error: any) {
+    console.error(`Error fetching note: ${error.message}`);
+    socket.emit('error', error.message);
+    return;
+  }
 
   if (!convoId) {
-    conversationId = await createNewConversation({
-      referenceId: studentId,
-      reference: 'student'
-    }).then((convo) => convo?.id);
+    console.log(`Creating new conversation for studentId: ${studentId}`);
+    try {
+      conversationId = await createNewConversation({
+        referenceId: studentId,
+        reference: 'student'
+      }).then((convo) => convo?.id);
+    } catch (error: any) {
+      console.error(`Error creating new conversation: ${error.message}`);
+      socket.emit('error', error.message);
+      return;
+    }
   }
 
   socket.emit('current_conversation', conversationId);
+  console.log(`Emitted current conversation: ${conversationId}`);
 
   const hasContent = Boolean(note?.note);
-
   if (!hasContent) {
+    console.error('Note has no content');
     socket.emit('error', 'Note has no content');
+    return;
   }
 
   const noteData = extractTextFromJson(note.note);
+  console.log(`Extracted text from note: ${noteData}`);
 
   const systemPrompt = chatWithNotePrompt(noteData);
+  console.log(`Generated system prompt`);
 
   const chatManager = new ChatManager(
     socket,
@@ -449,45 +474,62 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
     conversationId
   );
 
-  await chatManager.loadChats();
+  try {
+    console.log(`Loading chats for conversationId: ${conversationId}`);
+    await chatManager.loadChats();
+  } catch (error: any) {
+    console.error(`Error loading chats: ${error.message}`);
+    socket.emit('error', error.message);
+    return;
+  }
 
   let { chain, model, pastMessages } = await chatManager.loadModel();
 
   socket.on('chat message', async (message) => {
+    console.log(`Received chat message: ${message}`);
     const isFirstConvo = pastMessages.length === 0;
     if (
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
       (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
     ) {
-      const answer = await chain.call({
-        input: message,
-        history: pastMessages
-      });
-      socket.emit(`${event} end`, answer?.response);
+      try {
+        const answer = await chain.call({
+          input: message,
+          history: pastMessages
+        });
+        console.log(`AI response: ${answer?.response}`);
+        socket.emit(`${event} end`, answer?.response);
 
-      const userQuery = wrapForQL('user', message);
-      const assistantResponse = wrapForQL('assistant', answer?.response);
+        // Logging and persisting chat in the database
+        const userQuery = wrapForQL('user', message);
+        const assistantResponse = wrapForQL('assistant', answer?.response);
 
-      chatManager.addChat(new HumanChatMessage(message));
-      chatManager.addChat(new AIChatMessage(answer?.response));
+        chatManager.addChat(new HumanChatMessage(message));
+        chatManager.addChat(new AIChatMessage(answer?.response));
 
-      Promise.all([
-        await createNewChat({
-          studentId,
-          log: userQuery,
-          conversationId
-        }),
-        await createNewChat({
-          studentId,
-          log: assistantResponse,
-          conversationId
-        }),
-        () => Promise.resolve(socket.emit('saved conversation', true))
-      ]);
+        await Promise.all([
+          createNewChat({
+            studentId,
+            log: userQuery,
+            conversationId
+          }),
+          createNewChat({
+            studentId,
+            log: assistantResponse,
+            conversationId
+          })
+        ]);
+        console.log('Chats saved to database');
+        socket.emit('saved conversation', true);
+      } catch (error: any) {
+        console.error(`Error during chat message processing: ${error.message}`);
+        socket.emit('error', error.message);
+      }
     }
   });
 
   socket.on('refresh_note', async () => {
+    console.log('Refreshing note...');
     try {
       socket.emit('refresh_status', { status: 'REFRESH_LOADING' });
       note = await fetchNote(noteId);
@@ -500,8 +542,11 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
       pastMessages = data.pastMessages;
       chain = data.chain;
       model = data.model;
+
+      console.log('Note refreshed successfully');
       socket.emit('refresh_status', { status: 'REFRESH_DONE' });
     } catch (error: any) {
+      console.error(`Error refreshing note: ${error.message}`);
       socket.emit('refresh_status', {
         status: 'REFRESH_ERROR',
         error: error.message
