@@ -455,6 +455,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   const hasContent = Boolean(note?.note);
   if (!hasContent) {
+    console.log(note);
     console.error('Note has no content');
     socket.emit('error', 'Note has no content');
     return;
