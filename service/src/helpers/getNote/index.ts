@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MAIN_SERVICE_ENDPONT } from '../constants';
 
 async function fetchNote(id: string, isDevelopment = false) {
-  const baseUrl = isDevelopment
+  const baseUrl = !isDevelopment
     ? MAIN_SERVICE_ENDPONT
     : 'https://lobster-app-fgbff.ondigitalocean.app';
   const API_ENDPOINT = `${baseUrl}/notes/${id}`; // replace with your actual endpoint
