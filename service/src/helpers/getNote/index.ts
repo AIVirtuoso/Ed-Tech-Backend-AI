@@ -4,7 +4,9 @@ import { MAIN_SERVICE_ENDPONT } from '../constants';
 async function fetchNote(id: string, isDevelopment = false) {
   const baseUrl = !isDevelopment
     ? MAIN_SERVICE_ENDPONT
-    : 'https://lobster-app-fgbff.ondigitalocean.app';
+    : 'https://develop--api-sheperdtutors.netlify.app';
+
+  console.log(baseUrl);
   const API_ENDPOINT = `${baseUrl}/notes/${id}`; // replace with your actual endpoint
 
   const response = await axios.get(API_ENDPOINT, {

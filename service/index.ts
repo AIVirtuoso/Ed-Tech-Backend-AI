@@ -432,11 +432,13 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   let note;
 
+  console.log(isDevelopment);
+
   try {
     console.log(`Fetching note for noteId: ${noteId}`);
     note = await fetchNote(noteId, isDevelopment);
   } catch (error: any) {
-    console.error(`Error fetching note: ${error.message}`);
+    console.error(`Error fetching note: ${error}`);
     socket.emit('error', error.message);
     return;
   }
