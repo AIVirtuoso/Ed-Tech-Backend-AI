@@ -415,7 +415,12 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 noteWorkspaceNamespace.on('connection', async (socket) => {
   console.log('Socket connected');
 
-  const { studentId, noteId, conversationId: convoId } = socket.handshake.auth;
+  const {
+    studentId,
+    noteId,
+    conversationId: convoId,
+    isDevelopment
+  } = socket.handshake.auth;
   const event = 'chat response';
   let conversationId = convoId;
 

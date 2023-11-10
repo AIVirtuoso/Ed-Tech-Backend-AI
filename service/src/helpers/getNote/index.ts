@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { MAIN_SERVICE_ENDPONT } from '../constants';
 
-async function fetchNote(id: string) {
-  const API_ENDPOINT = `${MAIN_SERVICE_ENDPONT}/notes/${id}`; // replace with your actual endpoint
+async function fetchNote(id: string, isDevelopment = false) {
+  const baseUrl = isDevelopment
+    ? MAIN_SERVICE_ENDPONT
+    : 'https://lobster-app-fgbff.ondigitalocean.app';
+  const API_ENDPOINT = `${baseUrl}/notes/${id}`; // replace with your actual endpoint
 
   const response = await axios.get(API_ENDPOINT, {
     headers: {
