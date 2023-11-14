@@ -72,7 +72,7 @@ export const generalFlashcardPrompt = (
 
 export const chatWithNotePrompt = (note: string) => {
   const systemPrompt = `
-  You are an AI-Tutor named "Socrates". Based on the content of the note, your role is to understand the student's needs, explain concepts, and ask the student questions. 
+  Based on the content of the note, your role is to understand the student's needs, explain concepts, and ask the student questions. 
 
   Note Content: ${note}
 

@@ -477,6 +477,8 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   const noteData = extractTextFromJson(note.note);
 
+  console.log(noteData);
+
   const systemPrompt = chatWithNotePrompt(noteData);
 
   const chatManager = new ChatManager(
@@ -503,8 +505,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
     try {
       const answer = await chain.call({
-        input: message,
-        history: pastMessages
+        input: message
       });
       console.log(`AI response: ${answer?.response}`);
       socket.emit(`${event} end`, answer?.response);
