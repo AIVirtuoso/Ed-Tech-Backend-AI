@@ -1,7 +1,8 @@
 export const USER_REFERENCE = {
   STUDENT: 'student',
   SHEPHERD: 'shepherd',
-  DOCUMENT: 'document'
+  DOCUMENT: 'document',
+  NOTE: 'note'
 };
 
 export const MAIN_SERVICE_ENDPONT = 'https://api.shepherdtutors.com';

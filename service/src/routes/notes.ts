@@ -107,17 +107,19 @@ notes.get(
   validate(chatHistory),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { studentId, documentId } = req.query;
+      const { studentId, documentId, noteId } = req.query;
 
-      const reference = documentId
-        ? USER_REFERENCE.DOCUMENT
-        : USER_REFERENCE.STUDENT;
+      const reference = (() => {
+        if (documentId) return USER_REFERENCE.DOCUMENT;
+        if (noteId) return USER_REFERENCE.NOTE;
+        return USER_REFERENCE.STUDENT;
+      })();
 
       const conversationId = await getChatConversationId(
         {
           reference,
           // @ts-ignore
-          referenceId: documentId || studentId
+          referenceId: documentId || studentId || noteId
         },
         false
       );
