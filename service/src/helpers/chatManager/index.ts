@@ -98,8 +98,6 @@ class ChatManager {
     // Added this line to return pastMessages as well for conditional checks
     const pastMessages = this.chatHistory;
 
-    console.log(pastMessages);
-
     return { chain, model, prompt, pastMessages };
   }
 }

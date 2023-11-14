@@ -38,7 +38,7 @@ quizzes.post(
         modelName: OPENAI_MODELS.GPT_4
       });
 
-      // Replace with your quiz generation logic based on the flashcard logic.
+      // Replace with your quiz genewration logic based on the flashcard logic.
       const quizPrompt = generalQuizPrompt(
         type,
         count,

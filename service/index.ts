@@ -503,11 +503,27 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   socket.on('chat message', async (message) => {
     console.log(`Received chat message: ${message}`);
 
+    const question = `Using context from the note: [${noteData}] supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, exciting and informative. Be charming and have a personality.
+    
+    Suggest follow-up discussions based on the information, and format them in bullet points of three discussions.
+    
+    Make your answers in markdown.
+
+    Do not discuss with me. If I send you a message that does not seem like  a question about the document or from the history of the chat so far, respond with a variation of: 'I'm sorry, that is not a question about this document. Would you like to ask me something about this document?'
+    
+    If the user asks for more information use chat history and the information in document to provide more information. 
+
+    this is the history of the chat so far: ${pastMessages}
+    
+    My question is: ${message}
+
+    
+    Your answer:`;
+
     try {
       const answer = await chain.call({
-        input: message
+        input: question
       });
-      console.log(`AI response: ${answer?.response}`);
       socket.emit(`${event} end`, answer?.response);
 
       // Logging and persisting chat in the database
