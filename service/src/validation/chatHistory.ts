@@ -5,12 +5,16 @@ const chatHistorySchema = z.object({
     studentId: z.string({
       required_error: 'studentId required'
     }),
-    documentId: z.string({
-      required_error: 'documentId required'
-    }),
-    noteId: z.string({
-      required_error: 'noteIs required'
-    })
+    documentId: z
+      .string({
+        required_error: 'documentId required'
+      })
+      .optional(),
+    noteId: z
+      .string({
+        required_error: 'noteIs required'
+      })
+      .optional()
   })
 });
 
