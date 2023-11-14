@@ -12,7 +12,7 @@ const chatHistorySchema = z.object({
       .optional(),
     noteId: z
       .string({
-        required_error: 'noteIs required'
+        required_error: 'noteId required'
       })
       .optional()
   })

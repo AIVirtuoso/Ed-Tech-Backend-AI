@@ -449,14 +449,14 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
       conversationId = await getChatConversationId({
         referenceId: noteId,
         reference: 'note'
-      }).then((convo) => convo?.id);
+      });
 
-      if (!conversationId) {
-        conversationId = await createNewConversation({
-          referenceId: noteId,
-          reference: 'note'
-        }).then((convo) => convo?.id);
-      }
+      // if (!conversationId) {
+      //   conversationId = await createNewConversation({
+      //     referenceId: noteId,
+      //     reference: 'note'
+      //   }).then((convo) => convo?.id);
+      // }
     } catch (error: any) {
       console.error(`Error creating new conversation: ${error.message}`);
       socket.emit('error', error.message);
