@@ -519,9 +519,22 @@ notes.post(
       // let text = await pdfTextExtractor.getTextFromJob(jobId);
       // console.log(text);
 
+      // await pdfTextExtractor.storeJobDetailsInDynamoDB(
+      //   `${studentId}/${documentId}`,
+      //   text
+      // );
+
+      // const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
+
+      // text = text.replace(/[^\x00-\x7F]/g, '');
+      // console.log(text.length);
+
       const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
 
-      // text = text.slice(0, 50);
+      // text = textEncoder.encode(text).toString();
+
+      // text = text.slice(0, 500);
+
       const filePath = await createDocumentAndReturnFilePath(
         documentURL,
         studentId
@@ -532,13 +545,16 @@ notes.post(
       const text = await pdf(pdfdata).then((data: any) => data.text);
 
       const splitter = new CharacterTextSplitter({
-        chunkSize: 2000,
-        chunkOverlap: 300
+        chunkSize: 1550,
+        chunkOverlap: 400
       });
 
       const textRazorOptions = {
         extractors: 'entities'
       };
+
+      console.log(text);
+      const chunks = await splitter.createDocuments([text], [{ documentId }]);
 
       let keywords: string[];
 
@@ -565,9 +581,7 @@ notes.post(
         });
       }
 
-      const chunks = await splitter.createDocuments([text], [{ documentId }]);
-
-      console.log(chunks);
+      console.log(chunks[0]);
       let data: any = [];
       // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;
 

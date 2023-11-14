@@ -167,20 +167,15 @@ class PDFTextExtractor {
     return fullText;
   }
 
-  private async storeJobDetailsInDynamoDB(
-    jobId: string,
-    studentId: string,
-    documentId: string
-  ) {
+  public async storeJobDetailsInDynamoDB(uniqueId: string, text: string) {
     const data = {
-      jobId: { S: jobId },
-      studentId: { S: studentId },
-      documentId: { S: documentId }
+      textrxtjobs: { S: uniqueId },
+      Data: { S: text }
     };
 
     await dynamodb
       .putItem({
-        TableName: 'YourDynamoDBTableName',
+        TableName: 'StoreTextractJobs',
         Item: data
       })
       .promise();

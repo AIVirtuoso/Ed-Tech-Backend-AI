@@ -29,7 +29,7 @@ const Conversation = sequelize.define(
     },
 
     reference: {
-      type: DataTypes.ENUM('student', 'document'),
+      type: DataTypes.ENUM('student', 'document', 'note'),
       allowNull: false,
       default: 'document'
     },
