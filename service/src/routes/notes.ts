@@ -119,7 +119,7 @@ notes.get(
         {
           reference,
           // @ts-ignore
-          referenceId: documentId || studentId || noteId
+          referenceId: documentId || noteId || studentId
         },
         false
       );
