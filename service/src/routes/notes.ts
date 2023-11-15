@@ -5,7 +5,10 @@ import { Request, Response, NextFunction } from 'express';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { CharacterTextSplitter } from 'langchain/text_splitter';
+import {
+  CharacterTextSplitter,
+  RecursiveCharacterTextSplitter
+} from 'langchain/text_splitter';
 import { uuid } from 'uuidv4';
 // @ts-ignore
 import pdf from 'pdf-parse';
@@ -500,6 +503,9 @@ notes.post(
 
       const documentId = uuid(); // Though Postgres is perfectly capable of generating its own uuids, we're generating one optimistically/early so we can use it to set Pinecone's filters.
 
+      let text: string;
+      let filePath: any | undefined;
+
       const pdfTextExtractor = new PDFTextExtractor(
         bucketName,
         outputBucketName,
@@ -508,54 +514,40 @@ notes.post(
         snsRoleArn
       );
 
-      const jobId = await pdfTextExtractor.extractTextFromPDF(
-        documentURL,
-        studentId,
-        documentId
-      );
+      const jobId = await pdfTextExtractor
+        .extractTextFromPDF(documentURL, studentId, documentId)
+        .catch(() => {
+          return undefined;
+        });
 
-      if (!jobId) {
-        throw new Error('Failed to extract text from PDF');
+      if (jobId) {
+        text = await pdfTextExtractor.getTextFromJob(jobId);
+        console.log(text);
+        await pdfTextExtractor.storeJobDetailsInDynamoDB(
+          `${studentId}/${documentId}`,
+          text
+        );
+      } else {
+        // Fallback mechanism to read the PDF directly
+        filePath = await createDocumentAndReturnFilePath(
+          documentURL,
+          studentId
+        );
+        const pdfdata = fs.readFileSync(filePath);
+        text = await pdf(pdfdata).then((data: any) => data.text);
       }
-
-      // let text = await pdfTextExtractor.getTextFromJob(jobId);
-      // console.log(text);
-
-      // await pdfTextExtractor.storeJobDetailsInDynamoDB(
-      //   `${studentId}/${documentId}`,
-      //   text
-      // );
-
-      // const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
-
-      // text = text.replace(/[^\x00-\x7F]/g, '');
-      // console.log(text.length);
 
       const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
 
-      // text = textEncoder.encode(text).toString();
-
-      // text = text.slice(0, 500);
-
-      const filePath = await createDocumentAndReturnFilePath(
-        documentURL,
-        studentId
-      );
-
-      const pdfdata = fs.readFileSync(filePath);
-
-      const text = await pdf(pdfdata).then((data: any) => data.text);
-
-      const splitter = new CharacterTextSplitter({
-        chunkSize: 1550,
-        chunkOverlap: 400
+      const splitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 512,
+        chunkOverlap: 20
       });
 
       const textRazorOptions = {
         extractors: 'entities'
       };
 
-      console.log(text);
       const chunks = await splitter.createDocuments([text], [{ documentId }]);
 
       let keywords: string[];
@@ -606,10 +598,13 @@ notes.post(
           console.log('erroror ====? ', e.stack);
           return next(Error(e.stack));
         });
-      // fs.unlink(filePath, (err) => {
-      //   err && console.log('failed to delete file along path ', filePath);
-      //   !err && console.log('successfully deleted');
-      // });
+
+      if (filePath) {
+        fs.unlink(filePath, (err) => {
+          err && console.log('failed to delete file along path ', filePath);
+          !err && console.log('successfully deleted');
+        });
+      }
 
       res.send({
         message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}`,

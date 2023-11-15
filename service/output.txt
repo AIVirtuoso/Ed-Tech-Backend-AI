@@ -1,0 +1,2533 @@
+INFINITY
+THE ULTIMATE
+PRODUCT
+MANAGEMENT
+FRAMEWORK
+Complete guide to building the right product
+Introduction To Product Management
+4
+What Is Product Management?
+5
+Inbound Vs. Outbound Product Management
+6
+Roles in Product Management
+8
+Product Manager's Roles And Responsibilities
+9
+What Does a Product Manager Do?
+9
+Inside A Product Manager's Mind
+10
+What Software Should a Product Manager Use?
+11
+Product Strategy
+12
+Product Vision
+14
+Target Market/Customer Persona
+14
+Product Positioning
+14
+Product Differentiation
+14
+Goals and Initiatives
+15
+How To Define a Product Vision To Guide Your Team
+15
+Creating a Product Vision Statement
+16
+Product Vision Examples
+18
+How To Set Your Product Vision in Infinity
+18
+How To Define Your Target Market and Customer Persona
+19
+Defining Your Target Market
+20
+Creating Your Customer Persona
+20
+How To Create Customer Personas in Infinity
+21
+Product Positioning - How Your Product Fits in the Market
+24
+Creating Your Product Positioning Statement
+25
+Product Positioning Matrix
+25
+How To Define Product Positioning in Infinity
+26
+Product Differentiation - What's Your Competitive Edge
+28
+1
+Competitive Analysis
+28
+Setting a Competition Grid in Infinity
+29
+How To Set Smart, Measurable Product Goals
+32
+How To Set SMART Goals
+32
+Setting Product Goals in Infinity
+33
+How To Set Actionable Product Initiatives
+34
+Setting Initiatives in Infinity
+35
+Product Roadmap
+37
+What Is an Agile Product Roadmap?
+39
+Setting a Product Roadmap in Infinity
+39
+How To Get Ideas for Features
+40
+Your Ideas
+41
+Team Ideas
+41
+User Ideas
+42
+Competitors
+42
+Setting Ideas in Infinity
+42
+How To Prioritize the Right Features
+44
+Prioritizing With the ICE Score
+44
+How To Define Features in Infinity
+45
+What Are User Stories and How To Write Them
+47
+Why You Need User Stories
+47
+How To Write User Stories
+47
+User Story Template
+48
+User Story Examples
+48
+Adding User Stories to Your Infinity Roadmap
+48
+Product Backlog
+50
+2
+Product Backlog Management
+51
+Types of Product Backlog Tasks
+53
+Bugs
+53
+Refactoring
+54
+Knowledge Acquisition
+54
+How To Manage a Product Backlog in Infinity
+54
+Task Prioritization With the MoSCoW Method
+56
+The MoSCoW Method
+56
+How To Use MoSCoW Method in Infinity
+58
+Backlog Refinement, aka Backlog Grooming
+59
+Why You Need To Have a Well-Groomed Backlog
+59
+Scrum Sprint
+60
+What Happens During Sprint Planning?
+62
+Who Makes the Decisions?
+62
+How To Plan a Scrum Sprint in Infinity
+63
+How to Use Tabs to Organize a Sprint in Infinity
+65
+Why You Need Daily Scrum Meetings
+65
+Sprint Review vs. Sprint Retrospective
+67
+Sprint Review
+67
+Sprint Retrospective
+68
+3
+Introduction To Product Management
+Product management is the practice of planning, developing, marketing, and
+continuous improvement of a company's product or products.
+The idea of product management first appeared in the early 30s with a memo
+written by the president of Procter & Gamble, Neil H. McElroy, where he introduced
+the idea of a product manager - a "brand man" completely responsible for a brand
+and instrumental to its growth.
+Decades later, in the 1980s, modern product management started to take shape with
+the explosive growth of the software market. Since then, product management has
+been closely connected to and typically found in companies creating software.
+4
+What Is Product Management?
+The main objective of product management is the development of a new product. Its
+ultimate goal is making sure you're building the right product and building the
+product right.
+Analytics
+Process
+Users
+Design
+Product owner
+Architecture
+Building the
+Product
+Building the
+right product
+management
+product right
+Research
+Engineering
+Priorities
+Technology
+Opportunities
+Tests
+Most notably, product management means linking the development team on the
+one side with marketing, sales, and customer success teams on the other side, while
+ensuring the process is aligned with the business vision.
+Product management should translate business objectives into engineering
+requirements and explain product functionalities and limitations to commercial
+teams responsible for marketing, sales, and customer communication.
+5
+Business
+Product
+management
+Inbound Vs. Outbound Product Management
+Since product management is such a large concept, organizations usually split
+responsibilities across departments. That's why we can differentiate between
+inbound and outbound product management.
+Inbound product management involves market research, industry trends, and
+competitive analysis as well as the overall strategy and product roadmap.
+Inbound product management responsibilities include:
+Customer research and insights
+Business care analysis
+Positioning
+6
+Product roadmapping
+Market requirements and prioritization
+Whole product definition
+Differentiation and desirability
+Features/cost/schedule trade-offs
+Developing product requirements with engineering and UX
+Competitive analysis (product and market position)
+Beta programs
+Outbound product management focuses on product marketing - branding,
+messaging, positioning, product launches, PR, advertising, etc.
+Outbound product management responsibilities include:
+Launch and marketing plans
+Features and benefits
+Messaging by market and role
+Training
+Sales tools
+Product launch
+Marketing program
+Success stories
+Market analysis
+Competitive analysis (price, promotion, and place)
+7
+Roles and responsibilities
+Director of Product Management
+Portfolio Planning
+Strategic planning
+Resources Allocation
+PLC Strategy
+Pricing strategy
+Competitive analysis (company & financial level)
+Product Management
+Product Marketing
+Inbound
+Outbound
+Customer research and insights
+Launch and marketing plans
+Business case analysis
+Features and benefits
+Positioning
+Messaging by market and role
+Product road mapping
+Training
+Market req. & prioritization
+Sales tools
+Whole product definition
+Product launch
+Differentiation and desirability
+Marketing program
+Features/cost/schedule trade-offs
+Success stories
+Develop product req. w/eng. & UX
+Market analysis
+Competitive analysis
+Competitive analysis
+(product & market position)
+(price, promotion and place
+Beta programs
+Roles in Product Management
+The concept of product management includes many different roles such as chief
+product officer, director of product management, product manager, product owner,
+and product marketing manager, to name just a few.
+It's important to keep in mind that product management and project management
+are two different roles.
+There can be one person or a whole team in charge of product management. The
+number of people involved will largely depend on the size of the company. In some
+cases (for example, in growing startups) one person takes on several different roles
+- acting as a CEO, product manager, and product marketing manager.
+8
+Product Manager's Roles And
+Responsibilities
+A product team without a product manager is like an orchestra without a conductor.
+Even a group of phenomenal virtuosos would be completely uncoordinated and
+sound discordant without a conductor to guide and synchronize them.
+Much like a conductor, a product manager is supposed to lead a cross-functional
+product team and coordinate product creation from strategy to execution. A product
+manager needs to be the leader who will ensure that everyone on the team is
+working toward the same goal.
+To be able to handle such a complex and versatile role, a great product manager
+should be knowledgeable in several areas, most notably technology, business, and
+user experience.
+What Does a Product Manager Do?
+A product manager is responsible for setting a strategic plan for product creation and
+making sure that the plan is executed. In other words, a product manager is in
+charge of the following:
+Conducting market research, competitor analysis, and customer research
+Setting a product vision and strategy that states the unique value of the
+product
+Creating a product roadmap with a clearly defined action plan, defining the
+responsibilities and the timeline
+Coordinating among design, engineering, and marketing teams
+Owning the Daily Scrum and Sprint Planning meetings, ensuring that all
+developers understand the user stories and are clear on what needs to be
+built
+9
+Defining and analyzing product metrics and analytics
+Put even more simply, as a product manager, you will have three main
+responsibilities:
+1. Set the strategy and long-term vision
+2. Share this strategy with all the stakeholders
+3. Oversee the execution of the strategy
+Inside A Product Manager's Mind
+Communication
+40%
+Conductor - Must keep the entire team on track
+Design
+20%
+Motivational Speaker Must motivate the team
+to work together on one vision
+User Advocate - Understands what motivates
+Diplomat Negotiate and coordinate with
+certain user actions
+different departments
+Sketch Artist Can take his/her vision and turn
+Smooth Talker Tactfully communicate
+it into an accurate mockup
+progress to higher ups, can turn a roadblock into
+an insight or even an opportunity
+Business Acumen
+20%
+Market Tester - Measures the success of a new
+Engineering
+20%
+product or feature and decides whether to scrap it
+Code Whisperer - Has technical skill or can
+or expand it
+translate features into developer lingo
+Online Marketer  Has a plan to launch products
+Manager - Runs Scrum meetings and
+to the market and knows how to get early adopters
+assigns work to engineers
+10
+A great product manager should be the go-to person for all questions related to the
+product and the linking element of the whole team. That's why they need to be as
+transparent as possible in the prioritizing process.
+Although the product manager will have the final say, it's important to keep all
+stakeholders in the loop when it comes to making decisions.
+Having all the data necessary in one place - or one tool - will make it much easier for
+product managers to explain why they are prioritizing certain features over others
+and why they sometimes have to say no.
+What Software Should a Product Manager Use?
+To be productive in the role of a product manager, you should find the right tools
+that will make your job easier. Nowadays, there are many product management
+tools that help you develop your whole product strategy and keep all information in
+one place.
+Here are some product management software features that come in handy:
+User tracking/analysis - One of the best ways to get insight into your users ,
+behavior and the way they react to your product. This way, you can
+continually improve the product to better fit user needs.
+Customer survey tools - Direct customer feedback is invaluable, as you can
+learn all about the things your users love or hate about a product. Some
+product management software lets you create survey templates and easily
+send survey forms to your users.
+Prototyping - Get your product on the right track from the first step. Create a
+prototype you can easily share with the stakeholders.
+Roadmapping - A roadmapping tool helps you define features and plan
+releases, track development status and progress, plan and allocate
+development resources, and collaborate with your product team.
+11
+Task management - Assign tasks to team members and follow task progress
+in real time, define and prioritize tasks, and streamline your whole task
+management process.
+Data management/sharing - A quality product management tool makes
+it
+simple to upload and share documents and data with your team members.
+Instant messaging - Be able to quickly contact anyone on the team and get
+the information you need as soon as possible.
+To learn more about the right tools to use, you can read our review of the 20 best
+product management software for everything from small businesses to enterprises.
+Product Strategy
+Before you start building a product, you'll need to have a solid plan - or a product
+strategy.
+Product strategy is the foundation of the entire product lifecycle. It should answer 3
+main questions:
+1. What are you building?
+2. Why are you building it?
+3. How are you building it?
+12
+Product Strategy
+Product Vision
+Why are you building this exact product?
+Customer Persona
+Who is your ideal customer?
+Product Positioning
+How does your product fit in the market?
+Product Differentiation
+How is your product better from your competiton?
+F
+Goals & Initiatives
+What do you want to achieve and how?
+Aside from being a plan for building the product, product strategy should provide
+direction to the product manager and the whole team and set out the steps
+necessary to turn the product into success.
+As such, it involves all aspects of product creation:
+Development
+Marketing
+Sales
+Support
+13
+A great product strategy should define the following:
+Product Vision
+Product vision should determine the 'why 'behind your product. Why are you
+building this exact product and why should people care about it? It should capture
+the essence of what you want to accomplish with your product, and how it will
+improve the lives of the people using it.
+Target Market/Customer Persona
+Next, it's time to answer the question 'who'. Who is going to be using your product?
+For this, you'll need to determine the target market - the segment of people who
+will be most likely to use your product, and you'll need to define your customer
+persona - your ideal customer, together with their goals, challenges, buying
+motivation, and objectives.
+This will be crucial to decide how your product will look, how you will communicate
+with your audience, where you will reach them, etc.
+Product Positioning
+Product positioning means defining how your product fits into the marketplace.
+Rather than changing the product itself, product positioning focuses on the
+messaging, the way you're going to present your product to the world, and how your
+audience will perceive it.
+However, the most important thing about positioning is to be realistic - positioning is
+not about how you describe your product, it's ultimately how your users perceive it.
+Product Differentiation
+Product differentiation should answer the following questions:
+How does your product differ from other similar products on the market?
+What are its unique values that would motivate your customers to choose your
+product over another one?
+14
+To be able to do proper product differentiation, you'll need to perform a thorough
+competitive analysis. This way, you can get to know your competition and discover
+how to outshine them.
+Goals and Initiatives
+Lastly, product strategy includes product goals and initiatives. The goals should be
+clearly defined, measurable, and time-bound to help you and your team understand
+what you want to achieve with the product. We'll talk more about ways to set
+SMART goals later in the guide.
+After setting your goals, it's time to define initiatives, which are high-level efforts
+necessary to achieve the goals you've set.
+Product strategy will be your guide throughout the whole product creation process
+and essential for both inbound and outbound product management. That's why
+strategy is important for the whole team and should be visible to the stakeholders.
+In this chapter, we'll define best practices for setting out product strategy and
+explain how to create a detailed, transparent strategy that will help the whole team
+know where the product is headed and how you're planning to get there.
+How To Define a Product Vision To
+Guide Your Team
+Your product vision should capture the essence of what you want your product to
+accomplish. In one or two sentences, you should be able to explain where your
+product is headed and what its ultimate long-term goal is.
+In other words, you'll need to determine the "why" behind your product, the reason
+for its existence on the market. You need to ask yourself "why am I creating this
+exact product?"
+15
+VISION
+Company
+Product
+Engineering
+Why are
+What
+How are we
+we building
+product are
+building a
+a product?
+we building?
+product?
+Mission
+Requirements
+Architecture
+Values
+Feature set
+Data flows
+Story
+Design
+Algorithms & methodologies
+Users
+Marketing strategy
+Technologies
+Sales strategy
+Security
+Roadmap
+Once you define your product vision, it will be like a compass for your whole team,
+guiding every aspect of the product creation process.
+Creating a Product Vision Statement
+When creating a product vision statement, you need to have your end user in mind.
+So instead of focusing on what the product should accomplish for you and your
+company, you need to shift focus to the end user.
+What do you want your product to achieve for your users? As cheesy as it sounds -
+how are you planning to make the world a better place with your product?
+16
+Having this in mind, the product vision needs to also capture the essence of your
+audience - their challenges, problems, and goals - and the way your product is
+ultimately going to make their lives better.
+Creating a product vision board will help you arrive at your vision statement.
+The product vision board
+Vision
+What is your purpose for creating this product?
+Which positive change should it bring about?
+Target gorup
+Needs
+Product
+Business goals
+Which market or market
+What problem does the
+What product is it?
+How is the product going
+segmet does the product
+product solve?
+What makes it stand out?
+to benefit the company?
+address?
+Which benefit does it
+Is it feasible to develop
+What are the business
+Who are the target
+provide?
+the product?
+goals?
+customers and users?
+Image from: Roman Pichler
+When it comes to the product management process, a product vision is a guiding
+light that will help you set up your whole product strategy.
+The product vision should help you:
+Create a better product roadmap
+Give your team directions along the way
+Align your whole team while working toward the same goal.
+Even though all stakeholders should participate in developing the product vision
+statement, the product manager should have the final say and polish the final
+version.
+17
+Product Vision Examples
+Here are some examples of the product vision statements from the world's most
+successful companies:
+Microsoft: A computer on every desk and in every home.
+Google: To provide access to the world's information with one click.
+Amazon: To be Earth's most customer-centric company, where customers can find
+and discover anything they might want to buy online.
+Samsung: Inspire the world. Create the future.
+Instagram: To capture and share the world's moments.
+Infinity: To help companies realize their vision.
+How To Set Your Product Vision in Infinity
+Everyone on your team should live by your vision. That's why it's important to keep it
+visible for the whole team. Here's how to add the product vision to your Infinity
+framework:
+Step 1: Load the Product Management template into your workspace.
+Step 2: Open the Vision subfolder located in the Product Strategy folder.
+Step 3: Open every item and briefly answer the question in the Description
+field.
+Step 4: Use the last column to write your vision statement based on previous
+questions. Use the examples from the Description field as inspiration but then
+delete them and write your own vision statement.
+18
+Boards
+Search
+Board Manager
+Usage
+Invite
+Help
+45
+Product Management Overview
+Overview
+New Folder
+Columns
+Filter
+Grouped by Source Folder
+Sort
+Customize
+Subfolder Items
+Current Sprint
+Backlog
+Vision
+12
+Customer Person.
+Product Positioni.
+Product Differen.
+13
+Goals
+On Hold
+Who are the target users and
+Product Positioning Statement
+Structure
+Reach 500,000
+Roadmap
+customers?
+For a product manager who has a
+We want to build
+Initiatives
+Add description here..
+framework but doesn't have a tool to
+Data/Attributes
+going to solve pr
+Product Strategy
+support it, Infinity is flexible
+of professionals all
+Customers
+solution that allows him to build his
+To reach our vision
+Archive
+own system and organize every
+Views
+have 300,000 user
+aspect of product lifecycle. Unlike
+Have 60,000 av
+Instructions (Delete)
+Which market segment does
+other tools in this space which have a
+the product address?
+Configuration
+Have 3% Free
+fixed system, Infinity gives them the
+ability to create their own product
+Retention rate
+Add description here.
+management system
+Collaboration
+01/01/2024
+Customers
+James Maxwell
+Software and Technology
+Planned
+What problems does the
+Business Owner
+Integrations
+product solve?
+James is small-business owner.
+Develop Secur
+He owns and manages a software
+Usability
+Add description here..
+and Reliable App
+company creating different mobile
+Ahal
+We value our custo
+Needs
+apps. He has partly remote team
+of 9 people that he needs to
+Accessibility
+and security above
+manage and organize their
+work with us, custo
+Which benefits does the
+responsibilities. He needs to know
+trust us, to know t
+Onboarding
+product provide?
+that all his team members are
+Product Positioning Matrix
+secured and to fee
+clear on what needs to get done at
+reliable. We need t
+Add description here.
+all times, which is not always the
+all systems and po
+Payment
+Needs
+case. He also needs to be able to
+Top-notch host
+oversee the processes in his
+Secure proced
+company so he can know
+Security
+What product is it?
+GDPR compliar
+everything is running smoothly,
+and he has the time to focus on
+Secured from H
+If you're not an Infinity user (yet), you can preview the Product Management
+template here. The template is preloaded with demo data that shows real-life
+examples of a product vision, sprints, backlogs, and other parts of product
+management you can use as a checklist or inspiration.
+How To Define Your Target Market and
+Customer Persona
+Once you've created the product vision, you'll need to determine who you're
+creating this product for.
+For this, you'll have to define your target market and then go a step further to define
+your customer persona(s). So what is the difference between the two?
+19
+Defining Your Target Market
+Defining your target market will give you the segment of people you're targeting,
+according to their age, location, education, industry, interests, gender, and similar
+demographic information. Of course, you don't have to note down all these details,
+only those that are relevant to your product.
+Although narrowing down your audience may sound counterintuitive at first, it's a
+crucial step. The fact of the matter is that you can't sell to everyone, and if your
+marketing scope is too wide, you'll only be wasting your resources.
+Marketing to everyone is like shooting darts in the dark - you will probably run out
+of darts before you even hit the dartboard once.
+Keep in mind that the target market and the target audience are two separate
+things. The target market are people who will be using your product, and the target
+audience are people you're selling the product to.
+Here's an example: you're making software that helps children learn to read. Your
+target market are children aged 5-8. But, since kids of that age rarely have money (or
+the desire) to invest in software, your target audience are their parents,
+grandparents, etc.
+So, when making the product, you keep your target market in mind, but when selling
+the product, you sell it to the target audience. In most cases, these two are the same
+group of people or they greatly overlap, but sometimes they are completely
+different.
+Creating Your Customer Persona
+A customer persona (also known as a buyer persona) is the representation of your
+ideal customer based on market analysis and data collected from existing customers.
+Aside from demographics, a customer persona should give you information about
+your ideal customers such as their typical buying behavior, their lifestyle, needs,
+problems and challenges, goals, and motivations.
+20
+Buying
+concerns
+Customer Persona
+CEMMER
+Role
+Challenges
+/
+A
+1111111
+8
+OOO
+Buying
+Company
+motivation
+size
+88
+EB
+Goals
+Industry
+Once you define your customer persona (or personas), it will help you further
+develop your strategy when it comes to the product itself but also marketing and
+sales. You'll be able to know where to find your ideal customers, how to speak their
+language, create the features they need, deliver the content they're interested in,
+and even predict their common objections.
+How To Create Customer Personas in Infinity
+All stakeholders should be able to have a say in approving customer personas you
+have created, as this step will influence many future decisions. The easiest way to
+share customer personas with everyone is to create a product management board in
+Infinity. By using the Columns view, you can create a new column for each persona
+so that you have an overview of all personas at a glance. As you create a new
+persona, you can add all relevant information about them along with images that will
+help you visualize the personas you have created.
+Here's an example of Business Owner, Product Manager, and Project Manager
+personas created in Infinity:
+21
+Persona 1
+1
+Persona 2
+1
+Persona 3
+1
+Luis Stone
+Alexis Morrison
+James Maxwell
+Software and Technology
+Software and Technology
+Software and Technology
+Product Manager
+Project Manager
+Business Owner
+Luis is a product manager at a software
+Alexis is a project manager at a software
+James is a small-business owner. He owns and
+development agency. He's coordinating 5 different
+development agency. The whole team is working
+manages a software company creating different
+departments, his team has 20 people in total. He
+remotely. Her job is to coordinate projects from
+mobile apps. He has a partly remote team of 9
+manages the product creation process, making sure
+beginning to completion and to ensure the project
+people that he needs to manage and organize their
+the whole team is aligned at all times. He needs to
+is delivered on time. She cooperates with multiple
+responsibilities. He needs to know that all his team
+know that his teams have all the necessary
+departments and communicates with clients as well.
+members are clear on what needs to get done at all
+information to finish their part of the business, but
+She needs to be able to manage the tasks, files,
+times, which is not always the case. He also needs to
+also to have insight into other departments work.
+client reports, etc. and she needs to be able to track
+be able to oversee the processes in his company so
+He needs a tool that would allow him to organize
+the progress of her projects.
+he can know everything is running smoothly, and he
+and track the product development process and
+Goals
+has the time to focus on growing his business.
+help him be as productive as possible.
+Being able to deliver projects flawlessly and
+Goals
+Goals
+on time
+Having a well-functioning team
+Building great product
+Having a clear overview of all project aspects
+Growing his business
+Having a well-coordinated team
+Being able to easily see and manage
+Increasing revenue
+Having a streamlined product creation
+available resources
++
++
+You can easily create your customer persona(s) using the Infinity Product
+Management template.
+Step 1: Open the Customer Personas subfolder located in the Product Strategy
+folder.
+Step 2: Click the item you want to change and a modal will appear.
+Step 3: Write a brief description of your persona in the Description field.
+Step 4: Add a list of the persona's goals. What does your ideal customer want
+to accomplish that your product can help them with? When it comes to a B2B
+company, the ultimate goal will always be to grow their business and increase
+revenue, but you should also add some goals specific to your product. If you
+have a B2C business, the situation is a bit different. For example, if your
+product is a workout app, your persona's goal can be to lose weight or stay fit.
+Step 5: Add the persona's challenges. What problems and challenges is your
+ideal customer facing daily that your product could solve? For Infinity, a typical
+challenge is "the team needs to use several tools, which causes confusion,
+22
+delays, and misunderstanding". Knowing your persona's biggest challenges
+will help you build the best solution to these exact problems.
+Step 6: Add the persona's buying motivation. What motivates this person to
+buy your specific product? Out of all other similar products on the market,
+what would be their biggest motivation to buy yours? For example: "they feel
+limited by the tools they are currently using". Defining buying motivation will
+help you determine what sets your product apart from others on the market
+and identify its greatest value.
+Step 7: Add the persona's buying concerns. What would be the main objection
+that could prevent this person from buying your product? Maybe the tool
+they're currently using is free and yours isn't, or they think that it would take
+too much effort to switch to your product if they're already using something
+similar. By defining these objections you'll be able to prepare
+counterarguments and solutions that would remove the persona's buying
+concerns.
+Step 8: Add products similar to yours that your persona may already be using.
+This way, you will get a better idea of how your product should outshine and
+replace them in the eye of your ideal customer.
+Step 9: Add the persona's industry to the Industry field.
+Step 10: Add their job to the Job field.
+Step 11: Remove the current image from the template and add one that
+represents your customer persona.
+Step 12: Repeat the process to add more customer personas.
+Once you've defined your customer personas, this will be a strong foundation that
+will determine all your decisions. But, you should be ready to learn about your
+audience as you go and even adapt your target market and customer personas if you
+see the need for it in the future.
+Unsure how to start? Preview or download the Product Management template and
+check out the examples of 3 customer personas we have created along with their
+goals, challenges, buying motivation, buying concerns, and tools they use. You can
+use these to build your customer personas off of.
+23
+Product Positioning - How Your Product
+Fits in the Market
+The next step in your product strategy is product positioning.
+Product positioning means defining where your product fits in the marketplace. So
+rather than changing the product itself, positioning represents the messaging - how
+you want your audience to perceive your product.
+To be able to position your product, you will need to determine your target market
+first, which we explained in the previous chapter. Only after you have defined your
+target market, you'll be able to figure out what kind of message you want to send to
+them, and the best channels for sending it.
+Once you know the group of people you're creating the product for and once you
+have your customer persona(s), you'll be able to translate their core values and
+needs into the product benefits that will sound most appealing to them. And you'll
+be able to create a message that resonates with them.
+However, there is one important detail you need to keep in mind. No matter how
+you position your product, you need to make sure to deliver on the promise. Because
+at the end of the day, positioning is not what you say about your product, it's how
+your audience perceives it.
+If you have several audience segments, you will also need to adjust your messaging,
+since different audience segments may see different benefits from your product.
+Aside from that, you'll need to adjust your messaging depending on the channel
+you're using. For example, your style will have to be completely different when
+sending an email, writing a Facebook post, or creating a banner.
+24
+Creating Your Product Positioning Statement
+Ultimately, your positioning statement should define your target audience, the
+unique features that set your product apart from the competition, and the benefits
+that the users will have from it. According to the famous organizational theorist and
+management consultant, Geoffrey Moore, a product positioning statement formula
+should look something like this:
+For (target customer) who (has a specific problem or a need), our product is a
+(product category) that (provides this key benefit/solves this problem/fulfills this
+need). Unlike (primary competitive alternative), our product (provides this unique
+value).
+For Infinity, this statement could translate to:
+For a product manager who has a framework but doesn 't have a tool to support it,
+Infinity is a flexible solution that allows them to build their own system and organize
+every aspect of the product lifecycle. Unlike other tools on the market that provide a
+fixed system, Infinity gives the user the ability to create their own product
+management system.
+Don't forget that product positioning is all about crafting a compelling message that
+resonates with your target audience. Once you do that, it will serve as the
+foundation for your product management strategy.
+Product Positioning Matrix
+To help you visualize your product compared to your competitors, it is a great idea to
+create a product positioning matrix. By using this method, you will be able to realize
+which product aspects are the most valuable in your product and how this makes
+your product stand out from the rest.
+The product positioning matrix should have two axes, both representing an
+important value in your market. Quality and price are the most common ones, but
+you can use any other values that are relevant to your product. In the example of
+Infinity, the product positioning matrix looks like this:
+25
+Structure (Expansive)
+INFINITY
+Jira
+System
+asana
+System
+(Fixed)
+(Flexible)
+Aha!
+Trello
+productboard
+Structure (Simple)
+How To Define Product Positioning in Infinity
+Just like all other parts of your product strategy, product positioning should also be
+visible for you and your team at all times. That's why it's important to include it in
+your product management framework.
+If you use the Product Management template, it's pretty simple to add product
+positioning to your strategy by following the steps below.
+26
+Search
+Help
+Product Management Overview
+<<
+0
+Product Positioning :
+o New Folder
+Columns
+Filter
+Grouped by Source Folder
+E Sort
+Customize
+Product Positioning
+< > O 1 : X
+Current Sprint
+Product Positioning Statement
+Backlog
+Product Positioni..
+On Hold
+Product Positioning Statement
+Source Folder
+Roadmap
+For product manager who has a
+Product Positioning
+Initiatives
+framework but doesn't have a tool
+to support it, Infinity is flexible
+Product Strategy
+solution that allows him to build his
+Statement
+Vision
+own system and organize every
+aspect of product lifecycle. Unlike
+S U qT H1 H2 H3 <> " =
+Customer Personas
+other tools in this space which have
+E a + , C (
+Product Positioning
+a fixed system, Infinity gives them
+the ability to create their own
+For a product manager who has a framework
+Product Differentiation
+product management system.
+but doesn't have a tool to support it, Infinity is a
+Goals
+flexible solution that allows him to build his own
+system and organize every aspect of product
+Archive
+Jira
+lifecycle. Unlike other tools in this space which
+Instructions (Delete)
+have a fixed system, Infinity gives them the
+ability to create their own product management
+system.
+Image
+Add
+Here's how to add your product positioning in Infinity:
+Step 1: Open the Product Positioning subfolder located in the Product Strategy
+folder.
+Step 2: Replace the product positioning statement from the first column with
+your own.
+Step 3: Before you create a visual product positioning matrix (like the one we
+mentioned before), you'll need to define the main categories and main
+competitors you want to include. So in this step, choose 5-10 main
+competitors and pick the two axes. In our example, the values are Structure
+(Expansive - Simple) and System (Flexible - Fixed).
+Step 4: Replace the sample product positioning matrix with your own. Click
+this item and find the Image attribute to replace the sample image with a new
+one.
+Even if you don't use Infinity, you can preview this template directly from the
+browser to get samples of product positioning and the product positioning matrix.
+27
+Product Differentiation - What's Your
+Competitive Edge
+Although often defined as a marketing process, product differentiation is much more
+than that. It is related to every aspect of the product and every part of your team,
+which is why it belongs right here, in the chapter about product strategy.
+Unless you have an incredibly unique idea for a product that nobody has thought of
+before, chances are you're going to enter a competitive market with lots of similar
+products already available. Product differentiation should answer the following
+question - what does your product offer that other similar products on the market
+don't? What is the unique value of your product that makes it stand out from the
+competition?
+This kind of differentiation can be focused on any aspect of your product. Maybe
+you're planning to offer a better, more beautiful design. Maybe you're going to
+develop unique features that your competitors don't have. Or, you're simply
+planning to offer a lower price and better customer support.
+All these aspects are an opportunity for product differentiation, and ultimately
+product differentiation should motivate the customer to choose your product over
+another one.
+Ideally, product differentiation should explain to your target audience how your
+product offers everything similar products have and more.
+Competitive Analysis
+To be able to differentiate your product from the competition, you first need to
+know who your competitors are and what they have to offer. This is called
+competitive analysis.
+28
+First of all, you'll need to create a list of your ten biggest competitors. After you
+compile that list, it's time for a thorough analysis. You'll need to define all relevant
+factors in your niche such as:
+Feature segments
+Design
+Company size
+Prices
+Website traffic
+Number of users
+Customer support
+Other
+One of the most important things to analyze when it comes to SaaS products are the
+feature segments. Feature segments are groups of features that are commonly
+found in your niche. Defining them will help you create initiatives and build your
+product roadmap.
+To define the feature segments in your niche, you'll need to do the following steps:
+1. Find and note down all your major competitors
+2. List all the features these tools have
+3. Group those features into segments
+Setting a Competition Grid in Infinity
+Once you have your feature segments and a list of competitors, it's time to create a
+competition grid where you will visually present your analysis. You can do that by
+using a table in Infinity.
+Here's a product differentiation example from Infinity.
+1. We created feature segments such as Structure, Views, Attributes, Customization,
+Usability, Design, Pricing, etc. Each segment is a separate item.
+29
+2. We created a column for each competitor (including Infinity) in the shape of the
+'Rating 'attribute.
+3. In each segment, we rated tools on how accomplished they are in this category -
+one star denoting poor performance and five stars denoting excellent performance.
+For example, Infinity gets five stars for 'Structure 'because of its flexible structure
+and powerful folders and subfolders, but gets a 3-star rating for 'Collaboration
+,
+because it doesn't have advanced collaboration features like live chat.
+Check out the Infinity competition grid below:
+0 Name
+Infinity
+Airtable
+Monday
+Notion
+Trello
+3 Coda
+Zenkit
+Clickup
+3 Asana
+1
+Structure
+2
+Data/Attributes
+3
+Views
+Configuration
+Collaboration
+Integrations
+7
+:
+Usability
+:
+Accessibility
+9
+:
+Onboarding
+10
+:
+Payment
+11
+Security
+12
+Automations
+13
+Personalization
+To create your own competition grid in Infinity, you can use the Product
+Management template. Here's how:
+Step 1: Open the Product Differentiation subfolder located in the Product
+Strategy folder.
+Step 2: Delete all items in the first column to get a clean table you can fill out
+with your data. You can do it by clicking the three dots symbol next to the
+item.
+30
+Step 3: Add new items with your feature segments and other differentiation
+Name
+Infinity
+1
+Structure
+2
+Duplicate Item
+3
+Copy Item URL
+Delete Item
+4
+5
+Created by Aleksandar Dimtrijevic
+6
+Created on Jun 24, 2019.
+7
+| leability
+factors.
+Step 4: Edit the column names. Your tool should be in the first column,
+followed by your competitors. Just click the name of the column to edit it.
+Step 5: Rate your tool against your competitors by filling in the stars in the
+columns.
+Once you set up the competition grid, you will be able to see your competitors 'weak
+points. This will also help you discover how your product fits into the market and
+how it can stand out - by its design, features, price, or something else.
+By using feature segments, you'll be able to identify your product's potential weak
+points, which will help you understand how you can improve the product to
+outperform competition and give your users something unique and valuable.
+Preview or download the Project Management template to use the premade
+competition grid as the basis for your own.
+31
+How To Set Smart, Measurable
+Product Goals
+Product goals are the highest-level objectives regarding the product - the big, bold
+ideas for your product and business in the future. These goals should be the crucial
+achievements that need to happen to turn your vision into reality.
+By always keeping product goals in front of you and your team, you will make it
+much easier to focus on what needs to be done and when.
+Although product goals are abstract, they should derive from KPIs. In other words,
+they should be measurable and achievable within a certain timeframe.
+How To Set SMART Goals
+Setting goals might turn out more challenging than you expect. The SMART
+methodology provides one of the best guidelines for coming up with the right goals
+and for defining them the right way.
+Here's what the acronym SMART stands for:
+S = specific, significant, stretching
+M = measurable, meaningful, motivational
+A = agreed upon, attainable, achievable, acceptable, action-oriented
+R = realistic, relevant, reasonable, rewarding, results-oriented
+T = time-based, time-bound, timely, tangible, trackable
+Aside from creating SMART goals, you'll need to ensure they are aligned with your
+overall product strategy and business strategy.
+32
+Here are a few examples of high-level product goals that will help you drive your
+product forward:
+Become #1 work and data management platform by 2025
+Become a $1 billion company by January 2024
+Develop an exceptionally secure and trustworthy application by 2023
+Reach 1 million users by Q1 2025
+Setting Product Goals in Infinity
+The goals you set will determine the direction of your product and drive the smaller,
+short-term goals and actions necessary for the strategy execution. You can set the
+goals in a separate folder where stakeholders can keep an eye on them, and give
+editing access only to the product owner and product manager.
+Setting product goals using Infinity is pretty easy with the help of our Product
+Management template. All you need to do is follow these steps:
+Step 1: Open the Goals subfolder in the Product Strategy folder.
+Step 2: Delete all sample goals, or leave one goal to use as a template and
+delete everything else.
+Step 3: Add a new item by clicking the plus sign below the first column.
+Step 4: Write your first goal in the Name section.
+Step 5: Add a goal description to the Description field.
+Step 6: In Requirements, add a checklist of all requirements that need to be
+met to achieve this goal.
+Step 7: Add an end date to set the timeframe for the goal.
+Step 8: Repeat the process for all your goals.
+Step 9: As you make progress with your goals, you can move them from one
+column to another - from Planning to Working on It, to Ongoing, and finally
+Achieved.
+33
+Planned
+Working on It
+Ongoing
+2
+Achieved
+Reach 500,000 users by 2024
+Develop a Secure, Trustworthy and Reliable
+Flawless Internal Product Growth System
+We want to build product that's going to solve a
+Application
+In order to succeed we need to build the right
+problem to millions of professionals all over the world.
+We value our customers' privacy and security above all
+product and to build it right. We need to be
+To reach our vision. we expect to have 300,000 users by
+In order to work with us. customers need to trust us, to
+productive and smart. We need to experiment/fail
+2024.
+know that the system is secured and to feel that we're
+fast, learn and build the best possible solution in the
+Have 60,000 average new users per year
+reliable We need to make sure that all systems and
+shortest amount of time. That's why we need a
+policies are in place
+flawless internal product growth system.
+Have 3% Free to Paid Conversion Rate
+Top-notch hosting environment
+Agile Development Process
+Retention rate 27%
+Secure procedures in-house
+Deployment Process
+01/01/2024
+GDPR compliant
+Release Management
+Planned
+Secured from hacks
+Experimentation and Testing Framework
+Secured from data breaches
+Updates Process
+06/01/2021
+Prioritization System
+06/01/2020
+Working on
+Ongoing
+World Class Customer Service
+We're building our product for the users Users decide
+if we're the best company. Users are the ones that are
+going to bring 90% of a new users
+Customer-Centric Company
+99.9% Uptime
+Preview or download the template here to start defining your product goals.
+How To Set Actionable Product Initiatives
+Once you set your product goals, initiatives will be the actual steps you'll need to
+take if you want to reach those goals. Even so, product initiatives don't have to be
+tied to a specific goal as long as they're aligned with your overall product strategy
+and vision.
+The timeframe necessary to complete an initiative can vary from a few months to
+even a few years. For example, one initiative can be to improve the conversion rate
+by 3% which can take a few months to accomplish. If your initiative is to reach
+100,000 signups, this will take much longer to complete.
+The important thing is to set a timeframe and stick to it so you can track your
+progress, measure the results, and improve your strategy over time.
+34
+Here are some examples of product initiatives:
+Get 10,000 new users by November 2024
+Increase free trial engagement by 5%
+Get into the top 10 tools for project management
+Build 3 collaboration features
+Improve onboarding by 50%
+It's easy to see why initiatives are such an important part of your product strategy,
+but they have more than a single purpose.
+Firstly, they will help you figure out what needs to be done inside and outside the
+product in order to reach the desired goals. Once you lay the initiatives out in the
+roadmap, you'll be able to share and track them with the team so everyone can be in
+the loop.
+And finally, you'll be able to analyze the effort and impact of your initiatives, so you
+can tweak your product strategy accordingly and allocate resources in an optimal
+way.
+Setting Initiatives in Infinity
+In Infinity, you can set aside a folder for product initiatives. Just like goals, these
+initiatives shouldn't be too complicated. You should keep all information to a
+minimum that helps your team understand the initiative, its requirements, and
+timeframe.
+35
+Goal
+Reach 500,000 users by 2024
+4
+0 Name
+Initiative Status
+Metrics
+Progress
+Start Date
+End Date
+@ Goal
+Feature
+1
+:
+Hit 50,000 total signups by the end of year
+In Progress
+0/2
+60
+01/01/2019
+12/31/2019
+Reach 500,000 users by 2024
+2
+:
+Increase the number of new features per month
+In Progress
+0/2
+20
+06/01/2019
+10/01/2019
+Reach 500,000 users by 2024
+3
+:
+Increase free trial engagement by 5%
+To Start
+0/2
+07/01/2019
+11/01/2019
+Reach 500,000 users by 2024
+4
+:
+Improve conversion rate to 5%
+To Define
+0/2
+07/01/2019
+10/01/2019
+Reach 500,000 users by 2024
+Onboarding Tour
++ Add new row
+Goal
+Develop a Secure, Trustworthy and Reliable Application
+1
+0 Name
+Initiative Status
+Metrics
+Progress
+Start Date
+End Date
+@
+Goal
+Feature
+1
+:
+Become GDPR compliant
+Progress
+0/2
+15
+02/01/2019
+12/01/2019
+Develop a Secure, Trustworthy..
++ Add
+Here's how you can add product initiatives by using the Product Management
+template:
+Step 1: Open the Initiatives folder.
+Step 2: Delete all sample items in this folder, or keep one and use it as a
+template.
+Step 3: Add a new initiative by clicking +Add new row below at the bottom of
+the table.
+Step 4: In the first column, write your first initiative.
+Step 5: Add the Initiative Status to the next column. You can see all your
+options when you click the field.
+Step 6: Add relevant metrics. The first metric should be your current value,
+and the second one should be the target metric.
+Step 7: Set the progress bar to show how far along you are with this initiative.
+Step 8: In the next two columns, set start and end dates for the initiative.
+Step 9: Add a goal to which this initiative is linked.
+Step 10: Open the item to add other details such as description, priority,
+feature reference, etc. You can open an item in the table by clicking the icon
+36
+on the left.
+Name
+Initiative Status
+Implement 3 experiments in Q3
+Idea
+2
+Improve conversion rate to 5%
+To Define
+3
+Increase free trial engagement by 5%
+To Start
+4
+Hit 50,000 total signups by the end of year
+In Progress
+5
+Increase the number of new features per month
+In Progress
+Step 11: Repeat the process to create more initiatives.
+Just a reminder - even if you're not an Infinity user, you can preview this template
+from your browser and use it as a guideline to setting your initiatives.
+Product Roadmap
+If the product were a building, the product roadmap would be its blueprint. In other
+words, you can't even begin to build a successful product without a solid product
+roadmap.
+So, what is a product management roadmap and why is it so important?
+A product roadmap is an important document for both your internal teams and
+external stakeholders. The purpose of a roadmap is to provide several valuable
+aspects, including:
+Providing the framework for your product development process
+Keeping all stakeholders on the same page (including your team, investors,
+and even customers)
+37
+Helping to predict how much development power will be necessary to deliver
+the features you're planning
+After defining your product strategy, creating a product roadmap is the next priority.
+A roadmap is a guiding document that outlines the direction of your product and the
+plan for executing the strategy. In other words, a product roadmap is a map of
+features and functionalities that you're planning to add to your product and the
+general time frame necessary to develop them.
+Gantt
+view
+Permissions
+Product
+Zapier
+Roadmap
+integration
+Notifications
+Trello
+import
+Table
+Calendar
+view
+START
+38
+What Is an Agile Product Roadmap?
+When it comes to building SaaS products, there are numerous methodologies to
+choose from. However, one of the most popular methodologies for developing
+software is Agile. The main idea behind the Agile methodology is focusing the whole
+development process on satisfying the end user and embracing the changing
+requirements that are an inevitable part of this process.
+This means that when creating a product roadmap, you need to make sure it is
+completely flexible and regularly updated. The market and your audience will dictate
+the priorities, and your product management roadmap needs to reflect that.
+Setting a Product Roadmap in Infinity
+If you're looking to outline your strategy, keep your whole product team in the loop,
+and ultimately build the best possible product, you can easily do it by using Infinity's
+Product Roadmap template.
+rc
+or
+Stage :
+All Features
+Release :
+Categories :
+Timeline
++
+o Columns
+Filter
+Grouped by Stage
+Sort
+Customize
+Idea
+2
+To Design
+1
+To Develop
+2
+Desktop App
+Android App
+Activity Log
+Users need to download Infinity to
+A lot of users will want to access
+Allow users to have an option to see
+their desktop devices to have
+Infinity on an Android device.
+the changes in a board to be able to
+quicker access to theirs data.
+ICE Score: 6.6
+see who did what and when.
+ICE Score: 6
+Impact: 8
+ICE Score: 6.6
+Impact: 6
+Confidence: 8
+Impact: 8
+Confidence: 6
+Ease: 4
+Confidence: 7
+Ease: 6
+As a user I'd like to login with m
+Ease: 5
+As a user, I'd like to be able to
+As a user, I want to stay updat
+As a user I'd like to use app offli
+As an admin, I need to know d
+As an admin, I need to know wi
+Feb 28th
+Apr 1st
+Aug 20th
+Oct 1st
+Jun 1st
+Jul 1st
+50%
+0%
+Feature Size:
+30%
+Feature Size:
+Feature Size:
+Accessibility
+Q2
+Accessibility
+Q4
+Engagement
+Q3
+Keyboard Shortcuts
+Forms
+Keyboard shortcuts will allow
+Users will use Forms to collect data
+Infinity's users to work more quickly
+from their clients or visitors to store
+39
+You can download this template to your Infinity workspace to be able to define
+features and plan releases, prioritize them by importance and effort, track
+development status and progress, predict how much development power is required
+to build a feature, and collaborate with your product team to make sure everyone is
+working on functionalities that have the biggest impact.
+To understand the full potential of the Product Roadmap template, you can follow
+this link to watch a video tutorial:
+https://www.youtube.com/watch?v=LQEkO pMNi0&feature=emb logo
+How To Get Ideas for Features
+Once you've set up your product strategy with goals and initiatives, coming up with
+ideas for your product is not going to be a problem. But you will need to make sure
+that all the ideas that make the cut and find their way to your backlog are aligned
+with your product strategy.
+For example, if one of your initiatives is to increase conversions by 15%, you need to
+make sure that your feature ideas are going to contribute toward achieving that goal.
+You should also remember to align your feature ideas with the feature segments
+you've determined in one of the previous steps. For example, you can divide feature
+ideas into segments like Structure, Views, Usability, Accessibility, Design, etc.
+When it comes to getting ideas for features, you can find inspiration in multiple
+places. It's very important to write ideas down as soon as they are conceived, to
+make sure you don't forget them. If you're using a product management tool like
+Infinity, you can add items labeled as Ideas to your product roadmap.
+40
+Your Ideas
+As the product manager, you will know the product like the back of your hand. This
+means that you will always know best which features are missing, what needs
+improvement, or what the users will find the most valuable.
+You can come up with ideas in the following ways:
+Analytics will help you see what customers need and which areas of the
+product need improvement.
+Using the product every day will give you great insight into the problematic
+areas and bugs as well as potential new features.
+Market research will help you figure out the way market trends are changing
+and how to improve the product to keep up with those trends.
+Solo brainstorming - dedicate time to think about new ideas and you'll be
+surprised with the outcome.
+Team Ideas
+At the beginning of this guide, we mentioned that the product management process
+requires involvement from the whole team. That's why your whole team should be
+somewhat involved in the process of creating the product roadmap.
+Each part of the team - engineering, marketing, sales, customer success - will have
+their unique insights about the product because they see it from a different angle.
+Developers will know best how each new feature will fit inside the code. Marketing
+and sales teams can predict what would bring the biggest impact on your bottom
+line. The customer success team talks to the users every day and knows their
+problems best.
+That's why you should make it possible for your team members to note down their
+suggestions in the product roadmap. That way, anyone can directly contribute by
+adding an idea. One of the best ways to get the most out of your team members is to
+regularly organize brainstorming sessions.
+41
+User Ideas
+At the end of the day, you're creating the product for the end user. That's why some
+of your best ideas will come directly from your users.
+Make sure to stay in touch with your users/customers through support channels, live
+demo calls, and community channels (such as a forum or a Facebook group). Your
+users will be eager to give suggestions, report bugs, and offer plenty of honest
+feedback that will help you build the product.
+A good approach is to directly ask users for their opinions by having polls on what
+features they want to see next or by providing a form for user suggestions.
+Competitors
+Picasso once said (and Steve Jobs confirmed): "good artists copy; great artists steal."
+There's nothing wrong with keeping tabs on your competitors and copying (or
+stealing) ideas from them.
+In fact, that is the only smart thing to do. So make sure to check on your main
+competitors products from time to time, follow their new releases, read their blog,
+and pick up a few ideas along the way.
+Setting Ideas in Infinity
+As we already mentioned, it's very useful to include ideas in the product roadmap,
+but it's also important to keep them separate from the features that are already
+defined and ready for design and development.
+The best way to do this is to create a 'Stage 'label set that will include 'Idea 'as the
+first label. Grouped by Stage, your product roadmap will then clearly show all your
+ideas neatly listed in the first column. You'll also be able to create a separate tab and
+filter out ideas only so you can have them all in one place.
+Here's how to add new ideas to your Infinity roadmap:
+Step 1: Open the Roadmap folder from the Product Roadmap template.
+42
+Step 2: Delete the example Ideas from the first column.
+Step 3: Add a new item by clicking the plus sign below the Idea column.
+Step 4: In the Name section, write down your feature idea.
+Step 5: Add a short description of the idea to the Description field.
+Step 6: You can add a Priority label if necessary.
+Step 7: You can add a Feature Segment reference if you want. You'll find this
+field if you scroll down to the bottom of the item.
+Step 8: You can leave the rest of the fields empty until you decide whether to
+implement this idea or not. After you move the idea to the next column, you
+will fill in the rest of the information.
+Step 9: If you want to see only your ideas, click the third tab named Ideas.
+<
+0 By Stage :
+All Features :
+Ideas :
++
+Table
+Y
+1 Filte
+0 Name
+Description
+Stage
+Priority
+@
+Feature Segment
+1
+:
+Keyboard Shortcuts
+As a user I want to be able to use Infinity faster with my keyboa
+Idea
+Low
+Usability
+2 :
+Desktop App
+As a user I want to be able to download Infinity to have quicker
+Idea
+Low
+Accessibility
+3 :
+Form View
+As a user I want to be able to create custom forms that I can er
+Idea
+Low
+Views
+4 :
+Time Tracking
+As a user I want to be able to track how much time my team is
+Idea
+Low
+Usability
++ Add new row
+To try this out for yourself, preview or download the Product Roadmap template
+here.
+43
+How To Prioritize the Right Features
+Once you have your feature ideas, it's time to choose which ones are going to the
+product roadmap. To be able to do this you will need to prioritize the ideas.
+Prioritizing With the ICE Score
+When you're developing a product, there are a great number of ways to prioritize
+features on the roadmap. Whatever method you choose, it's important to cut
+subjectivity out of the equation.
+All the people who contributed with their feature ideas (you, your team, and the
+users) will feel very strongly about their own ideas. The prioritization process
+shouldn't be in favor of the loudest or most persuasive person.
+The process should be as objective as possible so that you end up prioritizing the
+features that are the right choice for the product and the majority of users. This way,
+you can deliver the features that will add the most value first.
+As we said, you can try one of the many methods to prioritize the features. When it
+comes to Infinity and our roadmap, we use the ICE scoring system.
+The ICE framework is the feature evaluation method that relies on three factors -
+impact, confidence, and ease.
+Impact: How impactful will this feature be (regarding user experience as well
+as product goals)?
+Confidence: How certain is it that this will prove my hypothesis (based on
+existing data)?
+Ease: How much effort by time is necessary to deliver this feature?
+Each of these three criteria should get a 1-10 grade, and the average is considered
+the ICE score.
+44
+For example, if we have a feature called 'Onboarding Tour 'we can grade it this way:
+Impact: 8
+Confidence: 6
+Ease: 7
+ICE Score: (8+6+7)/3=7
+It's important to note that all stakeholders should be taken into account for the
+scoring process - including all decision-making team members as well as
+users/customers. Even so, the ICE method is not perfect, as it can result in a lot of
+biased information.
+However, ICE shouldn't be taken too rigidly. This method is not supposed to be
+perfect - it's supposed to help product owners evaluate ideas more easily and make
+data-driven decisions, instead of getting overwhelmed by everyone's subjective
+opinions.
+How To Define Features in Infinity
+Once you've prioritized your ideas, those with the highest scores should be moved to
+the next column - To Define - where you will add other important details
+necessary for creating this feature.
+So here's how you will turn an idea into a feature:
+Step 1: Open the Roadmap folder.
+Step 2: Delete the sample items in the roadmap, or leave a few to use as a
+template.
+Step 3: Move the idea to the To Define column by using drag and drop.
+Step 4: Click the idea to open it.
+45
+Step 5: Provide a short description of the feature in the Description field. You
+can keep using the one you wrote already. A part of the description should
+include the ICE score.
+Step 6: Add user stories in the form of a checklist. If you're following the Agile
+methodology, the best way to describe features is through user stories. One
+product feature can consist of one or several user stories so you can use a
+checklist to turn user stories into tasks or update the list with new ones.
+Step 7: Add an assignee who will be responsible for delivering this feature.
+Step 8: Add a priority label - High, Medium, or Low.
+Step 9: Add start and end dates to set the feature time frame. Make sure you
+keep the dates flexible at the roadmap level.
+Step 10: Add a Feature Segment reference to link the feature with the
+segment from the Product Differentiation subfolder.
+Step 11: Add an Initiative reference to link the feature to the corresponding
+initiative(s).
+Step 12: Move the feature to the next column. Keep moving the feature to the
+next column each time it progresses to the next stage.
+Idea
+4
+To Define
+3
+To Design
+3
+To Develop
+1
+Keyboard Shortcuts
+Android App
+Activity Log
+Onboarding Tour
+As user want to be able to use Infinity faster with
+As user want to be able to access Infinity on my
+As user I'd like to have an option to see changes in
+As user I'd like to quickly understand how to use
+my keyboard
+Android device
+a board to be able to see who did what and when
+product to solve my problem
+ICE Score: 6
+ICE Score: 6.7
+ICE Score: 6.7
+ICE Score: 7
+Impact:
+Impact:
+Impact
+Impact:
+Confidence: 5
+Confidence 8
+Confidence 7
+Confidence 6
+Ease: 8
+Ease
+Ease: 5
+Ease 7
+As user I'd like to login with my Infinity accoun..
+As user would like to see the changes in my ***
+As user would like to understand how to use I...
+Usability
+As user I'd like to use app offline
+As user would like to see the changes on my ...
+As user would like to visually imagine how my ...
+Low
+07/31/2019
+As user would like to filter board activities by..
+07/07/2019
+07/20/2019
+07/14/2019
+07/22/2019
+Accessibility
+Onboarding
+Desktop App
+Usability
+As user want to be able to download Infinity to
+Medium
+Improve conversion rate to 5%
+have quicker access on my desktop.
+High
+ICE Score: 6
+High
+Impact:
+Templates
+Confidence 6
+As user I'd like to start my organization using a
+Integration: Zapier
+Ease: 6
+predefined template for the solution need, so can
+As user I'd like to connect and integrate related
+Accessibility
+better understand how to organize.
+data from other tools, so can set automated feed of
+ICE Score: 6.3
+data and information that want to organize in
+Impact:
+Low
+Infinity.
+Confidence 7
+ICE Score: 6.7
+Ease:
+Impact:
+Form View
+07/29/2019
+Confidence 8
++
++
+You can download or preview the Product Roadmap template to learn how to define
+features based on preloaded examples.
+46
+What Are User Stories and
+How To Write Them
+User stories are small units of development that describe a product functionality
+from the user's perspective. Instead of giving a technical description of a
+functionality, a user story gives a clear idea of what a user wants to accomplish with
+it.
+A lot of development teams rely on technical descriptions as well, which means you
+don't have to eliminate them altogether. Still, it's important to keep the focus on
+user stories and the user's point of view.
+Why You Need User Stories
+User stories are incredibly useful because they provide a user-centric work
+framework and allow the engineering team to be as creative as they like, as long as
+they deliver the end result expected by the user.
+Since user stories are supposed to represent the user's point of view, they should be
+short and simple descriptions written in non-technical language. After reading a
+story, the team should know what they are building, why they are building it, and
+what kind of value it will provide to the end user.
+How To Write User Stories
+The stories are written by the product manager or product owner, but they should
+be as simple as possible, narrowed down to one or two sentences. If the story is too
+complicated to write, it might mean that it should be broken down into several
+smaller user stories.
+The details of a user story are added after a discussion with the team. This is where
+the product manager and the development team come together. At this point,
+47
+features are broken down into several smaller user stories that can be delivered in a
+shorter time frame.
+This discussion should also provide the conditions of satisfaction - or acceptance
+criteria - which are a list of conditions that need to be met for the story to be
+considered complete.
+User Story Template
+How to write user stories? Typically, a user story template looks like this:
+As a [type of user], I want to [accomplish some goal] so that [reason].
+For example, this is how one user story in your product roadmap could look:
+As a user, / want to be able to sort my tasks in a way that makes the most sense to
+me.
+User Story Examples
+However, this user story can be broken down into multiple smaller stories. So here
+are a few user stories examples that can come out of it:
+As a user, I want to be able to sort my tasks by the due date.
+As a user, I want to be able to sort my tasks by the assignee.
+As a user, I want to be able to sort my tasks by priority.
+Adding User Stories to Your Infinity Roadmap
+Once the user stories are defined, they should be available for the whole team to
+see. That's why it's essential to write your stories down as part of feature
+descriptions. If you've already built a roadmap in Infinity according to the previous
+steps we talked about, here's a step-by-step guide to adding user stories to the
+roadmap.
+48
+Step 1: Open the Roadmap folder.
+Step 2: Open the item you want to add user stories to by clicking on it.
+Step 3: In the User Stories section, add one or more user stories related to this
+feature.
+Step 4: Once a user story is developed, you can check its box in the checklist.
+Step 5: Add new stories if they come up.
+Roadmap
+00
+X
+Activity Log
+Attributes
+Comments
+Activity Log
+Add an Attribute
+Name
+Activity Log
+Description
+As a user I'd like to have an option to see changes in a board to be able to see who did what and
+when.
+ICE Score: 6.7
+Impact: 8
+Confidence: 7
+Ease: 5
+1
+User Stories
+As a user I would like to see the changes in my board.
+As a user I would like to see the changes on my items.
+As a user I would like to filter board activities by team member.
++ Add a Checkbox
+For a quicker way to set up user stories, there is a User Stories template you can use.
+This comes in handy for those who are not Infinity users and want to use the
+template as inspiration, or for Infinity users who want to speed up the whole
+process.
+49
+Product Backlog
+A product backlog is a prioritized list of product requirements. Simply put, a product
+backlog is a list of everything that needs to be done to create the product -
+features, defect fixes, and other technical work.
+A typical product backlog in Scrum contains four different types of requirements
+(although you can add more):
+1. User stories
+2. Bugs
+3. Refactoring
+4. Knowledge acquisition
+When you create the product backlog for the very first time, you'll want to fill it out
+with the best-known requirements that are aligned with your overall product
+strategy - your vision, goals, and initiatives.
+As your product grows, so should the backlog. One of the basic principles of agile
+development is continuous work on the product, which is why the product backlog is
+never complete.
+If things go according to plan, your product will evolve and your community will
+grow, which means that you will receive a lot of suggestions from users and the team
+in order to make your product bigger and better.
+50
+Product Backlog
+Item
+Size
+High
+priority
+User stories
+Bugs
+Product backlog items
+Refactoring
+Knowledge
+acquisition
+Low
+priority
+Product Backlog Management
+During the sprint planning meeting, you and your team will need to turn the product
+backlog into the actual to-do list - or the sprint. The product manager and the
+Scrum master (or the head of development) should come together to figure out
+which items from the backlog should go into the next sprint. They have to make sure
+to choose the optimal number of items and the most important items that can be
+delivered within the coming sprint - which is all part of product backlog
+management.
+51
+A great backlog should state clearly which ideas from your roadmap should be done
+next and it should ensure that the most impactful features are delivered in each new
+release.
+Your product backlog should also be a reliable source of information for the whole
+team. Reserve one folder for the product backlog and make sure to keep all relevant
+information there.
+This is how a product backlog looks in Infinity:
+Type
+Story
+3
+Android > Mobile responsive version
+Story
+W None
+Reports > Define charts
+Story
+Co Low
+As a user I'd like to use app offline
+Story
+Co Low
++ Add new item
+Type
+Bug
+3
+Templates > Create template model
+Bug
+Mo High
+Android > Test cordova
+Bug
+W None
+Reference > Edit view bug
+Bug
+S Medium
++ Add new item
+Type
+Refactor
+2
+Desktop App > Desktop specific client events
+Refactor
+S Medium
+Notifications > Assigned notification generator
+Refactor
+S Medium
++ Add new item
+Type
+Knowledge
+1
+Onboarding > Q/A
+Knowledge
+W None
+You can preview or download the Product Management template to access the
+Product Backlog folder preloaded with sample items.
+52
+Types of Product Backlog Tasks
+In the previous chapter, we talked about user stories, but there are four main types
+of items that will be populating your product backlog. So what does a task in the
+backlog represent?
+Backlog tasks are classified into user stories, bugs, refactoring, and knowledge
+acquisition. Let's dive into each of the four categories and learn how to define and
+prioritize them.
+User Stories
+The majority of your backlog tasks will be in the form of user stories, which are the
+most important items in your backlog. As we already said, user stories are units of
+development that describe product functionalities from the users 'perspective.
+For example: As an admin user, / want to be able to control who can delete a
+task in my boards.
+Aside from this definition, a user story needs to include the acceptance criteria,
+which represents the conditions that need to be met for the story to be considered
+complete.
+Bugs
+Bugs are errors in the code discovered during peer review or testing. A bug will end
+up in your backlog most likely after it gets reported by a user or noticed by someone
+on your team.
+Bugs will usually be high-priority items in your product backlog. However, they
+should be discussed just like other backlog items during the backlog refinement and
+weekly Scrum meetings.
+Example: New item on the task list appears in the middle of the list.
+53
+Refactoring
+Refactoring is the process of restructuring existing code without changing the
+external behavior of the software. This results in better code readability and lower
+complexity, which makes the code much easier to work with and build upon.
+In other words, refactoring is essential for creating a good basis for improving the
+tool and adding more value in the future.
+Knowledge Acquisition
+As their name suggests, knowledge acquisition tasks are tasks focusing on gathering
+new information and knowledge to accomplish some future task.
+Let's imagine that there is a user story that your development team doesn't know
+how to tackle or that requires some prior learning. A knowledge acquisition task will
+be assigned to a team member to give them the knowledge necessary to eventually
+develop that user story and all similar stories in the future.
+Example: Research WordPress plugin libraries and select which one to
+implement.
+How To Manage a Product Backlog in Infinity
+Adding new tasks to the product backlog is simple when you have the Product
+Management template to help you out. Here's what you need to do:
+Step 1: Open the Backlog folder in the Product Management template.
+Step 2: Delete all sample tasks or keep a few to serve as a template.
+Step 3: Create a new task by clicking +Add new item below each group. Make
+sure you add the task to the correct group depending on its type - Story, Bug,
+Refactor, or Knowledge.
+Step 4: Write the task in the Name field.
+Step 5: In the Description field, you can briefly explain the task or add the user
+story related to it.
+54
+Step 6: Assign a team member who will be responsible for this task.
+Step 7: Add a priority level - make sure to read the next chapter where we'll
+explain backlog prioritization.
+Step 8: Add 'To Do" Status to high-priority tasks you're planning to work on in
+the next sprint.
+Step 9: After prioritization and backlog grooming, you will move high-priority
+tasks directly to the sprint by using Exdrag and drop.
+Type
+Story
+3
+Android > Mobile responsive version
+Story
+W None
+Reports > Define charts
+Story
+Co Low
+As a user I'd like to use app offline
+Story
+Co Low
++ Add new item
+Type
+Bug
+3
+Templates > Create template model
+Bug
+Mo High
+Android > Test cordova
+Bug
+W None
+Reference > Edit view bug
+Bug
+S Medium
++ Add new item
+Type
+Refactor
+2
+Desktop App > Desktop specific client events
+Refactor
+S Medium
+Notifications > Assigned notification generator
+Refactor
+S Medium
++ Add new item
+Type
+Knowledge
+1
+Onboarding > Q/A
+Knowledge
+W None
+55
+You can explore a real-life example of a product backlog by loading a preview of our
+Product Management template or by downloading it to your Infinity workspace.
+Task Prioritization With the
+MoSCoW Method
+During the product development process, you will have ideas, suggestions, and bugs
+coming left, right, and center. That's why you'll need to prioritize tasks in your
+backlog and make sure that the most impactful ideas are developed first.
+By performing task prioritization, you will be able to divide all tasks into three
+groups:
+Tasks that will go into the next sprint
+Tasks that will be developed later
+Tasks you won't be working on at all
+So, how do you prioritize the backlog?
+The MoSCoW Method
+There are several backlog prioritization methods that can help you manage your
+backlog, and you can choose whichever works best for you. In this guide, we will
+cover one of the most popular methods, called the MoSCoW method.
+The MoSCoW method is a prioritization technique that allows you to reach common
+ground with all stakeholders and make sure to deliver the most important
+requirements first. The system differentiates between these four levels of priority:
+56
+Mo (Must Have): The most vital product requirements that you (or your users) can't
+live without.
+S (Should Have): These requirements are important but not essential for your next
+release.
+Co (Could Have): These requirements are nice to have, but not as important as
+Should Have items.
+W (Won't Have): User stories that provide little or no value so you can leave them
+for later.
+Once you start prioritizing tasks in your backlog in such a way, it will become much
+clearer for you and the stakeholders what should be worked on in the next sprint. To
+make this prioritization more visual, you can create separate labels for these four
+priority levels.
+MoSCoW Priority
+Mo High
+2
+Templates > Create template model
+Bug
+Activity Log > Backend
+Bug
++ Add new item
+MoSCoW Priority
+S Medium
+3
+Desktop App > Desktop specific client events
+Refactor
+Notifications > Assigned notification generator
+Refactor
+Reference > Edit view bug
+Bug
++ Add new item
+MoSCoW Priority
+Co Low
+2
+Reports > Define charts
+Story
+As a user I'd like to use app offline
+Story
++ Add new item
+MoSCoW Priority
+W None
+3
+Android > Mobile responsive version
+Story
+57
+To make your product backlog even cleaner, you can create a separate folder for
+your W (Won't Have) items. You can name the folder Long Term, Future Tasks, etc. In
+Infinity's Product Development board, we call this folder On Hold and we keep all
+lower priority tasks there.
+You should revisit this folder from time to time and check if some of these items
+have deserved their spot in the backlog or if they should be completely scratched off
+the list.
+You don't have to follow the MoSCoW method to a tee. To make things simpler, you
+can create a label set in your Backlog folder called Priority and give it values Mo -
+High, S - Medium, Co - Low, and W - None. In this case, the items with no priority will
+go to the 'On Hold 'folder, while the rest will become contenders for the sprint.
+How To Use MoSCoW Method in Infinity
+Here's how you can prioritize your backlog in Infinity's Product Management
+template:
+Step 1: Open the Backlog folder.
+Step 2: Open an item.
+Step 3: Assign a MoSCoW label.
+Step 4: Repeat for each item that lands in your backlog.
+To make sure you're objectively prioritizing tasks, you'll need to take into
+consideration a few other factors such as:
+High value to the user
+High benefit to the business
+Ease of implementation
+Time to implement
+High/low risk
+Cost
+Dependencies between items
+58
+All of these factors will be crucial to help you decide which backlog items will go into
+the next sprint. Here's why this is important - sometimes you will have a medium or
+low priority task that is low-risk, low-cost, and super-easy to implement. In this case,
+you might consider adding this item to the sprint since it's going to be an easy but
+nice-to-have addition to your next release.
+The best way to adopt the MoSCoW method is through practice, which is why we
+added task examples to the Product Management template. You can preview or
+download the template and observe tasks in the Current Sprint, Backlog, and On
+Hold folders to get an idea of how to prioritize your tasks.
+Backlog Refinement, aka
+Backlog Grooming
+Backlog refinement, also known as backlog grooming, is the process of keeping the
+backlog clean and orderly and adding the necessary details and estimates to the
+product backlog items. Product refinement is the result of the product refinement
+meeting held between the product owner/manager, Scrum Master, or CTO and the
+development team.
+During the product backlog refinement meeting, top items from the backlog are
+discussed, reviewed, and revised. You should hold this meeting once per sprint and it
+should happen near the end of the sprint to ensure that the backlog is ready for the
+next sprint.
+Why You Need To Have a Well-Groomed Backlog
+Backlog refinement can have multiple important benefits. Refinement reduces
+confusion and uncertainty and prepares the team to be much more efficient in the
+following sprint. If done right, this meeting also helps reduce the time necessary for
+the sprint planning meeting.
+59
+Plus, refined backlog items are much easier to estimate and implement.
+In order to reach these benefits, it's crucial to include the whole development team
+in the meeting (or at least as many team members as possible).
+The discussion needs to be focused on gaining more insight into each backlog item
+and helping the responsible team member understand what needs to be done. You
+should document all decisions for future reference.
+For a successful product backlog grooming meeting, each team member needs to
+know their responsibilities.
+The product owner or manager is supposed to lead the meeting and make
+sure all decisions are in line with the overall product strategy.
+Scrum Master needs to facilitate communication between the development
+team and the product owner.
+Developers need to find and document creative solutions for backlog items,
+give time estimations, break up backlog items into smaller tasks if necessary,
+and collaborate with other team members on finding unified solutions.
+If the whole Scrum team is involved in the process of product backlog grooming, it
+becomes much easier to plan and execute a successful and fruitful sprint.
+Scrum Sprint
+A Scrum sprint is an iteration of development work that is accomplished in a fixed
+timeframe. A sprint usually lasts between one and four weeks, but it shouldn't be
+longer than a month. The length of a sprint is determined at the beginning of the
+agile project and it should be followed throughout the project.
+During a sprint, the Scrum team builds a set of features and functionalities
+predefined in the sprint goal. At the end of each sprint, a potential new release of
+the software is completed.
+60
+Each agile sprint starts with a sprint planning meeting where the product owner (or
+manager), Scrum Master, and development team come together to choose which
+backlog features will be completed in the following sprint.
+While the product manager decides on the sprint goal and the criteria that need to
+be met to achieve the goal, the development team decides how much work can
+realistically be done during the sprint.
+Once the Scrum sprint begins, the product owner needs to leave the Scrum team to
+work independently until the end of the sprint and should only provide feedback and
+answer questions if needed.
+Daily
+scrum
+Sprint review
+Review
+Sprint
+Sprint retrospective
+meeting
+ooo
+Planning
+Deployment..
+Project vision
+Release planning
+59
+Sprint planning
+The sprint ends when the time allocated for the sprint ends, regardless of whether all
+tasks have been completed. After that, a sprint review meeting takes place where
+the product owner determines whether the sprint goal has been achieved.
+61
+The following agile sprint starts as soon as the previous sprint ends, allowing the
+development process to work like a well-oiled machine.
+What Happens During Sprint Planning?
+Sprint planning happens during the sprint planning meeting held by the whole Scrum
+team - the product owner, Scrum Master, and the development team.
+As its name suggests, sprint planning is the process of planning the following sprint.
+The meeting shouldn't take more than eight hours for a month-long sprint, but
+ideally, it should take an hour per each week of the sprint.
+The plan should be the result of a collaborative discussion of the entire Scrum team
+and it should identify the backlog items that will be delivered in the upcoming sprint
+and determine how this work will be done.
+Sprint planning needs to happen right before the sprint but after the sprint review
+and retrospective.
+Each successful sprint needs to have a sprint goal, which is the main priority at the
+beginning of every sprint planning meeting. The sprint goal is the objective of the
+sprint that should guide the development team while building the next product
+increment. All tasks for the following sprint should be aligned with the sprint goal.
+Who Makes the Decisions?
+As we already said, the whole Scrum team should be involved in sprint planning, and
+everyone has a specific role:
+The Product owner should propose the sprint goal and the backlog items to
+work on in the upcoming sprint.
+Developers should give estimates on how many tasks they can handle in the
+upcoming sprint and discuss how they're planning to deliver these tasks and
+ultimately achieve the sprint goal.
+62
+The Scrum Master facilitates communication between team members and
+ensures that the discussion is effective. They need to make sure everyone is
+on the same page regarding the goal and the backlog items that will be
+handled in the sprint.
+Together, they should decide which items from the backlog will be completed in the
+sprint, as well as define their requirements, potential problems, and the factors that
+will determine when a task has been done.
+How To Plan a Scrum Sprint in Infinity
+The best way to plan the sprint in Infinity is during the sprint planning meeting. As
+the team discusses the tasks that will be done in the next sprint, the product owner
+should move tasks from the Backlog to the Sprint folder using drag and drop and
+hitting the Move button.
+Once a task is moved to the Sprint, the product owner needs to add all necessary
+details to define the task. This includes the team member responsible for this task,
+estimated time to finish the task, flexible due date, priority, etc. You can use the
+Product Management template to plan your sprint, and here's how:
+Step 1: Move the task from the Backlog to the Current Sprint folder.
+Step 2: A task that was in the Backlog will already have some information filled
+out - name, description, assignee, and type. You can update these if
+necessary.
+Step 3: Add a time estimate that you will get from the developer responsible
+for the task.
+Step 4: Add the To Do status which will move the task to the first column.
+Step 5: Add a priority level - High, Medium, or Low.
+Step 6: Add the due date.
+Step 7: Link the task to the corresponding feature in the roadmap by adding
+the feature reference.
+Step 8: Add any relevant links if necessary.
+63
+After you finish sprint planning, it's time for the sprint. How do you manage a sprint
+in Infinity?
+One of the most convenient ways to manage sprints is to keep them in separate
+folders. After each sprint planning meeting, you can easily move the backlog items
+you and the team agree on to the Sprint folder.
+Once you have a dedicated Sprint folder, you can recycle it and reuse it throughout
+the project. You can simply add new tasks from the backlog after each sprint
+planning meeting, and move completed tasks to the Archive folder at the end of the
+sprint.
+In our Product Management template, you'll notice that the sprint is organized in
+columns determining the stages of the task development process. A classic Kanban
+approach works well here because it gives the whole Scrum team a clear overview of
+the sprint's progress.
+o Do
+2
+Doing
+Review
+5
+To Deploy
+3
+Done
+Onboarding Progress bar
+Desktop App Client adapted to desktop
+Onboarding Helper
+Onboarding Workspace personalization
+0 Aug 8th
+Aug 1st
+OJul 21st
+JJ 12th
+Activity Log Add getLogScopeData
+Time Estimate 6h
+Time Estimate: 3h
+e 30th
+Time Estimate: 2h
+Time Estimate 22h
+Onboarding Tour
+Improvement
+Time Estimate 4h
+Improvement
+Improvement
+Improvement
+Notifications Generate notification attribute
+Desktop App Simple view of website
+Desktop App Displayed local client
+type setting
+OJ 22nd
+Jul 15th
+Keyboard Shortcuts Define list of shortcuts
+Templates App Backend
+Aug 1st
+Aug 5th
+24th
+Time Estimate: 12h
+Time Estimate 14h
+Time Estimate 3h
+Time Estimate 5h
+Time Estimate 3h
+Refactor
+Notifications
+Improvement
+Bug
+Notifications Comment Mention notification
+Onboarding Metrics tracking
+generator
+Jul 18th
+Onboarding Account creation flow
+User Story: As user would like to be notified when
+Activity Log Frontend
+26th
+Time Estimate 7h
+somebody mentions me in comment
+Aug 2nd
+Time Estimate 4h
+OJu 20th
+Time Estimate: 12h
+Bug
+Time Estimate: 4h
+Improvement
+Notifications Create notifications module
+Zapier Create API
+and watch model CRUD
+Aug
+Jul 31st
+Time Estimate: 17h
+Time Estimate: 5h
+Story
+Improvement
+As a task progresses through the sprint, you should also move it along the Kanban
+board. Each task will start in the To Do column and end up in the Done column once
+(and if) the task is completed. People responsible for tasks should move the tasks
+they're working on between columns so that the Scrum Master and the rest of the
+team always know how the sprint is going.
+64
+Once a task is completed, it should be moved from the Done column to the Archive
+folder.
+How to Use Tabs to Organize a Sprint in Infinity
+The first and most important tab for the whole Scrum team should be the columns
+grouped by status so that everyone on the team can easily track sprint progress.
+This way, you'll be able to streamline the sprint process and always the status of
+each task and the amount of work left before the end of the sprint. You can easily
+add additional tasks if any unexpected work comes up.
+The second tab in our template is another Kanban board where tasks are grouped by
+type. The third tab is reserved for a calendar, which is going to come in handy when
+keeping track of the deadlines. The fourth tab is reserved for daily tasks, while the
+fifth one shows the tasks organized by priority.
+C
+Status
+0
+Type
+Calendar
+0
+Daily
+Priorities
+Of course, you can always rearrange your tabs, delete those you don't need, and add
+new ones simply by clicking the + button at the end of the tabs bar.
+Our Product Management template is available for preview or download, so you
+don't have to organize a sprint from scratch.
+Why You Need Daily Scrum Meetings
+Daily standups, also known as Daily Scrum, are quick daily Scrum meetings that the
+Scrum team has every day of the sprint. These meetings should be time-boxed to 15
+minutes to keep the discussion quick but effective. To eliminate confusion and keep
+things as productive as possible, daily Scrum meetings should be held at the same
+time and same place every day. It's best to have them in the morning before the
+Scrum team starts their work.
+65
+The whole team should attend daily standups - the Scrum Master, product
+owner/manager, and developers. Other team members can attend and listen but
+they shouldn't actively participate in the discussion.
+If other people are present at the daily standup, the Scrum Master should ensure
+they don't disrupt the meeting.
+During the meeting, the Scrum team should go over the Scrum meeting agenda. This
+includes synchronizing activities and planning the work for the following 24 hours.
+Each team member should state:
+What they did the previous day
+What they're planning to do that day
+Whether there are any obstacles in their way
+The Scrum Master needs to make sure to remove those obstacles or find someone
+on the team who can do it.
+Daily Scrum Meeting
+15
+min
+HT
+Time box
+Same place
+Same time
+?
+Facilitated by
+Full team
+Focus on 3
+Scrum Master
+presence
+questions
+3 Main Questions:
+1. What did I do yesterday?
+2. What will I do today?
+3. What's in my way?
+66
+By sharing this information, the whole team knows what has been done and what
+still needs to be worked on. It's wrong to consider daily standups as feedback
+sessions where developers report to the Scrum Master and product owner. Instead,
+these meetings should help the whole team gain more knowledge of their progress
+and focus on the goal ahead.
+Having daily Scrum meetings increases the chances that the development team will
+meet the sprint goal.
+Sprint Review vs. Sprint Retrospective
+Although sprint review and sprint retrospective can be mistaken for the same thing,
+these two Scrum events are completely different. Here's a bit more about each of
+the two types of meeting and the things that set them apart.
+Sprint Review
+In each sprint, the Scrum team should produce a potentially shippable product
+increment. The sprint review is a meeting at the end of the sprint where the Scrum
+team and all stakeholders get together and discuss what has been accomplished
+during the sprint and whether the sprint goal has been met.
+The people attending the sprint review should include the product owner and
+product manager, Scrum Master, the development team, management, and anyone
+else involved in the product creation process.
+This is usually an informal type of meeting where the Scrum team presents the
+product increment, while the stakeholders provide feedback. A sprint review
+shouldn't last more than four hours per month-long sprint (up to one hour per each
+week of the sprint). The Scrum Master needs to ensure the meeting doesn't run
+longer than that.
+67
+Sprint Review
+Meeting at the end of the sprint to check the increment
+2-4 hours
+"Done" functionalities
+Updated product backlog
+Next sprint planning date
+Increment
+?
+Product owner + Scrum Master + Team + Others
+Aside from presenting the work done during the sprint, sprint review meetings
+should have a few other things on the agenda:
+The product owner needs to inform the team about the tasks that have been
+completed and those that are not yet done.
+The developers need to discuss problems they encountered during the sprint
+and how they were solved.
+The Scrum team answers sprint-related questions from the rest of the team.
+The team should discuss which tasks come next, which provides a great basis
+for the next sprint planning meeting.
+Sprint Retrospective
+The sprint retrospective meeting takes place immediately after the sprint review.
+While the sprint review is a discussion about what the team is building, the sprint
+retrospective is focused on how they're building it.
+68
+This meeting is usually slightly shorter than the sprint review and shouldn't last more
+than three hours per month-long sprint. To get the most out of a sprint retrospective
+meeting, you should ensure that the whole Scrum team, including the product
+owner, attends and participates.
+The goal of a sprint retrospective is to improve the development process. The Scrum
+team reflects on the previous sprint and discusses what's working well, what could
+be improved, and how they could improve overall productivity.
+Although these improvements may be implemented during the sprint, the sprint
+retrospective gives the Scrum team a formal opportunity to discuss the process and
+motivates each team member to voice their opinion and ideas.
+Sprint Retrospective
+Meeting after Sprint Review to review processes
+30 min - 3h
+Self-analysis on
+how to work
+What went well?
+What could be improved?
+Problem analysis and
+improved aspects
+!
+How can we improve it?
+Framework improvements
+Product owner + Scrum team
+For a successful sprint retrospective meeting, each team member should try to
+answer the following sprint retrospective questions:
+1. What went well during the sprint?
+2. Is there anything that can be improved?
+3. How can we make those improvements?
+69
+Instead of using the sprint retrospective as an opportunity for complaints, this
+meeting should be constructive with everyone on the team making an effort to
+improve the process and create an enjoyable work experience for the whole team.
+When organizing sprint review and sprint retrospective meetings, it helps to have a
+dedicated task management tool. Infinity offers the Agile Development template you
+can customize not only to plan sprints but also to keep and organize sprint review
+and sprint retrospective notes, stakeholder feedback, suggestions on how to boost
+productivity, and much more.
+You can preview this template in your browser to get inspiration on how to further
+improve your agile development processes.
+70

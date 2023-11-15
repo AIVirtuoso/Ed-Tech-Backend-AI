@@ -10,11 +10,9 @@ import { OpenAIConfig } from 'src/types/configs';
 import Models from '../../db/models';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
-  generalFlashcardPrompt,
   generalQuizPrompt,
   quizzesFromDocsPrompt,
-  flashCardsFromNotesPrompt,
-  flashCardsFromDocsPrompt
+  flashCardsFromNotesPrompt
 } from '../helpers/promptTemplates';
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
