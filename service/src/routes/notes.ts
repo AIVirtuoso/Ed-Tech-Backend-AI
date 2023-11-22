@@ -153,7 +153,7 @@ notes.get(
 );
 
 notes.get(
-  '/chat/documents/history',
+  '/chat/document_history',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { studentId } = req.query;
