@@ -32,7 +32,8 @@ import {
   chatHasTitle,
   deleteConversation,
   getChatConversationId,
-  storeChatTitle
+  storeChatTitle,
+  getDocumentHistory
 } from '../../db/models/conversation';
 import {
   fetchAllStudentChats,
@@ -145,6 +146,23 @@ notes.get(
         .reverse();
 
       res.send(mappedChatHistory);
+    } catch (e: any) {
+      next(e);
+    }
+  }
+);
+
+notes.get(
+  '/chat/documents/history',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { studentId } = req.query;
+
+      if (!studentId) throw new Error('No studentId present in request!');
+
+      const studentDocs = await getDocumentHistory(studentId as string);
+
+      res.send(studentDocs);
     } catch (e: any) {
       next(e);
     }

@@ -1,6 +1,7 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 import sequelize from '../../sequelize';
 import Log from './conversationLog';
+import Document from './document';
 
 const Conversation = sequelize.define(
   'Conversations',
@@ -43,6 +44,30 @@ const Conversation = sequelize.define(
     paranoid: true
   }
 );
+
+export const getDocumentHistory = async (studentId: string) => {
+  // Fetch user documents
+  const userDocuments = await Document.findAll({
+    where: {
+      studentId
+    }
+  });
+
+  // Extract document IDs from the user documents
+  const documentIds = userDocuments.map((doc: any) => doc.documentId);
+
+  // Fetch conversations where reference includes document IDs
+  const chattedDocuments = await Conversation.findAll({
+    where: {
+      referenceId: {
+        [Op.in]: documentIds // Assuming Sequelize and use of the Op.in operator
+      },
+      reference: 'document'
+    }
+  });
+
+  return chattedDocuments;
+};
 
 export const getChatConversations = async ({
   referenceId,
