@@ -66,7 +66,15 @@ export const getDocumentHistory = async (studentId: string) => {
     }
   });
 
-  return chattedDocuments;
+  const chatReferenceIds = chattedDocuments.map(
+    (conversation: any) => conversation.referenceId
+  );
+
+  const documentsWithConversations = userDocuments.filter((doc: any) =>
+    chatReferenceIds.includes(doc.documentId)
+  );
+
+  return documentsWithConversations;
 };
 
 export const getTextNoteHistory = async (noteIds: string[]) => {
@@ -80,7 +88,7 @@ export const getTextNoteHistory = async (noteIds: string[]) => {
     }
   });
 
-  return chattedNotes;
+  return chattedNotes.map((conversation: any) => conversation.referenceId);
 };
 
 export const getChatConversations = async ({

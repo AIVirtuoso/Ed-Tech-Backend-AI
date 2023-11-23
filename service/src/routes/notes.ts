@@ -169,8 +169,11 @@ notes.get(
           isDevelopment as boolean
         );
         const notesIds = notes.map((note: any) => note._id);
-        const noteDocs = await getTextNoteHistory(notesIds);
-        return res.send(noteDocs);
+        const noteReferences = await getTextNoteHistory(notesIds);
+        const docNotes = notes.filter((note: any) =>
+          noteReferences.includes(note._id)
+        );
+        return res.send(docNotes);
       }
 
       const studentDocs = await getDocumentHistory(studentId as string);
