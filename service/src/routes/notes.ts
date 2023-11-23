@@ -33,7 +33,8 @@ import {
   deleteConversation,
   getChatConversationId,
   storeChatTitle,
-  getDocumentHistory
+  getDocumentHistory,
+  getTextNoteHistory
 } from '../../db/models/conversation';
 import {
   fetchAllStudentChats,
@@ -44,6 +45,7 @@ import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import llmCreateConversationTitle from '../helpers/llmFunctions/createConversationTitle';
 import generateConversationDescription from '../helpers/llmFunctions/getConversationDescription';
+import { fetchNotes } from '../helpers/getNote';
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
@@ -156,9 +158,20 @@ notes.get(
   '/chat/document_history',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { studentId } = req.query;
+      const { studentId, documentType } = req.query;
 
       if (!studentId) throw new Error('No studentId present in request!');
+
+      if (documentType && documentType === 'text_note') {
+        const isDevelopment = Boolean(req.query.isDevelopment);
+        const notes = await fetchNotes(
+          studentId as string,
+          isDevelopment as boolean
+        );
+        const notesIds = notes.map((note: any) => note._id);
+        const noteDocs = await getTextNoteHistory(notesIds);
+        return res.send(noteDocs);
+      }
 
       const studentDocs = await getDocumentHistory(studentId as string);
 

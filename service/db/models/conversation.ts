@@ -49,7 +49,7 @@ export const getDocumentHistory = async (studentId: string) => {
   // Fetch user documents
   const userDocuments = await Document.findAll({
     where: {
-      studentId
+      referenceId: studentId
     }
   });
 
@@ -67,6 +67,20 @@ export const getDocumentHistory = async (studentId: string) => {
   });
 
   return chattedDocuments;
+};
+
+export const getTextNoteHistory = async (noteIds: string[]) => {
+  // Fetch conversations where reference includes note IDs
+  const chattedNotes = await Conversation.findAll({
+    where: {
+      referenceId: {
+        [Op.in]: noteIds // Assuming Sequelize and use of the Op.in operator
+      },
+      reference: 'note'
+    }
+  });
+
+  return chattedNotes;
 };
 
 export const getChatConversations = async ({
