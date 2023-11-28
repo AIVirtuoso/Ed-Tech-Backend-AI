@@ -576,6 +576,13 @@ notes.post(
 
       const chunks = await splitter.createDocuments([text], [{ documentId }]);
 
+      // Calculate max text length
+      const maxTextLength = 4050;
+
+      // Trim the text if it exceeds the max length
+      if (text.length > maxTextLength) {
+        text = text.substring(0, maxTextLength);
+      }
       // Generate keywords using openai
       const openAImodel = new OpenAI({
         openAIApiKey: openAIconfig.apikey,
@@ -584,6 +591,7 @@ notes.post(
 
       const prompt = `Please provide a list of at least 20 relevant keywords for the following text. The keywords selected should be in a comma-separated format and reflect the main ideas or subjects discussed in the text. The keywords should be insightful and pertinent to the text, capturing the core themes, concepts, topics or opportunities for contextual depth. Please return the keywords in a comma-separated format without any trailing punctuation:\n\n${text}`;
 
+      // Call OpenAI to generate keywords
       let keywords: string[];
 
       try {
