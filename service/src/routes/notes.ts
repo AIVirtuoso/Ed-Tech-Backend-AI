@@ -57,10 +57,6 @@ const {
   patchSummary,
   editHistoryTitle
 } = schema;
-const TextRazor = require('textrazor');
-const textRazorClient = new TextRazor(
-  '81f7f4e691b88e45ddec8fa3336a42d306e37930c745aefd33b6e835'
-);
 interface Chats {
   log: Array<any>;
 }
@@ -578,38 +574,25 @@ notes.post(
         chunkOverlap: 20
       });
 
-      const textRazorOptions = {
-        extractors: 'entities'
-      };
-
       const chunks = await splitter.createDocuments([text], [{ documentId }]);
+
+      // Generate keywords using openai
+      const openAImodel = new OpenAI({
+        openAIApiKey: openAIconfig.apikey,
+        modelName: 'gpt-4'
+      });
+
+      const prompt = `Please provide a list of at least 20 relevant keywords for the following text. The keywords selected should be in a comma-separated format and reflect the main ideas or subjects discussed in the text. The keywords should be insightful and pertinent to the text, capturing the core themes, concepts, topics or opportunities for contextual depth. Please return the keywords in a comma-separated format without any trailing punctuation:\n\n${text}`;
 
       let keywords: string[];
 
-      // Fetch keywords using textRazorClient
       try {
-        const res = await textRazorClient.exec(text, textRazorOptions);
-        keywords = [
-          ...new Set(
-            res.response.entities
-              //@ts-ignore: petty type check
-              .map((entity) => entity.entityId)
-              .filter(
-                (keyword: string) =>
-                  !/^\d+$|^\d+\.\d+|^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?\+00:00$/.test(
-                    keyword
-                  )
-              )
-          )
-        ] as string[];
-      } catch (err) {
-        console.error('textRazorClient ERROR', err);
-        return res.status(500).send({
-          message: 'Error fetching keywords from TextRazor.'
-        });
+        const response = await openAImodel.call(prompt);
+        keywords = response.split(',').map((kw: string) => kw.trim());
+      } catch (error) {
+        keywords = [];
       }
 
-      console.log(chunks[0]);
       let data: any = [];
       // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;
 
@@ -625,7 +608,8 @@ notes.post(
             referenceId: studentId,
             documentId,
             title,
-            documentURL
+            documentURL,
+            keywords
           });
         })
         .catch((e) => {
