@@ -578,4 +578,25 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
       });
     }
   });
+
+  socket.on('generate_summary', async () => {
+    try {
+      try {
+        const answer = await chatManager.summarizeText(noteData);
+        socket.emit('new_note_summary', { summary: answer?.text });
+      } catch (error: any) {
+        console.error(`Error loading chats: ${error.message}`);
+        socket.emit('summary_generation_error', {
+          message: 'Failed to generate summary',
+          error: error.message
+        });
+        return;
+      }
+    } catch (error: any) {
+      socket.emit('summary_generation_error', {
+        message: 'Failed to generate summary',
+        error: error.message
+      });
+    }
+  });
 });

@@ -1,7 +1,7 @@
 import { PromptTemplate } from 'langchain';
 import { ConversationChain } from 'langchain/chains';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-
+import { summarizeNotePrompt } from '../promptTemplates';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { HumanChatMessage, AIChatMessage } from 'langchain/schema';
 import paginatedFind from '../pagination';
@@ -76,6 +76,23 @@ class ChatManager {
 
   public setSystemPrompt(prompt: string) {
     this.systemPrompt = prompt;
+  }
+
+  public summarizeText(text: string) {
+    const model = this.socketAiModel(this.socket, this.event);
+
+    const basePrompt = `${summarizeNotePrompt} is the text to summarize:${text} Ignore all history and summarize this text.`;
+    const prompt = new PromptTemplate({
+      template: this.systemPrompt,
+      inputVariables: ['history', 'input']
+    });
+
+    const chain = new ConversationChain({
+      llm: model,
+      prompt
+    });
+
+    return chain.call({ input: basePrompt });
   }
 
   async loadModel() {

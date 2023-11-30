@@ -168,6 +168,9 @@ notes.get(
           studentId as string,
           isDevelopment as boolean
         );
+        if (!notes || notes.length === 0) {
+          throw new Error('This student has no note');
+        }
         const notesIds = notes.map((note: any) => note._id);
         const noteReferences = await getTextNoteHistory(notesIds);
         const docNotes = notes.filter((note: any) =>
