@@ -52,11 +52,11 @@ export const generalFlashcardPrompt = (
     blacklistedQuestions && blacklistedQuestions.length > 0
       ? `Do not ask any of these questions: [${blacklistedQuestions || ''}]`
       : '';
-  return `Generate ONLY ${count} ${difficulty}-grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} level — no harder or simpler. 
+  return `Generate ONLY ${count}  ${difficulty} -grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} educational level difficulty — no harder or simpler.  The difficulty level indicates the type of student you are teaching. 
   Do not include any explanations, ${promptForMoreQuestions}. Only provide a RFC8259 compliant JSON response following this format without deviation:
    {
-    "front": "Flash card question, suitable for a ${difficulty} level",
-    "back": "Answer/completion of the flash card question, also written to be understood by someone at a $difficulty} education level.",
+    "front": "Flash card question, suitable for a ${difficulty} education level.",
+    "back": "Answer/completion of the flash card question, also written to be understood by someone at a ${difficulty} education level.",
     "explainer": "helpful explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student. The explanation shobe at a ${difficulty} level.",
     "helpful reading": "related topics and materials pertaining to the topic. Don't include links, just textbook references."
   }
