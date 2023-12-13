@@ -20,9 +20,9 @@ studyPlanRouter.post(
   '/generate',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { syllabus } = req.body;
+      const { syllabusUrl } = req.body;
 
-      if (!syllabus) {
+      if (!syllabusUrl) {
         return res.status(400).json({ message: 'Syllabus is required' });
       }
 
@@ -40,15 +40,15 @@ studyPlanRouter.post(
       );
 
       let text = await pdfTextExtractor.getTextFromDynamoDB(
-        syllabus,
+        syllabusUrl,
         'template'
       );
 
       if (!text) {
-        const jobId = await pdfTextExtractor.extractTextFromPDF(syllabus);
+        const jobId = await pdfTextExtractor.extractTextFromPDF(syllabusUrl);
         text = await pdfTextExtractor.getTextFromJob(jobId);
 
-        await pdfTextExtractor.storeJobDetailsInDynamoDB(syllabus, text);
+        await pdfTextExtractor.storeJobDetailsInDynamoDB(syllabusUrl, text);
       }
 
       const model = new OpenAI({
