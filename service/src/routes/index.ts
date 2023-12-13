@@ -8,6 +8,7 @@ import flashCards from './flashCards';
 import { PineconeClient } from '@pinecone-database/pinecone';
 import mnemonics from './mnemonics';
 import highlights from './highlights';
+import studyPlan from './studyPlan';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import cors from 'cors';
@@ -113,6 +114,7 @@ ai.use('/flash-cards', flashCards);
 ai.use('/mnemonics', mnemonics);
 ai.use('/highlights', highlights);
 ai.use('/quizzes', quizzes);
+ai.use('/study-plans', studyPlan);
 
 ai.use(Sentry.Handlers.errorHandler());
 ai.use(error);

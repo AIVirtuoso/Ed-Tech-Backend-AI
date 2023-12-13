@@ -5,10 +5,9 @@ import { Request, Response, NextFunction } from 'express';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import {
-  CharacterTextSplitter,
-  RecursiveCharacterTextSplitter
-} from 'langchain/text_splitter';
+
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+
 import { uuid } from 'uuidv4';
 // @ts-ignore
 import pdf from 'pdf-parse';
@@ -534,7 +533,7 @@ notes.post(
     try {
       const { documentURL, studentId, title } = req.body;
 
-      const documentId = uuid(); // Though Postgres is perfectly capable of generating its own uuids, we're generating one optimistically/early so we can use it to set Pinecone's filters.
+      const documentId = uuid();
 
       let text: string;
       let filePath: any | undefined;
@@ -556,10 +555,7 @@ notes.post(
       if (jobId) {
         text = await pdfTextExtractor.getTextFromJob(jobId);
         console.log(text);
-        await pdfTextExtractor.storeJobDetailsInDynamoDB(
-          `${studentId}/${documentId}`,
-          text
-        );
+        await pdfTextExtractor.storeJobDetailsInDynamoDB(documentURL, text);
       } else {
         // Fallback mechanism to read the PDF directly
         filePath = await createDocumentAndReturnFilePath(

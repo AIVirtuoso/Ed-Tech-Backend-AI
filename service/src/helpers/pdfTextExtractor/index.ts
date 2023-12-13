@@ -33,8 +33,8 @@ class PDFTextExtractor {
 
   public async extractTextFromPDF(
     pdfUrl: string,
-    studentId: string,
-    documentId: string
+    studentId?: string,
+    documentId?: string
   ): Promise<string> {
     console.log('Extracting text from PDF...');
     const pdfKey = this.extractS3KeyFromUrl(pdfUrl);
@@ -70,8 +70,10 @@ class PDFTextExtractor {
     return jobId;
   }
 
-  private extractS3KeyFromUrl(url: string): string {
+  public extractS3KeyFromUrl(url: string): string {
     console.log(`Extracting S3 key from URL: ${url}`);
+
+    url = decodeURIComponent(url.replace(/\+/g, ' '));
     const urlParts = url.split('/');
     return `${urlParts[urlParts.length - 2]}/${urlParts[urlParts.length - 1]}`;
   }
@@ -167,7 +169,9 @@ class PDFTextExtractor {
     return fullText;
   }
 
-  public async storeJobDetailsInDynamoDB(uniqueId: string, text: string) {
+  public async storeJobDetailsInDynamoDB(pdfUrl: string, text: string) {
+    const uniqueId = this.extractS3KeyFromUrl(pdfUrl);
+
     const data = {
       textrxtjobs: { S: uniqueId },
       Data: { S: text }
@@ -179,6 +183,44 @@ class PDFTextExtractor {
         Item: data
       })
       .promise();
+    console.log(`Stored text for ID ${uniqueId} in DynamoDB`);
+  }
+
+  public async getTextFromDynamoDB(
+    url: string,
+    prefix: string
+  ): Promise<string | null> {
+    const key = this.extractS3KeyFromUrl(url);
+    const uniqueId = key;
+
+    console.log(`Retrieving text from DynamoDB for ID: ${uniqueId}`);
+
+    try {
+      const params = {
+        TableName: 'StoreTextractJobs',
+        Key: {
+          textrxtjobs: { S: uniqueId }
+        }
+      };
+
+      const data = await dynamodb.getItem(params).promise();
+
+      if (!data.Item || !data.Item.Data) {
+        console.log(`No text item found for ID ${uniqueId}`);
+        return null;
+      }
+
+      const text = data.Item.Data.S;
+      if (!text) {
+        console.log(`No text found for ID ${uniqueId}`);
+        return null;
+      }
+      console.log(`Retrieved text for ID ${uniqueId}`);
+      return text;
+    } catch (error) {
+      console.error(`Error retrieving text from DynamoDB: ${error}`);
+      throw error;
+    }
   }
 }
 

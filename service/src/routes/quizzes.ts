@@ -87,7 +87,7 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_3_5_16K
+        modelName: OPENAI_MODELS.GPT_4
       });
 
       const generateQuizzes = async (): Promise<any> => {
@@ -161,7 +161,7 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_3_5_16K
+        modelName: OPENAI_MODELS.GPT_4
       });
 
       let docs = await documents();
