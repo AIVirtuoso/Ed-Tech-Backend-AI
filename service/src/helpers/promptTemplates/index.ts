@@ -46,14 +46,21 @@ export const generalFlashcardPrompt = (
   difficulty: string,
   subject: string,
   topic: string,
-  blacklistedQuestions?: string[]
+  blacklistedQuestions?: string[],
+  subTopics?: string[]
 ) => {
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
       ? `Do not ask any of these questions: [${blacklistedQuestions || ''}]`
       : '';
+  const promptForSubTopics =
+    subTopics && subTopics.length > 0
+      ? `Limit your questions to the range of these sub-topics of these ${subTopics.join(
+          ','
+        )}, you should only ask questions that relate to the subtopics`
+      : '';
   return `Generate ONLY ${count}  ${difficulty} -grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} educational level difficulty — no harder or simpler.  The difficulty level indicates the type of student you are teaching. 
-  Do not include any explanations, ${promptForMoreQuestions}. Only provide a RFC8259 compliant JSON response following this format without deviation:
+  Do not include any explanations, ${promptForMoreQuestions}. ${promptForSubTopics}. Only provide a RFC8259 compliant JSON response following this format without deviation:
    {
     "front": "Flash card question, suitable for a ${difficulty} education level.",
     "back": "Answer/completion of the flash card question, also written to be understood by someone at a ${difficulty} education level.",
