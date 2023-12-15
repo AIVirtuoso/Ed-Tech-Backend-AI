@@ -21,6 +21,7 @@ const queryEmbeddingsSchema = z.object({
         ])
         .optional(),
       existingQuestions: z.array(z.string()).optional(),
+      subTopics: z.array(z.string()).optional(),
       count: z.number({
         required_error: 'Number of flash cards to generate required'
       })

@@ -26,7 +26,7 @@ flashCards.post(
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { topic, count, subject, existingQuestions } = req.body;
+      let { topic, count, subject, existingQuestions, subTopics } = req.body;
 
       let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
 
@@ -41,7 +41,8 @@ flashCards.post(
         difficulty,
         subject,
         topic,
-        existingQuestions
+        existingQuestions,
+        subTopics
       );
 
       const response = await model.call(flashCardPrompt);
