@@ -253,12 +253,10 @@ docChatNamespace.on('connection', async (socket) => {
         .catch(async (e: any): Promise<any> => {
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
             topK -= 5;
-            console.log('Error, context length: ', topK);
             chain = docChatChain(event, topK);
             return await callChain();
           }
 
-          console.log(e.message, e?.response?.data?.error?.code);
           socket.emit(
             `${event} start`,
             'I ran into some trouble coming up with an answer. Can you ask me the question again?'

@@ -96,7 +96,6 @@ const preparePinecone = async () => {
   const vectorIndex = pinecone.Index(index);
   ai.locals.pineconeIndex = vectorIndex;
 
-  console.log(vectorIndex);
   pineconeIndex = vectorIndex;
 };
 

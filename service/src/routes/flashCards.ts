@@ -45,6 +45,8 @@ flashCards.post(
         subTopics
       );
 
+      console.log(flashCardPrompt);
+
       const response = await model.call(flashCardPrompt);
       res.send(JSON.parse(response));
       res.end();
@@ -97,7 +99,6 @@ flashCards.post(
           const response = await model.call(flashCardsFromNotes);
           res.json(JSON.parse(response));
         } catch (e: any) {
-          console.debug('Error in generateCards', e);
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
             topK -= 10;
             return await generateCards();

@@ -59,22 +59,34 @@ export const generalFlashcardPrompt = (
           ','
         )}, you should only ask questions that relate to the subtopics`
       : '';
-  return `Generate ONLY ${count}  ${difficulty} -grade flash cards based on this ${subject} topic: ${topic}. Make sure your flash cards at exactly at a ${difficulty} educational level difficulty — no harder or simpler.  The difficulty level indicates the type of student you are teaching. 
-  Do not include any explanations, ${promptForMoreQuestions}. ${promptForSubTopics}. Only provide a RFC8259 compliant JSON response following this format without deviation:
-   {
-    "front": "Flash card question, suitable for a ${difficulty} education level.",
-    "back": "Answer/completion of the flash card question, also written to be understood by someone at a ${difficulty} education level.",
-    "explainer": "helpful explanation of the answer (ie, back of flashcard) that disambiguates the topic further for the student. The explanation shobe at a ${difficulty} level.",
-    "helpful reading": "related topics and materials pertaining to the topic. Don't include links, just textbook references."
-  }
-          
-  Wrap the total flashcards generated in an object, like this:
-          
-   {
-     flashcards: [
-      // the ${count} flashcards go here
-    ]
-  }`;
+  return `You are a dedicated student tutor. Your task is to create study flashcards for your students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
+ Output the flashcards in JSON format, with keys for 'question', 'answer', and 'explanation'.
+ # Here is the Student Request Information:
+ Subject: ${subject}
+ Topic:  ${topic}
+ Difficulty Level:  ${difficulty} level
+ Number of Flashcards: ${count}
+ ${promptForMoreQuestions}
+ ${promptForSubTopics}
+ Here are some guidelines to help you generate helpful flashcards:
+ # Question Formation:
+ - The question should be clear, concise, and directly related to the specified topic. It should challenge the student's understanding according to the specified difficulty level
+ # Answer Formation:
+ - Provide a brief answer to the question, ideally in 1-2 sentences. The answer should be accurate and to the point, giving just enough information to correctly respond to the question.
+ # Explanation Formation: 
+ - This should expand on the answer, providing context, background information, and a deeper level of understanding. It should help the student not just memorize the answer, but understand the reasoning behind it.
+ # Difficulty Level:
+ - Easy: Include questions that focus on basic recall and understanding. These questions should involve fundamental concepts, definitions, or simple processes.
+ - Medium: Include questions that require application of concepts or understanding of relationships between concepts. These can include problem-solving or explaining phenomena based on known principles.
+ - Hard: Frame questions that involve analysis or synthesis of information. These can include interpreting data, comparing and contrasting concepts, or explaining complex processes in detail.
+ - Very Hard: Pose questions that require Require advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
+ Please structure your response in JSON format as shown below:\n\
+ {
+   \"flashcards\": [
+     {\"question\": \"...\", \"answer\": \"...\", \"explanation\": \"...\"},
+     {\"question\": \"...\", \"answer\": \"...\", \"explanation\": \"...\"}
+   ]
+ }`;
 };
 
 export const chatWithNotePrompt = (note: string) => {
