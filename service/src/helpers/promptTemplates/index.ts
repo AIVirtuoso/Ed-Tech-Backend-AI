@@ -144,7 +144,7 @@ export const flashCardsFromNotesPrompt = (
     "helpful reading": "If there's related reading in the notes, include them. If not, omit this field."
   }
   
-  Finally, wrap the generated flashcards in an object:
+  Finally, wrap the generated flashcards in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     flashcards: [
       // the ${count} flashcards are placed here
@@ -179,7 +179,7 @@ export const flashCardsFromDocsPrompt = (
     "helpful reading": "If there is related reading in the notes, include them. Otherwise omit this field."
   }
   
-  Wrap the total flashcards generated in an object, like this:
+  Wrap the total flashcards generated in an object, like this, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information :
   {
     flashcards: [
       // the ${count} flashcards go here
@@ -264,7 +264,7 @@ export const generalQuizPrompt = (
 
   return `${basePrompt} 
     ${optionsStructure}
-    Wrap the total flashcards generated in an object, Only provide a RFC8259 compliant JSON response following this format without deviation::
+    Wrap the total flashcards generated in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
       // the ${count} quizzes go here
@@ -295,14 +295,13 @@ export const quizzesFromDocsPrompt = (
 
   ${optionsStructure}
 
-  Wrap the total quizzes generated in an object, like this:
+  Wrap the total quizzes generated in an object, like this, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
       // the ${count} quizzes go here
       ]
   }
 
-  If the document does not have enough information to generate ${count} quizzes of type ${type}, return a payload with this shape:
   {
     "status": 400,
     "message": "Insufficient information in the document to generate the requested number of quizzes."
