@@ -49,6 +49,14 @@ export const generalFlashcardPrompt = (
   blacklistedQuestions?: string[],
   subTopics?: string[]
 ) => {
+  const difficultyMap: any = {
+    kindergarten: 'Easy',
+    'high school': 'Medium',
+    college: 'Hard',
+    PhD: 'Hard',
+    genius: 'Hard',
+    phd: 'Hard'
+  };
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
       ? `Do not ask any of these questions: [${blacklistedQuestions || ''}]`
@@ -64,27 +72,29 @@ export const generalFlashcardPrompt = (
  # Here is the Student Request Information:
  Subject: ${subject}
  Topic:  ${topic}
- Difficulty Level:  ${difficulty} level
+ Difficulty Level:  ${difficultyMap[difficulty]}
  Number of Flashcards: ${count}
  ${promptForMoreQuestions}
  ${promptForSubTopics}
  Here are some guidelines to help you generate helpful flashcards:
- # Question Formation:
+ # Front Formation:
  - The question should be clear, concise, and directly related to the specified topic. It should challenge the student's understanding according to the specified difficulty level
- # Answer Formation:
+ # Back Formation:
  - Provide a brief answer to the question, ideally in 1-2 sentences. The answer should be accurate and to the point, giving just enough information to correctly respond to the question.
- # Explanation Formation: 
+ # Explainer Formation: 
  - This should expand on the answer, providing context, background information, and a deeper level of understanding. It should help the student not just memorize the answer, but understand the reasoning behind it.
+ # "Helpful Reading" Formation:
+ - If there's related reading in the notes, include them. If not, omit this field.
  # Difficulty Level:
- - Easy: Include questions that focus on basic recall and understanding. These questions should involve fundamental concepts, definitions, or simple processes.
+ - Easy : Include questions that focus on basic recall and understanding. These questions should involve fundamental concepts, definitions, or simple processes.
  - Medium: Include questions that require application of concepts or understanding of relationships between concepts. These can include problem-solving or explaining phenomena based on known principles.
  - Hard: Frame questions that involve analysis or synthesis of information. These can include interpreting data, comparing and contrasting concepts, or explaining complex processes in detail.
  - Very Hard: Pose questions that require Require advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
- Please structure your response in Only a RFC8259 compliant JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:\n\
+ Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:\n\
  {
    \"flashcards\": [
-     {\"question\": \"...\", \"answer\": \"...\", \"explanation\": \"...\"},
-     {\"question\": \"...\", \"answer\": \"...\", \"explanation\": \"...\"}
+     {\"front\": \"...\", \"back\": \"...\", \"explainer\": \"...\", helpful reading: \"...\"}
+     {\"front\": \"...\", \"back\": \"...\", \"explainer\": \"...\", helpful reading: \"...\"}
    ]
  }`;
 };
