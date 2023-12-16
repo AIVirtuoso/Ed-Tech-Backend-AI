@@ -45,9 +45,9 @@ flashCards.post(
         subTopics
       );
 
-      console.log(flashCardPrompt);
-
       const response = await model.call(flashCardPrompt);
+
+      console.log(response);
       res.send(JSON.parse(response));
       res.end();
     } catch (e) {
