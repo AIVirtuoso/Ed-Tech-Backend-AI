@@ -584,7 +584,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
       console.log('SUMMARIZING TEXT');
       const answer = await chatManager.summarizeText(noteData);
       console.log('SUMMARIZED TEXT', answer);
-      socket.emit('new_note_summary', { summary: answer?.text });
+      socket.emit('new_note_summary', { summary: answer?.response });
     } catch (error: any) {
       console.error(`Error loading chats: ${error.message}`);
       socket.emit('summary_generation_error', {
