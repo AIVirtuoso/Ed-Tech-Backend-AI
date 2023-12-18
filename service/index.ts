@@ -473,7 +473,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
     return;
   }
 
-  const noteData = extractTextFromJson(note.note);
+  let noteData = extractTextFromJson(note.note);
 
   console.log(noteData);
 
@@ -556,6 +556,8 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
     try {
       socket.emit('refresh_status', { status: 'REFRESH_LOADING' });
       note = await fetchNote(noteId, isDevelopment);
+
+      noteData = extractTextFromJson(note.note);
 
       const prompt = chatWithNotePrompt(extractTextFromJson(note.note));
       chatManager.setSystemPrompt(prompt);
