@@ -579,7 +579,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
     }
   });
 
-  socket.on('generate_summary', async () => {
+  socket.on('generate summary', async () => {
     try {
       console.log('SUMMARIZING TEXT');
       const answer = await chatManager.summarizeText(noteData);
