@@ -267,24 +267,53 @@ docChatNamespace.on('connection', async (socket) => {
   });
 
   socket.on('generate summary', async () => {
-    const model = socketAiModel(socket, 'summary');
-    const chain = RetrievalQAChain.fromLLM(
-      model,
-      vectorStore.asRetriever(TOP_K)
-    );
+    const model = new ChatOpenAI({
+      openAIApiKey: apikey,
+      modelName: modelName
+    });
+
+    let answers = [];
+
+    for (let SUMMARY_TOP_K = 50; SUMMARY_TOP_K >= 10; SUMMARY_TOP_K -= 10) {
+      const chain = RetrievalQAChain.fromLLM(
+        model,
+        vectorStore.asRetriever(SUMMARY_TOP_K)
+      );
+
+      try {
+        const answer = await chain.call({ query: summarizeNotePrompt });
+        if (answer?.text) {
+          answers.push(answer.text);
+        }
+      } catch (error: any) {
+        socket.emit('summary_generation_error', {
+          message: 'Failed to generate summary',
+          error: error.message
+        });
+        return;
+      }
+    }
 
     try {
-      const answer = await chain.call({ query: summarizeNotePrompt });
+      const summaryModel = socketAiModel(socket, 'summary');
+
+      const chain = new ConversationChain({
+        llm: summaryModel
+      });
+
+      const answer = await chain.call({
+        input: `${summarizeNotePrompt}. Here is the note: ${answers.join()}`
+      });
       await updateDocument({
         data: {
-          summary: answer?.text
+          summary: answer
         },
         referenceId: studentId,
         documentId
       });
     } catch (error: any) {
       socket.emit('summary_generation_error', {
-        message: 'Failed to generate summary',
+        message: 'Failed to summarize answers',
         error: error.message
       });
     }
