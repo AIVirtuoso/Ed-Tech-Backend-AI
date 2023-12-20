@@ -278,6 +278,7 @@ docChatNamespace.on('connection', async (socket) => {
     let answers = [];
 
     for (let SUMMARY_TOP_K = 50; SUMMARY_TOP_K >= 10; SUMMARY_TOP_K -= 10) {
+      console.log('CURRENT TOP K', SUMMARY_TOP_K);
       const chain = RetrievalQAChain.fromLLM(
         model,
         vectorStore.asRetriever(SUMMARY_TOP_K)
@@ -296,6 +297,8 @@ docChatNamespace.on('connection', async (socket) => {
         return;
       }
     }
+
+    console.log('ANSWERS', answers);
 
     try {
       const summaryModel = socketAiModel(socket, 'summary');
