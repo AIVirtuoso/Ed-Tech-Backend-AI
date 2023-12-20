@@ -9,7 +9,10 @@ import fetchNote from './src/helpers/getNote';
 import extractTextFromJson from './src/helpers/parseNote';
 import ChatLog, { createNewChat } from './db/models/conversationLog';
 import { HumanChatMessage, AIChatMessage } from 'langchain/schema';
-import { summarizeNotePrompt } from './src/helpers/promptTemplates/index';
+import {
+  summarizeNotePrompt,
+  summarizeNoteSummariesPrompt
+} from './src/helpers/promptTemplates/index';
 import {
   ConversationChain,
   ConversationalRetrievalQAChain,
@@ -302,7 +305,7 @@ docChatNamespace.on('connection', async (socket) => {
       });
 
       const answer = await chain.call({
-        input: `${summarizeNotePrompt}. Here is the note: ${answers.join()}`
+        input: `${summarizeNoteSummariesPrompt}. Here is the text: ${answers.join()}`
       });
       await updateDocument({
         data: {
