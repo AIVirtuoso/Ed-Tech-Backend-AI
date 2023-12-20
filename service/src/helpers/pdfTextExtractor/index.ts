@@ -136,6 +136,7 @@ class PDFTextExtractor {
   private async waitForJobCompletion(jobId: string): Promise<void> {
     console.log(`Waiting for job ${jobId} to complete...`);
     let jobStatus = 'IN_PROGRESS';
+    let error: any;
     while (jobStatus === 'IN_PROGRESS') {
       const response = await textract
         .getDocumentTextDetection({ JobId: jobId })
@@ -147,13 +148,14 @@ class PDFTextExtractor {
       }
       jobStatus = response.JobStatus;
       if (jobStatus === 'SUCCEEDED' || jobStatus === 'FAILED') {
+        error = response.StatusMessage;
         break;
       }
       console.log(`Job ${jobId} still in progress, waiting...`);
       await new Promise((resolve) => setTimeout(resolve, 5000));
     }
     if (jobStatus === 'FAILED') {
-      throw new Error(`Textract job ${jobId} failed`);
+      throw new Error(`Textract job ${jobId} failed with error: ${error}`);
     }
     console.log(`Job ${jobId} completed with status ${jobStatus}`);
   }

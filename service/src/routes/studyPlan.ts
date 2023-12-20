@@ -43,10 +43,12 @@ studyPlanRouter.post(
         syllabusUrl,
         'template'
       );
+      console.log('EXTRACTED TEXT', text);
 
       if (!text) {
         const jobId = await pdfTextExtractor.extractTextFromPDF(syllabusUrl);
         text = await pdfTextExtractor.getTextFromJob(jobId);
+        console.log('NEW EXTRACTED TEXT', text);
 
         await pdfTextExtractor.storeJobDetailsInDynamoDB(syllabusUrl, text);
       }
@@ -63,8 +65,11 @@ studyPlanRouter.post(
       const userMessage = ` # Here is the Student Syllabus Text:\n\n ${text}`;
 
       const response = await model.call(systemMessage + userMessage);
+      console.log('NEW EXTRACTED TEXT', text);
 
       const studyPlanString = response;
+
+      console.log('RESPONSE', studyPlanString);
 
       const formattedStudyPlan = JSON.parse(
         studyPlanString.replace(/```json\n|\n```/g, '')
