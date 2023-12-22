@@ -85,14 +85,9 @@ class ChatManager {
     });
 
     const basePrompt = `${summarizeNotePrompt} is the text to summarize:${text} Ignore all history and summarize this text.`;
-    const prompt = new PromptTemplate({
-      template: this.systemPrompt,
-      inputVariables: ['history', 'input']
-    });
 
     const chain = new ConversationChain({
-      llm: model,
-      prompt
+      llm: model
     });
 
     return chain.call({ input: basePrompt });
