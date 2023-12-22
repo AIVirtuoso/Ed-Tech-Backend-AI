@@ -3,7 +3,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { OpenAIConfig } from 'src/types/configs';
 import config from 'config';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
-import { studyPlanWithoutFilePrompt } from 'src/helpers/promptTemplates';
+import { studyPlanWithoutFilePrompt } from '../helpers/promptTemplates';
 import validate from '../validation/index';
 import Schema from '../validation/schema';
 
