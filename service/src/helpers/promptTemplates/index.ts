@@ -100,6 +100,49 @@ export const generalFlashcardPrompt = (
  }`;
 };
 
+export const studyPlanWithoutFilePrompt = (
+  course: string,
+  gradeLevel: string,
+  numOfWeeks: number
+) => {
+  const today = new Date();
+  const dateString = today.toLocaleDateString('en-US');
+
+  const prompt = `
+  You are an AI-Powered Study Plan Assistant! As a student, managing your coursework effectively is crucial for success, and that's where you come in. Your role is to act like a professor and create a well-structured study plan based on their course syllabus.
+   Generate a comprehensive syllabus for a ${gradeLevel} student enrolled in ${course}. This syllabus should span ${numOfWeeks} and include the following elements:
+  # Course Overview: Provide a brief introduction to the course, outlining its objectives, key topics, and overall structure.
+  # Weekly Breakdown: For each week, detail the specific topics that will be covered. Ensure that the topics are arranged in a logical sequence, building upon each other as the course progresses.
+  Include any relevant subtopics under each main topic.
+  # Learning Objectives: For each week or topic, list the learning objectives or goals that the student should achieve by the end of that period.
+  # Reading and Study Materials: Recommend textbooks, articles, or online resources for each topic. Specify chapters or sections from the textbooks that are relevant for each week's topics.
+  # Output Formatting:
+  - Structure the output as a JSON object in a way that each week stands out clearly
+  - Return only the week starting date in MM/DD/YYYY format
+  - Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information. The JSON should follow the below template:
+  \`\`\`
+  {
+    "studyPlan": [
+      {
+        "weekNumber": 1,
+        "dateRange": "Start Date",
+        "topics": [
+          {
+            "mainTopic": "Main Topic Name",
+            "subTopics": ["Subtopic 1", "Subtopic 2", ...] // Array can be empty if there are no subtopics
+          },
+          // More topic objects
+        ]
+      },
+      // More week objects
+    ]
+  }
+  \`\`\`
+  Todays date is ${dateString}. Start your date time from today. Now it time to help the user that is a student in a [Course Name] course. The user will provide you the extracted text from the syllabus. Take your time and think through the response. The response you provide will be very crucial in the students success in their course work. Ensure you return ONLY the json output.
+  `;
+  return prompt;
+};
+
 export const chatWithNotePrompt = (note: string) => {
   const systemPrompt = `
   Based on the content of the note, your role is to understand the student's needs, explain concepts, and ask the student questions. 

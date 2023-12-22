@@ -19,6 +19,7 @@ import patchSummary from './patchSummary';
 import reaction from './conversationReaction';
 import highlightComment from './highlightComment';
 import { quizRequestSchema, quizzesFromDocs } from './quizzes';
+import studyPlanSchema from './generateStudyPlan';
 
 export default {
   eli5Schema,
@@ -41,5 +42,6 @@ export default {
   quizzesFromDocs,
   reaction,
   commentGenerateSchema,
-  commentSaveSchema
+  commentSaveSchema,
+  studyPlanSchema
 };
