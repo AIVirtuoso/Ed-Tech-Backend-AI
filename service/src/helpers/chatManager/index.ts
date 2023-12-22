@@ -79,7 +79,10 @@ class ChatManager {
   }
 
   public summarizeText(text: string) {
-    const model = this.socketAiModel(this.socket, this.event);
+    const model = new ChatOpenAI({
+      openAIApiKey: this.apikey,
+      modelName: this.modelName
+    });
 
     const basePrompt = `${summarizeNotePrompt} is the text to summarize:${text} Ignore all history and summarize this text.`;
     const prompt = new PromptTemplate({
