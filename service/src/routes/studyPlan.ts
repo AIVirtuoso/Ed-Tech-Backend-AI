@@ -24,10 +24,6 @@ studyPlanRouter.post(
     try {
       const { syllabusUrl, syllabusData } = req.body;
 
-      if (!syllabusUrl || !syllabusData) {
-        return res.status(400).json({ message: 'Syllabus is required' });
-      }
-
       const model = new OpenAI({
         temperature: 0.25,
         openAIApiKey: openAIconfig.apikey,
@@ -77,7 +73,7 @@ studyPlanRouter.post(
           studyPlanString.replace(/```json\n|\n```/g, '')
         );
 
-        res.json({ studyPlan: formattedStudyPlan.studyPlan });
+        return res.json({ studyPlan: formattedStudyPlan.studyPlan });
       }
       if (syllabusData) {
         const { course, gradeLevel, weekCount } = syllabusData;
@@ -93,7 +89,7 @@ studyPlanRouter.post(
           studyPlanString.replace(/```json\n|\n```/g, '')
         );
 
-        res.json({ studyPlan: formattedStudyPlan.studyPlan });
+        return res.json({ studyPlan: formattedStudyPlan.studyPlan });
       }
     } catch (error: any) {
       console.error('Error generating study plan:', error.data);
