@@ -90,7 +90,10 @@ class ChatManager {
       llm: model
     });
 
-    return chain.call({ input: basePrompt });
+    const data = chain.call({ input: basePrompt });
+    console.log(data);
+    return data;
+    // return chain.call({ input: basePrompt });
   }
 
   async loadModel() {
