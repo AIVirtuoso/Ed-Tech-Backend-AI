@@ -61,7 +61,8 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { count, noteId, existingQuestions, env } = req.body;
+      const { count, noteId, existingQuestions } = req.body;
+      const { env } = req.query;
       let note;
       try {
         const isDevelopment = env && env.includes('develop');
