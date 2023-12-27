@@ -61,10 +61,11 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { count, noteId, existingQuestions } = req.body;
+      const { count, noteId, existingQuestions, env } = req.body;
       let note;
       try {
-        note = await fetchNote(noteId);
+        const isDevelopment = env && env.includes('develop');
+        note = await fetchNote(noteId, isDevelopment);
       } catch (error: any) {
         return res.status(400).json({ message: 'Failed to find note' });
       }
