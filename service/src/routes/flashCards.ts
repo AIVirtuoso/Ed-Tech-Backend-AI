@@ -62,10 +62,11 @@ flashCards.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { count, noteId, existingQuestions } = req.body;
-      const { env } = req.query;
+      const { env: userEnv } = req.query;
       let note;
       try {
-        const isDevelopment = env && env.includes('develop');
+        const env = (userEnv || '') as string;
+        const isDevelopment = !userEnv ? false : env.includes('develop');
         note = await fetchNote(noteId, isDevelopment);
       } catch (error: any) {
         return res.status(400).json({ message: 'Failed to find note' });
