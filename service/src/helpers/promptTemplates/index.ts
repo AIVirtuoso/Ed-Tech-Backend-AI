@@ -91,6 +91,7 @@ export const generalFlashcardPrompt = (
  - Medium: Include questions that require application of concepts or understanding of relationships between concepts. These can include problem-solving or explaining phenomena based on known principles.
  - Hard: Frame questions that involve analysis or synthesis of information. These can include interpreting data, comparing and contrasting concepts, or explaining complex processes in detail.
  - Very Hard: Pose questions that require Require advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
+ - Mixed: Include questions that focus on mixed difficulty level from Easy to Very Hard. These questions should range from the fundamental concepts, definitions, or simple processes to advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
  Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:\n\
  {
    \"flashcards\": [

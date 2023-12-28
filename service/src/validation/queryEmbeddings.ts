@@ -17,7 +17,8 @@ const queryEmbeddingsSchema = z.object({
           'college',
           'PhD',
           'genius',
-          'phd'
+          'phd',
+          'mixed'
         ])
         .optional(),
       existingQuestions: z.array(z.string()).optional(),
