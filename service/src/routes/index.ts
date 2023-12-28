@@ -13,6 +13,7 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { OpenAI } from 'langchain/llms/openai';
 import cors from 'cors';
 import http from 'http';
+import ProcessStudyPlanService from '../services/processStudyPlanResources';
 import config from 'config';
 import { VectorOperationsApi } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 
@@ -105,6 +106,9 @@ console.log(`\n🤖 Vector store OK \n`);
 
 ai.locals.embeddingAI = embedding;
 ai.locals.chatModel = model;
+
+const processStudyPlanService = new ProcessStudyPlanService();
+processStudyPlanService.init();
 
 ai.use(auth);
 ai.use(express.json());
