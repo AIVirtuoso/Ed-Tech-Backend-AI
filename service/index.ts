@@ -310,6 +310,7 @@ docChatNamespace.on('connection', async (socket) => {
       const answer = await chain.call({
         input: `${summarizeNoteSummariesPrompt}. Here is the text: ${answers.join()}`
       });
+      console.log('GENERATED READ SUMMARY', answer);
       await updateDocument({
         data: {
           summary: answer
