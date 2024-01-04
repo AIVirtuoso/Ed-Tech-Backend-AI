@@ -119,14 +119,12 @@ export const studyPlanWithoutFilePrompt = (
   # Reading and Study Materials: Recommend textbooks, articles, or online resources for each topic. Specify chapters or sections from the textbooks that are relevant for each week's topics.
   # Output Formatting:
   - Structure the output as a JSON object in a way that each week stands out clearly
-  - Return only the week starting date in MM/DD/YYYY format
   - Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information. The JSON should follow the below template:
   \`\`\`
   {
     "studyPlan": [
       {
         "weekNumber": 1,
-        "dateRange": "Start Date",
         "topics": [
           {
             "mainTopic": "Main Topic Name",
