@@ -322,12 +322,13 @@ docChatNamespace.on('connection', async (socket) => {
       console.log('GENERATED READ SUMMARY', answer);
       await updateDocument({
         data: {
-          summary: answer
+          summary: answer.text
         },
         referenceId: studentId,
         documentId
       });
     } catch (error: any) {
+      console.log('STORE SUMMARY FOR DOC FAULED');
       socket.emit('summary_generation_error', {
         message: 'Failed to summarize answers',
         error: error.message
