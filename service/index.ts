@@ -325,7 +325,7 @@ docChatNamespace.on('connection', async (socket) => {
       try {
         await updateDocument({
           data: {
-            summary: answer.text
+            summary: answer.response
           },
           referenceId: studentId,
           documentId
