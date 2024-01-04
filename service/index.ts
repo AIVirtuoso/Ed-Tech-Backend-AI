@@ -320,13 +320,19 @@ docChatNamespace.on('connection', async (socket) => {
         input: `${summarizeNoteSummariesPrompt}. Here is the text: ${answers.join()}`
       });
       console.log('GENERATED READ SUMMARY', answer);
-      await updateDocument({
-        data: {
-          summary: answer.text
-        },
-        referenceId: studentId,
-        documentId
-      });
+      console.log('SUMMARY TEXT', answer.text);
+
+      try {
+        await updateDocument({
+          data: {
+            summary: answer.text
+          },
+          referenceId: studentId,
+          documentId
+        });
+      } catch (error) {
+        console.log('ERROR CREATING', error);
+      }
     } catch (error: any) {
       console.log('STORE SUMMARY FOR DOC FAULED');
       socket.emit('summary_generation_error', {
