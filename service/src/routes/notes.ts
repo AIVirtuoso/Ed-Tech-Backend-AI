@@ -175,6 +175,8 @@ notes.get(
         console.log(notesIds);
         const noteReferences = await getTextNoteHistory(notesIds);
 
+        console.log(noteReferences);
+
         const docNotes = notes.filter((note: any) =>
           noteReferences.includes(note._id)
         );

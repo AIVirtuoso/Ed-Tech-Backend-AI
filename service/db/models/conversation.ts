@@ -78,6 +78,7 @@ export const getDocumentHistory = async (studentId: string) => {
 };
 
 export const getTextNoteHistory = async (noteIds: string[]) => {
+  console.log('TEXT HISTORY NOTE', noteIds);
   // Fetch conversations where reference includes note IDs
   const chattedNotes = await Conversation.findAll({
     where: {
@@ -88,9 +89,7 @@ export const getTextNoteHistory = async (noteIds: string[]) => {
     }
   });
 
-  console.log(chattedNotes);
-
-  return chattedNotes;
+  return chattedNotes.map((conversation: any) => conversation.referenceId);
 };
 
 export const getChatConversations = async ({
