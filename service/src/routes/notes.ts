@@ -172,15 +172,14 @@ notes.get(
           throw new Error('This student has no note');
         }
         const notesIds = notes.map((note: any) => note._id);
-        console.log(notesIds);
         const noteReferences = await getTextNoteHistory(notesIds);
-
-        console.log(noteReferences);
 
         const docNotes = notes.filter((note: any) =>
           noteReferences.includes(note._id)
         );
-        return res.send(docNotes);
+        const data = docNotes.map((doc: any) => ({ ...doc, title: doc.topic }));
+
+        return res.send(data);
       }
 
       const studentDocs = await getDocumentHistory(studentId as string);
