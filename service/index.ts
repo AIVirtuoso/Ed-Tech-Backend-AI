@@ -286,7 +286,7 @@ docChatNamespace.on('connection', async (socket) => {
 
     let answers = [];
 
-    for (let SUMMARY_TOP_K = 50; SUMMARY_TOP_K >= 10; SUMMARY_TOP_K -= 10) {
+    for (let SUMMARY_TOP_K = 50; SUMMARY_TOP_K >= 30; SUMMARY_TOP_K -= 10) {
       console.log('CURRENT TOP K', SUMMARY_TOP_K);
       const chain = RetrievalQAChain.fromLLM(
         model,
@@ -319,8 +319,7 @@ docChatNamespace.on('connection', async (socket) => {
       const answer = await chain.call({
         input: `${summarizeNoteSummariesPrompt}. Here is the text: ${answers.join()}`
       });
-      console.log('GENERATED READ SUMMARY', answer);
-      console.log('SUMMARY TEXT', answer.text);
+      socket.emit('summary_done', true);
 
       try {
         await updateDocument({
