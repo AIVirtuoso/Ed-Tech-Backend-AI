@@ -159,20 +159,22 @@ notes.get(
 
       if (documentType && documentType === 'text_note') {
         const env = (req.query.env || '') as string;
+        console.log(env);
 
         const isDevelopment = env?.includes('dev');
+        console.log(isDevelopment);
+
         const notes = await fetchNotes(
           studentId as string,
           isDevelopment as boolean
-        );
+        ).catch((error) => console.log(error));
         if (!notes || notes.length === 0) {
           throw new Error('This student has no note');
         }
-        console.log(notes);
         const notesIds = notes.map((note: any) => note._id);
         console.log(notesIds);
         const noteReferences = await getTextNoteHistory(notesIds);
-        console.log('NOTE REFERENCES', noteReferences);
+
         const docNotes = notes.filter((note: any) =>
           noteReferences.includes(note._id)
         );

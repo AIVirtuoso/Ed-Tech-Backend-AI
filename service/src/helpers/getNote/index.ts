@@ -23,7 +23,6 @@ export async function fetchNotes(studentId: string, isDevelopment = false) {
     ? MAIN_SERVICE_ENDPONT
     : 'https://develop--api-sheperdtutors.netlify.app';
 
-  console.log(baseUrl);
   const API_ENDPOINT = `${baseUrl}/notes?studentId=${studentId}`; // replace with your actual endpoint
 
   const response = await axios.get(API_ENDPOINT, {
@@ -31,7 +30,7 @@ export async function fetchNotes(studentId: string, isDevelopment = false) {
       'x-api-key': 'AIzaSyZhxyXWtHTbgdZju8zjHPX7Gp6lIuXP23aLN5uPZ'
     }
   });
-
+  console.log(response);
   return response.data?.data?.data;
 }
 
