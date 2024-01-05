@@ -158,7 +158,9 @@ notes.get(
       if (!studentId) throw new Error('No studentId present in request!');
 
       if (documentType && documentType === 'text_note') {
-        const isDevelopment = Boolean(req.query.isDevelopment);
+        const env = (req.query.env || '') as string;
+
+        const isDevelopment = env?.includes('dev');
         const notes = await fetchNotes(
           studentId as string,
           isDevelopment as boolean
