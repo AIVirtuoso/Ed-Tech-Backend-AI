@@ -78,6 +78,11 @@ class PDFTextExtractor {
     return `${urlParts[urlParts.length - 2]}/${urlParts[urlParts.length - 1]}`;
   }
 
+  /**
+   * Retrieves text from the Textract job using parallel fetching.
+   * @param {string} jobId - The ID of the Textract job.
+   * @return {Promise<string>} - The full extracted text.
+   */
   public async getTextFromJob(jobId: string): Promise<string> {
     console.log(`Getting text from job: ${jobId}`);
     await this.waitForJobCompletion(jobId);
@@ -85,52 +90,44 @@ class PDFTextExtractor {
 
     let fullText: string = '';
     let nextToken: string | undefined;
+    let fetchPromises: Promise<any>[] = [];
 
-    const getDocumentTextDetection = async (
-      jobId: string,
-      nextToken?: string
-    ): Promise<string> => {
-      console.log(
-        `Fetching page results for job ${jobId} ${
-          nextToken ? `with next token: ${nextToken}` : ''
-        }`
-      );
-
+    do {
       const params: AWS.Textract.GetDocumentTextDetectionRequest = {
         JobId: jobId,
         NextToken: nextToken
       };
 
-      try {
-        const response = await textract
-          .getDocumentTextDetection(params)
-          .promise();
-        console.log(
-          `Results received for page ${
-            nextToken ? `with token: ${nextToken}` : ''
-          }`
-        );
-
-        response.Blocks?.forEach((block) => {
-          if (block.BlockType === 'LINE') {
-            fullText += block.Text + '\n';
-          }
+      // @ts-ignore
+      const fetchPromise = textract
+        .getDocumentTextDetection(params)
+        .promise()
+        .then((response) => {
+          response.Blocks?.forEach((block) => {
+            if (block.BlockType === 'LINE') {
+              fullText += block.Text + '\n';
+            }
+          });
+          return response.NextToken;
+        })
+        .catch((err) => {
+          console.error(`Error fetching text detection results: ${err}`);
+          throw err;
         });
 
-        if (response.NextToken) {
-          console.log(`More pages detected for job ${jobId}`);
-          return getDocumentTextDetection(jobId, response.NextToken);
-        } else {
-          console.log(`All pages processed for job ${jobId}`);
-          return fullText;
-        }
-      } catch (err) {
-        console.error(`Error fetching text detection results: ${err}`);
-        throw err;
-      }
-    };
+      // ts-ignore-next-line
+      fetchPromises.push(fetchPromise);
 
-    return getDocumentTextDetection(jobId);
+      // Update nextToken for the next iteration
+      const response = await fetchPromise;
+      nextToken = response;
+    } while (nextToken);
+
+    // Wait for all fetches to complete
+    await Promise.all(fetchPromises);
+
+    console.log(`All pages processed for job ${jobId}`);
+    return fullText;
   }
 
   private async waitForJobCompletion(jobId: string): Promise<void> {
@@ -171,12 +168,35 @@ class PDFTextExtractor {
     return fullText;
   }
 
+  /**
+   * Stores text in S3 and references in DynamoDB.
+   * @param {string} pdfUrl - The URL of the PDF.
+   * @param {string} text - The text to be stored.
+   */
   public async storeJobDetailsInDynamoDB(pdfUrl: string, text: string) {
     const uniqueId = this.extractS3KeyFromUrl(pdfUrl);
+    const s3Key = `${this.outputS3Prefix}/${uniqueId}`;
 
+    // Store text in S3
+    try {
+      await s3
+        .putObject({
+          Bucket: this.outputBucketName,
+          Key: s3Key,
+          Body: text,
+          ContentType: 'text/plain'
+        })
+        .promise();
+      console.log(`Text stored in S3 under key: ${s3Key}`);
+    } catch (err) {
+      console.error(`Error storing text in S3: ${err}`);
+      throw err;
+    }
+
+    // Store reference in DynamoDB
     const data = {
       textrxtjobs: { S: uniqueId },
-      Data: { S: text }
+      S3Key: { S: s3Key }
     };
 
     await dynamodb
@@ -185,42 +205,54 @@ class PDFTextExtractor {
         Item: data
       })
       .promise();
-    console.log(`Stored text for ID ${uniqueId} in DynamoDB`);
+    console.log(`Stored S3 key for ID ${uniqueId} in DynamoDB`);
   }
 
+  /**
+   * Retrieves text from S3 using reference stored in DynamoDB.
+   * @param {string} url - The URL of the PDF.
+   * @param {string} prefix - Unused, kept for compatibility.
+   * @return {Promise<string | null>} The retrieved text or null if not found.
+   */
   public async getTextFromDynamoDB(
     url: string,
     prefix: string
   ): Promise<string | null> {
-    const key = this.extractS3KeyFromUrl(url);
-    const uniqueId = key;
+    const uniqueId = this.extractS3KeyFromUrl(url);
 
-    console.log(`Retrieving text from DynamoDB for ID: ${uniqueId}`);
+    console.log(`Retrieving S3 key from DynamoDB for ID: ${uniqueId}`);
 
     try {
-      const params = {
-        TableName: 'StoreTextractJobs',
-        Key: {
-          textrxtjobs: { S: uniqueId }
-        }
-      };
+      const dynamoResponse = await dynamodb
+        .getItem({
+          TableName: 'StoreTextractJobs',
+          Key: {
+            textrxtjobs: { S: uniqueId }
+          }
+        })
+        .promise();
 
-      const data = await dynamodb.getItem(params).promise();
+      const s3Key = dynamoResponse.Item?.S3Key?.S;
 
-      if (!data.Item || !data.Item.Data) {
-        console.log(`No text item found for ID ${uniqueId}`);
+      if (!s3Key) {
+        console.log(`No S3 key found for ID ${uniqueId}`);
         return null;
       }
 
-      const text = data.Item.Data.S;
-      if (!text) {
-        console.log(`No text found for ID ${uniqueId}`);
-        return null;
-      }
-      console.log(`Retrieved text for ID ${uniqueId}`);
-      return text;
+      console.log(`Retrieved S3 key fsor ID ${uniqueId}: ${s3Key}`);
+
+      // Retrieve text from S3
+      const s3Response = await s3
+        .getObject({
+          Bucket: this.outputBucketName,
+          Key: s3Key
+        })
+        .promise();
+
+      const body = s3Response.Body;
+      return body ? body.toString('utf-8') : null;
     } catch (error) {
-      console.error(`Error retrieving text from DynamoDB: ${error}`);
+      console.error(`Error retrieving text: ${error}`);
       throw error;
     }
   }
