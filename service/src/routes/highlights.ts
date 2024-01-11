@@ -47,7 +47,8 @@ highlight.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { documentId, highlightText, studentId } = req.body;
-      if (!documentId || !highlightText || !studentId) {
+      const isValid = [documentId, highlightText, studentId].every(Boolean);
+      if (!isValid) {
         throw new Error(
           'documentId, highlightText, and studentId are required.'
         );
@@ -109,8 +110,7 @@ highlight.post(
       await generateComment();
     } catch (e: any) {
       next({
-        message:
-          "Failed to generate comment. Make sure you're correctly supplying the highlight text or highlight ID, document ID, and student ID."
+        message: e.message
       });
     }
   }
