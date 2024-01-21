@@ -1,6 +1,8 @@
 import express from 'express';
 import config from 'config';
+import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { saveHighlightComment } from '../../db/models/highlights';
+import { retrieveDocument } from '../../db/models/document';
 import { Request, Response, NextFunction } from 'express';
 import { embedding, pineconeIndex } from '../routes/index';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
@@ -20,6 +22,13 @@ const highlight = express.Router();
 interface Query {
   documentId: string;
 }
+
+const {
+  bucketName,
+  outputBucketName,
+  snsRoleArn,
+  snsTopicArn
+}: { [key: string]: string } = config.get('textExtractor');
 
 const openAIConfig: OpenAIConfig = config.get('openai');
 
@@ -54,6 +63,38 @@ highlight.post(
         );
       }
 
+      const pdfTextExtractor = new PDFTextExtractor(
+        bucketName,
+        outputBucketName,
+        studentId,
+        snsTopicArn,
+        snsRoleArn
+      );
+      let document = null;
+
+      let topK = 50;
+
+      let vectorStore: any = null;
+
+      const storedDocument = await retrieveDocument({
+        referenceId: studentId,
+        documentId
+      });
+
+      if (!storedDocument) {
+        throw new Error('No document found for the specified documentId');
+      }
+
+      document = await pdfTextExtractor.getTextFromDynamoDB(
+        storedDocument.documentURL,
+        storedDocument.documentId
+      );
+
+      console.log(document);
+
+      const getDocs = (vectorStore: any) =>
+        vectorStore.similaritySearch(highlightText, topK);
+
       const getDocumentVectorStore = async ({
         studentId,
         documentId
@@ -69,19 +110,24 @@ highlight.post(
         });
       };
 
-      let topK = 50;
+      if (!document) {
+        try {
+          vectorStore = await getDocumentVectorStore({
+            studentId,
+            documentId
+          });
+          document = await getDocs(vectorStore);
+        } catch (error) {
+          throw new Error(
+            'No document found for the specified documentId On PineCone and S3. Please make sure you have uploaded the document.'
+          );
+        }
+      }
 
-      const vectorStore = await getDocumentVectorStore({
-        studentId,
-        documentId
-      });
-      const getDocs = () => vectorStore.similaritySearch(highlightText, topK);
-
-      let document = await getDocs();
       const model = new OpenAI({
         temperature: 0.5,
         openAIApiKey: openAIConfig.apikey,
-        modelName: 'text-davinci-003' // Or whatever the appropriate GPT-4 model name is
+        modelName: 'gpt-4-1106-preview' // Or whatever the appropriate GPT-4 model name is
       });
 
       const prompt = `With context from this document: ${JSON.stringify(
@@ -99,7 +145,7 @@ highlight.post(
               throw new Error('Top K cannot go lower than zero');
             }
             topK -= 10;
-            document = await getDocs();
+            document = await getDocs(vectorStore as any);
             return await generateComment();
           } else {
             throw new Error(JSON.stringify(e));
