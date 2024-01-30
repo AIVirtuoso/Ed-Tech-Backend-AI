@@ -33,7 +33,7 @@ flashCards.post(
       const model = new OpenAI({
         temperature: 0.9,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
 
       const flashCardPrompt = generalFlashcardPrompt(
@@ -94,7 +94,7 @@ flashCards.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
 
       const generateCards = async (): Promise<any> => {
@@ -167,7 +167,7 @@ flashCards.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
 
       let docs = await documents();

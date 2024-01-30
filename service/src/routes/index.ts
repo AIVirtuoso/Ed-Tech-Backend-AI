@@ -1,6 +1,7 @@
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { Response } from 'express';
+import subscriptionCheck from '../middleware/subscriptionCheck';
 import Middleware from '../middleware/index';
 import notes from './notes';
 import quizzes from './quizzes';
@@ -113,7 +114,7 @@ processStudyPlanService.init();
 ai.use(auth);
 ai.use(express.json());
 ai.use('/notes', notes);
-ai.use('/flash-cards', flashCards);
+ai.use('/flash-cards', subscriptionCheck, flashCards);
 ai.use('/mnemonics', mnemonics);
 ai.use('/highlights', highlights);
 ai.use('/quizzes', quizzes);
