@@ -16,11 +16,8 @@ const checkUserSubscription = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('checkUserSubscription intercepted!');
   try {
     const firebaseId = req.body.firebaseId || '';
-    console.log("Request: ", req)
-    console.log('firebaseId: ', firebaseId);
     if (!firebaseId) {
       return res.status(400).send('Firebase ID must be provided');
     }

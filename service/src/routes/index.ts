@@ -117,7 +117,7 @@ ai.use('/notes', notes);
 ai.use('/flash-cards', subscriptionCheck, flashCards);
 ai.use('/mnemonics', mnemonics);
 ai.use('/highlights', highlights);
-ai.use('/quizzes', quizzes);
+ai.use('/quizzes', subscriptionCheck, quizzes);
 ai.use('/study-plans', studyPlan);
 
 ai.use(Sentry.Handlers.errorHandler());

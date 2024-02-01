@@ -8,7 +8,7 @@ import Schema from '../validation/schema';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { OpenAIConfig } from 'src/types/configs';
 import Models from '../../db/models';
-import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
+import { FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalQuizPrompt,
   quizzesFromDocsPrompt,
@@ -25,6 +25,7 @@ quizzes.post(
   '/students/:studentId',
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
+
     try {
       let { topic, count, subject, type } = req.body;
 
@@ -33,7 +34,7 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0.9,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
 
       // Replace with your quiz genewration logic based on the flashcard logic.
@@ -87,7 +88,7 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
 
       const generateQuizzes = async (): Promise<any> => {
@@ -117,6 +118,7 @@ quizzes.post(
   '/generate-from-notes',
   validate(Schema.quizzesFromDocs),
   async (req: Request, res: Response, next: NextFunction) => {
+
     try {
       let { topic, count, studentId, documentId, type } = req.body;
 
@@ -161,9 +163,8 @@ quizzes.post(
       const model = new OpenAI({
         temperature: 0,
         openAIApiKey: openAIconfig.apikey,
-        modelName: OPENAI_MODELS.GPT_4
+        modelName: req.gptVersion
       });
-
       let docs = await documents();
       // Replace with your quiz generation logic based on the flashcard logic.
       const quizzesFromDocs = quizzesFromDocsPrompt(
