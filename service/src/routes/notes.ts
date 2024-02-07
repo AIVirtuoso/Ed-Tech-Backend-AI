@@ -602,7 +602,11 @@ notes.post(
         modelName: 'gpt-4'
       });
 
-      const prompt = `Please provide a list of at least 20 relevant keywords for the following text. The keywords selected should be in a comma-separated format and reflect the main ideas or subjects discussed in the text. The keywords should be insightful and pertinent to the text, capturing the core themes, concepts, topics or opportunities for contextual depth. Please return the keywords in a comma-separated format without any trailing punctuation:\n\n${text}`;
+      const prompt = `Please provide a list of at least 20 relevant keywords for the following text. 
+      Each keyword should be only one word, unless there is a highly pertinent paring of words that occur frequently in the document.
+      The keywords selected should be in comma-separated format and reflect the main ideas or subjects discussed in the text. 
+      The keywords should be insightful and pertinent to the text, capturing the core themes, concepts, topics or opportunities for contextual depth.
+      Please return the keywords in a comma-separated format without any trailing punctuation.:\n\n${text}`;
 
       // Call OpenAI to generate keywords
       let keywords: string[];
@@ -613,6 +617,8 @@ notes.post(
       } catch (error) {
         keywords = [];
       }
+
+      console.log("Keywords", keywords)
 
       let data: any = [];
       // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;
