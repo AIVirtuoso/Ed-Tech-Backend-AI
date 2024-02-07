@@ -2,15 +2,25 @@ import { database, credential } from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import config from 'config';
 import { OpenAI } from 'langchain/llms/openai';
+import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalFlashcardPrompt,
-  generalQuizPrompt
+  generalQuizPrompt,
+  flashCardsFromDocsPrompt,
+  quizzesFromDocsPrompt
 } from '../helpers/promptTemplates';
 import { OpenAIConfig } from 'src/types/configs';
 import serviceAccount from '../../config/serviceAccountKeys.json';
 
 const openAIconfig: OpenAIConfig = config.get('openai');
+
+const {
+  bucketName,
+  outputBucketName,
+  snsRoleArn,
+  snsTopicArn
+}: { [key: string]: string } = config.get('textExtractor');
 
 type SubTopic = {
   description: string;
@@ -20,6 +30,7 @@ type SubTopic = {
 type JobData = {
   createdAt: number;
   difficulty: string;
+  documentUrls: string[];
   resourceType: 'flashcard' | 'quiz';
   status: 'notStarted' | 'inProgress' | 'failed' | 'done';
   subTopics: SubTopic[];
@@ -57,10 +68,51 @@ class ProcessStudyPlanService {
     console.log(`Processing job: ${jobId}`);
     try {
       let resource: any;
+      let supportingText;
+      if (jobData.documentUrls) {
+        const fileUrl = jobData.documentUrls[0];
+        if (fileUrl) {
+          console.log('Has file url');
+          try {
+            const url = new URL(fileUrl);
+            const pathSegments = url.pathname
+              .split('/')
+              .filter((segment) => segment !== '');
+            // Ensure there are enough segments to extract the second to the last
+            if (pathSegments.length < 2) {
+              throw new Error('URL does not student folder path');
+            }
+            const folderName = pathSegments[pathSegments.length - 2];
+
+            const pdfTextExtractor = new PDFTextExtractor(
+              bucketName,
+              outputBucketName,
+              folderName,
+              snsTopicArn,
+              snsRoleArn
+            );
+
+            const jobId = await pdfTextExtractor.extractTextFromPDF(fileUrl);
+
+            const text = await pdfTextExtractor.getTextFromJob(jobId);
+            console.log(text);
+            await pdfTextExtractor.storeJobDetailsInDynamoDB(fileUrl, text);
+          } catch (error: any) {
+            console.log(error);
+            await this.db.ref(`study-plan-resource-queue/${jobId}`).update({
+              ingestError: error.message
+            });
+          }
+        }
+      }
       if (jobData.resourceType === 'flashcard') {
-        resource = await this.generateFlashcard(jobData, jobId);
+        resource = await this.generateFlashcard(jobData, jobId, supportingText);
       } else if (jobData.resourceType === 'quiz') {
-        resource = await this.generateQuizQuestions(jobData, jobId);
+        resource = await this.generateQuizQuestions(
+          jobData,
+          jobId,
+          supportingText
+        );
       }
 
       console.log('Resource generated:', resource);
@@ -83,7 +135,8 @@ class ProcessStudyPlanService {
 
   private async generateFlashcard(
     jobData: JobData,
-    jobId: string
+    jobId: string,
+    documentString?: string
   ): Promise<any> {
     console.log('Generating flashcard:', jobId);
     const model = new OpenAI({
@@ -92,14 +145,24 @@ class ProcessStudyPlanService {
       modelName: OPENAI_MODELS.GPT_4
     });
 
-    const flashcardPrompt = generalFlashcardPrompt(
-      '5',
-      'mixed',
-      jobData.subject,
-      jobData.topic,
-      undefined,
-      jobData.subTopics.map((subTopic) => subTopic.label)
-    );
+    let flashcardPrompt: string;
+
+    if (!documentString) {
+      flashcardPrompt = generalFlashcardPrompt(
+        '5',
+        'mixed',
+        jobData.subject,
+        jobData.topic,
+        undefined,
+        jobData.subTopics.map((subTopic) => subTopic.label)
+      );
+    } else {
+      flashcardPrompt = flashCardsFromDocsPrompt(
+        documentString,
+        5,
+        jobData.subTopics.map((subTopic) => subTopic.label)
+      );
+    }
 
     const response = await model.call(flashcardPrompt);
     console.log('Flashcard generated:', response);
@@ -108,7 +171,8 @@ class ProcessStudyPlanService {
 
   private async generateQuizQuestions(
     jobData: JobData,
-    jobId: string
+    jobId: string,
+    documentString?: string
   ): Promise<any> {
     console.log('Generating quizzes:', jobId);
     const model = new OpenAI({
@@ -117,13 +181,24 @@ class ProcessStudyPlanService {
       modelName: OPENAI_MODELS.GPT_4
     });
 
-    const flashcardPrompt = generalQuizPrompt(
-      'mixed',
-      '5',
-      'college',
-      jobData.subject,
-      jobData.topic
-    );
+    let flashcardPrompt: string;
+
+    if (!documentString) {
+      flashcardPrompt = generalQuizPrompt(
+        'mixed',
+        '5',
+        'college',
+        jobData.subject,
+        jobData.topic
+      );
+    } else {
+      flashcardPrompt = quizzesFromDocsPrompt(
+        documentString,
+        5,
+        'mixed',
+        jobData.subTopics.map((subTopic) => subTopic.label)
+      );
+    }
 
     const response = await model.call(flashcardPrompt);
     console.log('Quizzes generated:', response);

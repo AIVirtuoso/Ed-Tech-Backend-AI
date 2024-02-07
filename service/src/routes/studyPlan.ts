@@ -82,7 +82,7 @@ eventEmitter.on(
 
         let text = await pdfTextExtractor.getTextFromDynamoDB(
           syllabusUrl,
-          'template'
+          folderName
         );
         console.log('EXTRACTED TEXT', text);
 

@@ -198,7 +198,8 @@ export const flashCardsFromNotesPrompt = (
 export const flashCardsFromDocsPrompt = (
   docs: string,
   count: number,
-  blacklistedQuestions?: string[]
+  blacklistedQuestions?: string[],
+  subTopics?: string[]
 ) => {
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
@@ -206,7 +207,13 @@ export const flashCardsFromDocsPrompt = (
           ', '
         )}].`
       : '';
-  return `Convert this note ${docs} into ${count} flashcards. ${promptForMoreQuestions}. If the document has nothing relating to the topic, return a payload with this shape:
+  const promptForSubTopics =
+    subTopics && subTopics.length > 0
+      ? `Limit your questions to the range of these sub-topics of these ${subTopics.join(
+          ','
+        )}, you should only ask questions that relate to the subtopics`
+      : '';
+  return `Convert this note ${docs} into ${count} flashcards. ${promptForMoreQuestions}. ${promptForSubTopics} If the document has nothing relating to the topic, return a payload with this shape:
   
   {
     "status": 400,
@@ -319,9 +326,17 @@ export const quizzesFromDocsPrompt = (
   docs: string,
   count: number,
   type: QuizType = 'mixed',
-  blacklistedQuestions?: string[]
+  blacklistedQuestions?: string[],
+  subTopics?: string[]
 ) => {
   const optionsStructure = generateOptionsStructure(type);
+
+  const promptForSubTopics =
+    subTopics && subTopics.length > 0
+      ? `Limit your questions to the range of these sub-topics of these ${subTopics.join(
+          ','
+        )}, you should only ask questions that relate to the subtopics`
+      : '';
 
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
@@ -330,7 +345,7 @@ export const quizzesFromDocsPrompt = (
         )}].`
       : '';
 
-  return `Using the provided document, create ${count} quizzes of type ${type} about the content within the document. ${promptForMoreQuestions}
+  return `Using the provided document, create ${count} quizzes of type ${type} about the content within the document. ${promptForMoreQuestions} ${promptForSubTopics}
   
   Make sure to formulate questions and options (if applicable) based on the information present in the document. Ensure that the quizzes are relevant, clear, and concise.
 
