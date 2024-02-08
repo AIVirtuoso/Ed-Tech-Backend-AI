@@ -194,8 +194,9 @@ docChatNamespace.on('connection', async (socket) => {
     return chain;
   };
 
-  // Done with setting up the chat AI requirements, so we can tell the client we're ready to discuss.
   socket.emit('ready', true);
+
+  // Done with setting up the chat AI requirements, so we can tell the client we're ready to discuss.
 
   const chats = await paginatedFind(
     ChatLog,
@@ -205,6 +206,26 @@ docChatNamespace.on('connection', async (socket) => {
     },
     { limit: 20 }
   );
+
+  socket.on('fetch_history', async ({ limit, offset }) => {
+    try {
+      const chats = await paginatedFind(
+        ChatLog,
+        {
+          studentId,
+          conversationId
+        },
+        {
+          limit,
+          offset
+        }
+      );
+      const mappedChatHistory = chats.map((history: any) => history);
+      socket.emit('chat_history', JSON.stringify(mappedChatHistory));
+    } catch (error: any) {
+      socket.emit('fetch_history_error', { message: error.message });
+    }
+  });
 
   // Use the full chat history (all messages)
   const pastMessages: any[] = chats.map((chat: any) => {
@@ -422,10 +443,30 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       studentId,
       conversationId
     },
-    { limit: 10 }
+    {
+      limit: 15
+    }
   );
 
-  console.log(chats);
+  socket.on('fetch_history', async ({ limit, offset }) => {
+    try {
+      const chats = await paginatedFind(
+        ChatLog,
+        {
+          studentId,
+          conversationId
+        },
+        {
+          limit,
+          offset
+        }
+      );
+      const mappedChatHistory = chats.map((history: any) => history);
+      socket.emit('chat_history', JSON.stringify(mappedChatHistory));
+    } catch (error: any) {
+      socket.emit('fetch_history_error', { message: error.message });
+    }
+  });
 
   const lastTenChats = chats.map((chat: any) => chat.log).reverse();
 
