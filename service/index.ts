@@ -466,7 +466,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
           offset
         }
       );
-      const mappedChatHistory = chats.map((history: any) => history);
+      const mappedChatHistory = chats.map((history: any) => history).reverse();
       console.log('MAPPED HISTORY', mappedChatHistory);
       socket.emit('chat_history', JSON.stringify(mappedChatHistory));
     } catch (error: any) {
