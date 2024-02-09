@@ -467,8 +467,10 @@ homeworkHelpNamespace.on('connection', async (socket) => {
         }
       );
       const mappedChatHistory = chats.map((history: any) => history);
+      console.log('MAPPED HISTORY', mappedChatHistory);
       socket.emit('chat_history', JSON.stringify(mappedChatHistory));
     } catch (error: any) {
+      console.log(error);
       socket.emit('fetch_history_error', { message: error.message });
     }
   });
@@ -483,8 +485,6 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     if (message.role === 'user')
       pastMessages.push(new HumanChatMessage(message.content));
   });
-
-  console.log(lastTenChats);
 
   const model = socketAiModel(socket, event, 'gpt-4-0613');
 
