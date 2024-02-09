@@ -378,6 +378,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     conversationId: convoId,
     documentId
   } = socket.handshake.auth;
+  console.log('studentId', studentId);
   const event = 'chat response';
 
   const getSystemPrompt = async (documentId?: string) => {
