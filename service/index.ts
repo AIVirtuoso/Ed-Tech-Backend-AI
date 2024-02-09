@@ -429,12 +429,14 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       topic,
       subject,
       level
-    }).then((convo) => convo?.id);
+    }).then((convo) => convo?.id).catch(error => console.log(error))
     isNewChat = true;
     // socket.emit('new_conversation', conversationId);
   }
 
   socket.emit('current_conversation', conversationId);
+  socket.emit('ready', true);
+
 
   console.log(conversationId);
   const chats = await paginatedFind(
@@ -483,7 +485,6 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
   const model = socketAiModel(socket, event, 'gpt-4-0613');
 
-  socket.emit('ready', true);
 
   const memory = new BufferMemory({
     chatHistory: new ChatMessageHistory(pastMessages)
