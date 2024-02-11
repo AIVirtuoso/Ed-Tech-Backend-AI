@@ -464,7 +464,6 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
   socket.emit('current_conversation', conversationId);
   console.log('current_conversation', conversationId);
-  socket.emit('ready', true);
   console.log('studentId', studentId);
 
   const chats = await paginatedFind(
@@ -573,6 +572,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       ]);
     }
   });
+  socket.emit('ready', true);
 });
 
 noteWorkspaceNamespace.on('connection', async (socket) => {
