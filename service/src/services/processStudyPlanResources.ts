@@ -1,6 +1,6 @@
 import { database, credential } from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
-import config from 'config';
+import config from '../../config/development';
 import { OpenAI } from 'langchain/llms/openai';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
@@ -13,14 +13,14 @@ import {
 import { OpenAIConfig } from 'src/types/configs';
 import serviceAccount from '../../config/serviceAccountKeys.json';
 
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const {
   bucketName,
   outputBucketName,
   snsRoleArn,
   snsTopicArn
-}: { [key: string]: string } = config.get('textExtractor');
+}: { [key: string]: string } = config.textExtractor;
 
 type SubTopic = {
   description: string;

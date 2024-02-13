@@ -1,6 +1,6 @@
 import { createOrUpdateDocument } from '../../db/models/document';
 import express from 'express';
-import config from 'config';
+import config from '../../config/development';
 import { Request, Response, NextFunction } from 'express';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
@@ -60,14 +60,14 @@ interface Chats {
   log: Array<any>;
 }
 
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const {
   bucketName,
   outputBucketName,
   snsRoleArn,
   snsTopicArn
-}: { [key: string]: string } = config.get('textExtractor');
+}: { [key: string]: string } = config.textExtractor;
 
 const createDocumentAndReturnFilePath = async (
   documentURL: string,
@@ -618,7 +618,7 @@ notes.post(
         keywords = [];
       }
 
-      console.log("Keywords", keywords)
+      console.log('Keywords', keywords);
 
       let data: any = [];
       // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;

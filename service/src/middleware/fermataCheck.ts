@@ -98,8 +98,8 @@ export const getDocchatBalance = async (
         const chatLimit = await getAccountBalance(
           fermataCustomerId,
           'docchats',
-          'c_tle47b5w', //set up .env for ai service FERMATA_COMPANY_ID prod: c_tle47b5w test: c_7ykkji2b
-          '4c8e1df90b5a9268b2415bc3c007f5e6' //FERMATA_API_KEY prod:4c8e1df90b5a9268b2415bc3c007f5e6 test:9fe51451f1bdba2047bbaa43f6d4b30b
+          process.env.FERMATA_COMPANY_ID as string,
+          process.env.FERMATA_API_KEY as string
         );
         console.log('chatLimit object', chatLimit);
         return chatLimit.amount;
@@ -131,8 +131,8 @@ export const setDocchatBalance = async (firebaseId: string) => {
           'CHAT',
           1,
           'docchats',
-          'c_tle47b5w', //set up .env for ai service FERMATA_COMPANY_ID prod: c_tle47b5w test: c_7ykkji2b
-          '4c8e1df90b5a9268b2415bc3c007f5e6' //FERMATA_API_KEY prod:4c8e1df90b5a9268b2415bc3c007f5e6 test:9fe51451f1bdba2047bbaa43f6d4b30b
+          process.env.FERMATA_COMPANY_ID as string,
+          process.env.FERMATA_API_KEY as string
         );
         return chatLimit.balance.amount
       } catch (error) {
@@ -161,8 +161,8 @@ export const getAItutorChatBalance = async (firebaseId: string) => {
         const chatLimit = await getAccountBalance(
           fermataCustomerId,
           'aitutorchats',
-          'c_tle47b5w', //set up .env for ai service FERMATA_COMPANY_ID prod: c_tle47b5w test: c_7ykkji2b
-          '4c8e1df90b5a9268b2415bc3c007f5e6' //FERMATA_API_KEY prod:4c8e1df90b5a9268b2415bc3c007f5e6 test:9fe51451f1bdba2047bbaa43f6d4b30b
+          process.env.FERMATA_COMPANY_ID as string,
+          process.env.FERMATA_API_KEY as string
         );
         console.log('chatLimit object', chatLimit);
         return chatLimit.amount;
@@ -194,8 +194,8 @@ export const setAItutorChatBalance = async (firebaseId: string) => {
           'CHAT',
           1,
           'aitutorchats',
-          'c_tle47b5w', //set up .env for ai service FERMATA_COMPANY_ID prod: c_tle47b5w test: c_7ykkji2b
-          '4c8e1df90b5a9268b2415bc3c007f5e6' //FERMATA_API_KEY prod:4c8e1df90b5a9268b2415bc3c007f5e6 test:9fe51451f1bdba2047bbaa43f6d4b30b
+          process.env.FERMATA_COMPANY_ID as string,
+          process.env.FERMATA_API_KEY as string
         );
         return chatLimit.balance.amount;
       } catch (error) {

@@ -3,7 +3,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import EventEmitter from 'events';
 import { OpenAIConfig } from 'src/types/configs';
-import config from 'config';
+import config from '../../config/development';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { studyPlanWithoutFilePrompt } from '../helpers/promptTemplates';
 import validate from '../validation/index';
@@ -16,10 +16,10 @@ const {
   outputBucketName,
   snsRoleArn,
   snsTopicArn
-}: { [key: string]: string } = config.get('textExtractor');
+}: { [key: string]: string } = config.textExtractor;
 
 const studyPlanRouter = express.Router();
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const eventEmitter = new EventEmitter();
 

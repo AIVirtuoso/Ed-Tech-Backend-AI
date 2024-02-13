@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import config from 'config';
+import config from '../../../config/development';
 
-const API_KEY = config.get('localAuth');
+const API_KEY = config.localAuth;
 const X_SHEPHERD_HEADER = 'x-shepherd-header';
 
 const authValidate = async (

@@ -1,5 +1,5 @@
 import express from 'express';
-import config from 'config';
+import config from '../../config/development';
 import { Request, Response, NextFunction } from 'express';
 import { embedding, pineconeIndex } from '../routes/index';
 import { OpenAI } from 'langchain/llms/openai';
@@ -17,7 +17,7 @@ import {
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
 
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const quizzes = express.Router();
 
@@ -25,7 +25,6 @@ quizzes.post(
   '/students/:studentId',
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
-
     try {
       let { topic, count, subject, type } = req.body;
 
@@ -118,7 +117,6 @@ quizzes.post(
   '/generate-from-notes',
   validate(Schema.quizzesFromDocs),
   async (req: Request, res: Response, next: NextFunction) => {
-
     try {
       let { topic, count, studentId, documentId, type } = req.body;
 

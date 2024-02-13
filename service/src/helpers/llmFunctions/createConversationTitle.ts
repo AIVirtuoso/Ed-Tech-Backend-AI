@@ -1,7 +1,7 @@
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { BufferMemory } from 'langchain/memory';
 import { PromptTemplate } from 'langchain/prompts';
-import config from 'config';
+import config from '../../../config/development';
 import { ConversationChain } from 'langchain/chains';
 
 const titlePrompt = (topic?: string) => `
@@ -26,7 +26,7 @@ const llmCreateConversationTitle = async (
   topic?: string,
   memory?: BufferMemory
 ) => {
-  const { apikey, model: modelName } = config.get('openai') as any;
+  const { apikey, model: modelName } = config.openai as any;
 
   const model = new ChatOpenAI({
     openAIApiKey: apikey,

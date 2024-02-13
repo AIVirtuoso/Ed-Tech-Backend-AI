@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config({
+  path: process.env.NODE_ENV === 'development' ? '.env.development' : '.env'
+});
+import config from '../../config/development';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { Response } from 'express';
@@ -15,7 +20,6 @@ import { OpenAI } from 'langchain/llms/openai';
 import cors from 'cors';
 import http from 'http';
 import ProcessStudyPlanService from '../services/processStudyPlanResources';
-import config from 'config';
 import { VectorOperationsApi } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
 
 const ai = express();
@@ -70,7 +74,7 @@ ai.locals.config = config;
 console.log(`🤖 Application config file loaded\n`);
 
 // @ts-ignore
-const { apikey: openAIApiKey, model: modelName } = config.get('openai');
+const { apikey: openAIApiKey, model: modelName } = config.openai;
 
 const embedding = new OpenAIEmbeddings({
   openAIApiKey,
@@ -89,7 +93,7 @@ let pineconeIndex: VectorOperationsApi;
 const preparePinecone = async () => {
   const pinecone = new PineconeClient();
   // @ts-ignore
-  const { apikey, environment, index } = config.get('pinecone');
+  const { apikey, environment, index } = config.pinecone;
   await pinecone.init({
     apiKey: apikey,
     environment

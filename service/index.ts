@@ -27,7 +27,7 @@ import {
   chatHasTitle,
   storeChatTitle
 } from './db/models/conversation';
-import config from 'config';
+import config from './config/development';
 import paginatedFind from './src/helpers/pagination';
 import llmCreateConversationTitle from './src/helpers/llmFunctions/createConversationTitle';
 import {
@@ -43,14 +43,14 @@ const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
   role,
   content
 });
-const { apikey, model: modelName } = config.get('openai') as any;
+const { apikey, model: modelName } = config.openai as any;
 
 const {
   bucketName,
   outputBucketName,
   snsRoleArn,
   snsTopicArn
-}: { [key: string]: string } = config.get('textExtractor');
+}: { [key: string]: string } = config.textExtractor;
 
 const TOP_K = 15;
 
