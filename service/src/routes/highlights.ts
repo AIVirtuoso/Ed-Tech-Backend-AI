@@ -1,5 +1,5 @@
 import express from 'express';
-import config from 'config';
+import config from '../../config/index';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { saveHighlightComment } from '../../db/models/highlights';
 import { retrieveDocument } from '../../db/models/document';
@@ -28,9 +28,9 @@ const {
   outputBucketName,
   snsRoleArn,
   snsTopicArn
-}: { [key: string]: string } = config.get('textExtractor');
+}: { [key: string]: string } = config.textExtractor;
 
-const openAIConfig: OpenAIConfig = config.get('openai');
+const openAIConfig: OpenAIConfig = config.openai;
 
 highlight.post(
   '/',

@@ -6,7 +6,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { HumanChatMessage, AIChatMessage } from 'langchain/schema';
 import paginatedFind from '../pagination';
 import ChatLog from '../../../db/models/conversationLog';
-import config from 'config';
+import config from '../../../config/index';
 
 class ChatManager {
   private socket: any;
@@ -30,7 +30,7 @@ class ChatManager {
     this.systemPrompt = systemPrompt;
     this.studentId = studentId;
     this.conversationId = conversationId;
-    const { apikey, model } = config.get('openai') as any;
+    const { apikey, model } = config.openai as any;
     this.apikey = apikey as string;
     this.modelName = model as string;
   }

@@ -1,5 +1,5 @@
 import express from 'express';
-import config from 'config';
+import config from '../../config/index';
 import { Request, Response, NextFunction } from 'express';
 import { embedding, pineconeIndex } from '../routes/index';
 import { OpenAI } from 'langchain/llms/openai';
@@ -17,7 +17,7 @@ import {
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
 
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const flashCards = express.Router();
 

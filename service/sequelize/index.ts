@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
-const config = require('config');
+import config from '../config/index';
 
-const dbConfig = config.get('postgres');
+const dbConfig = config.postgres;
 
 const sequelize = new Sequelize(
   dbConfig.database,

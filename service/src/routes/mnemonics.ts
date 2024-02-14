@@ -1,5 +1,5 @@
 import express from 'express';
-import config from 'config';
+import config from '../../config/index';
 import { Request, Response, NextFunction } from 'express';
 import { OpenAI } from 'langchain/llms/openai';
 import validate from '../validation/index';
@@ -8,7 +8,7 @@ import { OpenAIConfig } from '../types/configs';
 import { OPENAI_MODELS } from '../helpers/constants';
 import { mnemonicPrompt } from '../helpers/promptTemplates/';
 
-const openAIconfig: OpenAIConfig = config.get('openai');
+const openAIconfig: OpenAIConfig = config.openai;
 
 const mnemonics = express.Router();
 
