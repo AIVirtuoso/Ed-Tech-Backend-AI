@@ -592,7 +592,7 @@ notes.post(
       const extractorInfo = await localTextExtractor.extractText(documentURL);
 
       if (extractorInfo.status === 'success') {
-        if (extractorInfo.lineCount >= 100) {
+        if (extractorInfo.lineCount >= 20) {
           text = extractorInfo.text;
         }
       }
