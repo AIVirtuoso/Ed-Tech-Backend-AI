@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-import config from '../config/development';
+import config from '../config/index';
 
 const dbConfig = config.postgres;
 
