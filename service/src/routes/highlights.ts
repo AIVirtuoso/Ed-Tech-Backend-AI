@@ -1,5 +1,5 @@
 import express from 'express';
-import config from '../../config/index';
+import config from '../../config/development';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { saveHighlightComment } from '../../db/models/highlights';
 import { retrieveDocument } from '../../db/models/document';

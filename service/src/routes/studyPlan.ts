@@ -3,7 +3,7 @@ import { OpenAI } from 'langchain/llms/openai';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import EventEmitter from 'events';
 import { OpenAIConfig } from 'src/types/configs';
-import config from '../../config/index';
+import config from '../../config/development';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { studyPlanWithoutFilePrompt } from '../helpers/promptTemplates';
 import validate from '../validation/index';

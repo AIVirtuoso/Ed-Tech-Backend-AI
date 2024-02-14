@@ -1,0 +1,27 @@
+{
+  "openai": {
+    "apikey": "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",
+    "model": "gpt-4-1106-preview"
+  },
+  "pinecone": {
+    "environment": "us-east-1-aws",
+    "apikey": "d918e727-22fd-4f1b-8bcc-c9c5645c399c",
+    "index": "shepherd",
+    "namespace": "students"
+  },
+  "localAuth": "vunderkind23",
+
+  "postgres": {
+    "database": "postgres",
+    "username": "postgres",
+    "password": "i6d2u9yTEwlpZgOi",
+    "host": "db.bxgzpxgmadtmlboycqgj.supabase.co",
+    "dialect": "postgres"
+  },
+  "textExtractor": {
+    "bucketName": "shepherd-document-upload",
+    "outputBucketName": "stage-for-ocr-output",
+    "snsTopicArn": "arn:aws:sns:us-east-2:322634587886:ocr",
+    "snsRoleArn": "arn:aws:iam::322634587886:role/textract-sns-async"
+  }
+}
