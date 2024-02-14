@@ -1,5 +1,5 @@
 import express from 'express';
-import config from '../../config/development';
+import config from '../../config/index';
 import { Request, Response, NextFunction } from 'express';
 import { OpenAI } from 'langchain/llms/openai';
 import validate from '../validation/index';

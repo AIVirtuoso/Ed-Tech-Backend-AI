@@ -27,7 +27,7 @@ import {
   chatHasTitle,
   storeChatTitle
 } from './db/models/conversation';
-import config from './config/development';
+import config from './config/index';
 import paginatedFind from './src/helpers/pagination';
 import llmCreateConversationTitle from './src/helpers/llmFunctions/createConversationTitle';
 import {

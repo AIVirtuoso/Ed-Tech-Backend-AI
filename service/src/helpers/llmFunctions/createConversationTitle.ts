@@ -1,7 +1,7 @@
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { BufferMemory } from 'langchain/memory';
 import { PromptTemplate } from 'langchain/prompts';
-import config from '../../../config/development';
+import config from '../../../config/index';
 import { ConversationChain } from 'langchain/chains';
 
 const titlePrompt = (topic?: string) => `

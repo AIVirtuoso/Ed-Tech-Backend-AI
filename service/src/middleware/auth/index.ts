@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import config from '../../../config/development';
+import config from '../../../config/index';
 
 const API_KEY = config.localAuth;
 const X_SHEPHERD_HEADER = 'x-shepherd-header';

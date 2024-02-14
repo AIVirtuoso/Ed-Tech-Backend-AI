@@ -1,6 +1,6 @@
 import { database, credential } from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
-import config from '../../config/development';
+import config from '../../config/index';
 import { OpenAI } from 'langchain/llms/openai';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';

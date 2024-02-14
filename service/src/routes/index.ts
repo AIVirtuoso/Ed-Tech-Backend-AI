@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config({
   path: process.env.NODE_ENV === 'development' ? '.env.development' : '.env'
 });
-import config from '../../config/development';
+import config from '../../config/index';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { Response } from 'express';

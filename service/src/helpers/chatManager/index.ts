@@ -6,7 +6,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { HumanChatMessage, AIChatMessage } from 'langchain/schema';
 import paginatedFind from '../pagination';
 import ChatLog from '../../../db/models/conversationLog';
-import config from '../../../config/development';
+import config from '../../../config/index';
 
 class ChatManager {
   private socket: any;
