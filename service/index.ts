@@ -715,8 +715,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
           log: assistantResponse,
           conversationId
         })
-      ]);
-      console.log('Chats saved to database');
+      ]).catch((error) => console.error(`Error saving chat: ${error.message}`));
       socket.emit('saved conversation', true);
     } catch (error: any) {
       console.error(`Error during chat message processing: ${error.message}`);
