@@ -37,6 +37,9 @@ import {
   setAItutorChatBalance
 } from './src/middleware/fermataCheck';
 
+const NODE_ENV = process.env.NODE_ENV as string;
+const isDevelopment = NODE_ENV === 'development';
+
 const CONVERSATION_STARTER_TEXT = 'Shall we begin, Socrates?';
 // Setting up some general shit for global AI assistant usage
 const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
@@ -202,9 +205,11 @@ docChatNamespace.on('connection', async (socket) => {
 
   socket.emit('ready', true);
 
-  const currentChatBalance = await getDocchatBalance(firebaseId);
-  if (!currentChatBalance || currentChatBalance < 1) {
-    socket.emit('docchat_limit_reached', true);
+  if (!isDevelopment) {
+    const currentChatBalance = await getDocchatBalance(firebaseId);
+    if (!currentChatBalance || currentChatBalance < 1) {
+      socket.emit('docchat_limit_reached', true);
+    }
   }
 
   // Done with setting up the chat AI requirements, so we can tell the client we're ready to discuss.
@@ -247,13 +252,14 @@ docChatNamespace.on('connection', async (socket) => {
 
   // Client sends us a chat message
   socket.on('chat message', async (message) => {
-    const chatBalance = await setDocchatBalance(firebaseId);
-    if (!chatBalance || chatBalance < 1) {
-      socket.emit('docchat_limit_reached', true);
-      return;
+    if (!isDevelopment) {
+      const chatBalance = await setDocchatBalance(firebaseId);
+      if (!chatBalance || chatBalance < 1) {
+        socket.emit('docchat_limit_reached', true);
+        return;
+      }
+      console.log('currentChatBalance', chatBalance);
     }
-    console.log('currentChatBalance', chatBalance);
-
     const userQuery = wrapForQL('user', message);
     const event = 'chat response';
 
@@ -401,12 +407,13 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   console.log('studentId', studentId);
   const event = 'chat response';
 
-  const currentChatBalance = await getAItutorChatBalance(firebaseId);
-  if (!currentChatBalance || currentChatBalance < 1) {
-    socket.emit('aitutorchat_limit_reached', true);
-    return;
+  if (!isDevelopment) {
+    const currentChatBalance = await getAItutorChatBalance(firebaseId);
+    if (!currentChatBalance || currentChatBalance < 1) {
+      socket.emit('aitutorchat_limit_reached', true);
+      return;
+    }
   }
-
   const getSystemPrompt = async (documentId?: string) => {
     const pdfTextExtractor = new PdfTextExtractor(
       bucketName,
@@ -531,13 +538,14 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   });
 
   socket.on('chat message', async (message) => {
-    const chatBalance = await setAItutorChatBalance(firebaseId);
-    if (!chatBalance || chatBalance < 1) {
-      socket.emit('aitutorchat_limit_reached', true);
-      return;
+    if (!isDevelopment) {
+      const chatBalance = await setAItutorChatBalance(firebaseId);
+      if (!chatBalance || chatBalance < 1) {
+        socket.emit('aitutorchat_limit_reached', true);
+        return;
+      }
+      console.log('currentChatBalance', chatBalance);
     }
-    console.log('currentChatBalance', chatBalance);
-
     const isFirstConvo = pastMessages.length === 0;
     if (
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
