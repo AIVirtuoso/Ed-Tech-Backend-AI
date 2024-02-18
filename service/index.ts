@@ -205,7 +205,7 @@ docChatNamespace.on('connection', async (socket) => {
 
   socket.emit('ready', true);
 
-  if (!isDevelopment) {
+  if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
     const currentChatBalance = await getDocchatBalance(firebaseId);
     if (!currentChatBalance || currentChatBalance < 1) {
       socket.emit('docchat_limit_reached', true);
@@ -252,7 +252,7 @@ docChatNamespace.on('connection', async (socket) => {
 
   // Client sends us a chat message
   socket.on('chat message', async (message) => {
-    if (!isDevelopment) {
+    if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
       const chatBalance = await setDocchatBalance(firebaseId);
       if (!chatBalance || chatBalance < 1) {
         socket.emit('docchat_limit_reached', true);
@@ -407,7 +407,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   console.log('studentId', studentId);
   const event = 'chat response';
 
-  if (!isDevelopment) {
+  if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
     const currentChatBalance = await getAItutorChatBalance(firebaseId);
     if (!currentChatBalance || currentChatBalance < 1) {
       socket.emit('aitutorchat_limit_reached', true);
@@ -538,7 +538,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   });
 
   socket.on('chat message', async (message) => {
-    if (!isDevelopment) {
+    if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
       const chatBalance = await setAItutorChatBalance(firebaseId);
       if (!chatBalance || chatBalance < 1) {
         socket.emit('aitutorchat_limit_reached', true);
