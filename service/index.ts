@@ -557,7 +557,6 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
     ) {
       const answer = await chain.call({ input: message });
-      console.log(lastTenChats);
       socket.emit(`${event} end`, answer?.response);
 
       const hasTitle = await chatHasTitle(conversationId);
@@ -612,10 +611,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   let note;
 
-  console.log(isDevelopment);
-
   try {
-    console.log(`Fetching note for noteId: ${noteId}`);
     note = await fetchNote(noteId, isDevelopment);
   } catch (error: any) {
     console.error(`Error fetching note: ${error}`);
@@ -624,7 +620,6 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   }
 
   if (!convoId) {
-    console.log(`Creating new conversation for studentId: ${studentId}`);
     try {
       conversationId = await getChatConversationId({
         referenceId: noteId,
@@ -645,19 +640,15 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   }
 
   socket.emit('current_conversation', conversationId);
-  console.log(`Emitted current conversation: ${conversationId}`);
 
   const hasContent = Boolean(note?.note);
   if (!hasContent) {
-    console.log(note);
     console.error('Note has no content');
     socket.emit('error', 'Note has no content');
     return;
   }
 
   let noteData = extractTextFromJson(note.note);
-
-  console.log(noteData);
 
   const systemPrompt = chatWithNotePrompt(noteData);
 
@@ -670,7 +661,6 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   );
 
   try {
-    console.log(`Loading chats for conversationId: ${conversationId}`);
     await chatManager.loadChats();
   } catch (error: any) {
     console.error(`Error loading chats: ${error.message}`);
@@ -681,8 +671,6 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   let { chain, model, pastMessages } = await chatManager.loadModel();
 
   socket.on('chat message', async (message) => {
-    console.log(`Received chat message: ${message}`);
-
     const question = `Using context from the note: [${noteData}] supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, exciting and informative. Be charming and have a personality.
     
     Suggest follow-up discussions based on the information, and format them in bullet points of three discussions.
@@ -738,7 +726,6 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   });
 
   socket.on('refresh_note', async () => {
-    console.log('Refreshing note...');
     try {
       socket.emit('refresh_status', { status: 'REFRESH_LOADING' });
       note = await fetchNote(noteId, isDevelopment);
@@ -754,7 +741,6 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
       chain = data.chain;
       model = data.model;
 
-      console.log('Note refreshed successfully');
       socket.emit('refresh_status', { status: 'REFRESH_DONE' });
     } catch (error: any) {
       console.error(`Error refreshing note: ${error.message}`);
@@ -767,9 +753,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
 
   socket.on('generate summary', async () => {
     try {
-      console.log('SUMMARIZING TEXT');
       const answer = await chatManager.summarizeText(noteData);
-      console.log('SUMMARIZED TEXT', answer);
       socket.emit('new_note_summary', { summary: answer?.response });
     } catch (error: any) {
       console.error(`Error loading chats: ${error.message}`);
