@@ -36,9 +36,7 @@ class PDFTextExtractor {
     studentId?: string,
     documentId?: string
   ): Promise<string> {
-    console.log('Extracting text from PDF...');
     const pdfKey = this.extractS3KeyFromUrl(pdfUrl);
-    console.log(`PDF key extracted: ${pdfKey}`);
 
     const params = {
       DocumentLocation: { S3Object: { Bucket: this.bucketName, Name: pdfKey } },

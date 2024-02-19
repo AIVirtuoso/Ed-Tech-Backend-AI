@@ -176,10 +176,8 @@ notes.get(
       if (!studentId) throw new Error('No studentId present in request!');
 
       const env = (req.query.env || '') as string;
-      console.log(env);
 
       const isDevelopment = env?.includes('dev');
-      console.log(isDevelopment);
 
       const notes = await fetchNotes(
         studentId as string,
@@ -201,7 +199,6 @@ notes.get(
       }));
 
       const studentDocs = await getDocumentHistory(studentId as string);
-      console.log(studentDocs);
       const studentFiles = studentDocs.map((doc: any) => ({
         ...doc.dataValues,
         type: 'file'
@@ -597,8 +594,6 @@ notes.post(
         }
       }
 
-      console.log(extractorInfo);
-
       if (!text) {
         updateProgressLog(progressLogId, {
           status: 'Image Scanning Started, this may take a long time'
@@ -610,7 +605,6 @@ notes.post(
           });
         if (jobId) {
           text = await pdfTextExtractor.getTextFromJob(jobId);
-          console.log(text);
           await pdfTextExtractor.storeJobDetailsInDynamoDB(documentURL, text);
         } else {
           // Fallback mechanism to read the PDF directly
@@ -678,7 +672,6 @@ notes.post(
         namespace: studentId
       })
         .then(async () => {
-          console.log('inside pinecone store');
           data = await createOrUpdateDocument({
             reference: USER_REFERENCE.STUDENT,
             referenceId: studentId,

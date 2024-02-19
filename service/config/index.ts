@@ -25,6 +25,5 @@ const config = {
   }
 };
 
-console.log('POSTGRES USERNAME', process.env.POSTGRES_USERNAME);
 
 export default config;

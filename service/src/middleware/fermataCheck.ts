@@ -26,11 +26,9 @@ export async function getAccountBalance(
 
   if (response.ok) {
     const body = await response.json();
-    console.log(body);
     return body.data;
   } else {
     const textBody = await response.text();
-    console.log('Error from Fermata:', textBody);
     throw new Error('Failed to get account balance');
   }
 }
@@ -76,14 +74,11 @@ export async function pushEvent(
     return body.data;
   } else {
     const textBody = await response.text();
-    console.log('Error from Fermata:', textBody);
     throw new Error('Failed to push event');
   }
 }
 
-export const getDocchatBalance = async (
-  firebaseId: string,
-) => {
+export const getDocchatBalance = async (firebaseId: string) => {
   const db = database();
   const fermataCustomerRef = db.ref(
     `user-subscriptions/${firebaseId}/fermataCustomerId`
@@ -101,10 +96,8 @@ export const getDocchatBalance = async (
           process.env.FERMATA_COMPANY_ID as string,
           process.env.FERMATA_API_KEY as string
         );
-        console.log('chatLimit object', chatLimit);
         return chatLimit.amount;
       } catch (error) {
-        console.log('FERMATA docchats ERROR!!!', error);
         return 0;
       }
     } else {
@@ -134,9 +127,8 @@ export const setDocchatBalance = async (firebaseId: string) => {
           process.env.FERMATA_COMPANY_ID as string,
           process.env.FERMATA_API_KEY as string
         );
-        return chatLimit.balance.amount
+        return chatLimit.balance.amount;
       } catch (error) {
-        console.log(error);
         return 0;
       }
     } else {
@@ -164,10 +156,8 @@ export const getAItutorChatBalance = async (firebaseId: string) => {
           process.env.FERMATA_COMPANY_ID as string,
           process.env.FERMATA_API_KEY as string
         );
-        console.log('chatLimit object', chatLimit);
         return chatLimit.amount;
       } catch (error) {
-        console.log('FERMATA aitutorchats ERROR!!!', error);
         return 0;
       }
     } else {
@@ -199,7 +189,6 @@ export const setAItutorChatBalance = async (firebaseId: string) => {
         );
         return chatLimit.balance.amount;
       } catch (error) {
-        console.log(error);
         return 0;
       }
     } else {

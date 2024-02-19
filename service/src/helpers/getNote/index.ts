@@ -6,7 +6,6 @@ async function fetchNote(id: string, isDevelopment = false) {
     ? MAIN_SERVICE_ENDPONT
     : 'https://develop--api-sheperdtutors.netlify.app';
 
-  console.log(baseUrl);
   const API_ENDPOINT = `${baseUrl}/notes/${id}`; // replace with your actual endpoint
 
   const response = await axios.get(API_ENDPOINT, {

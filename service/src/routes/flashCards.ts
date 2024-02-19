@@ -47,7 +47,6 @@ flashCards.post(
 
       const response = await model.call(flashCardPrompt);
 
-      console.log(response);
       res.send(JSON.parse(response));
       res.end();
     } catch (e) {
@@ -113,7 +112,6 @@ flashCards.post(
 
       await generateCards();
     } catch (e) {
-      console.log(e);
       next(e);
     }
   }

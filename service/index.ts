@@ -252,7 +252,6 @@ docChatNamespace.on('connection', async (socket) => {
       socket.emit('docchat_limit_reached', true);
       return;
     }
-    console.log('currentChatBalance', chatBalance);
 
     const userQuery = wrapForQL('user', message);
     const event = 'chat response';
@@ -331,7 +330,6 @@ docChatNamespace.on('connection', async (socket) => {
     let answers = [];
 
     for (let SUMMARY_TOP_K = 50; SUMMARY_TOP_K >= 30; SUMMARY_TOP_K -= 10) {
-      console.log('CURRENT TOP K', SUMMARY_TOP_K);
       const chain = RetrievalQAChain.fromLLM(
         model,
         vectorStore.asRetriever(SUMMARY_TOP_K)
@@ -350,8 +348,6 @@ docChatNamespace.on('connection', async (socket) => {
         return;
       }
     }
-
-    console.log('ANSWERS', answers);
 
     try {
       const summaryModel = socketAiModel(socket, 'summary');
@@ -374,10 +370,9 @@ docChatNamespace.on('connection', async (socket) => {
           documentId
         });
       } catch (error) {
-        console.log('ERROR CREATING', error);
+        // console.log('ERROR CREATING', error);
       }
     } catch (error: any) {
-      console.log('STORE SUMMARY FOR DOC FAULED');
       socket.emit('summary_generation_error', {
         message: 'Failed to summarize answers',
         error: error.message
@@ -399,6 +394,16 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     firebaseId
   } = socket.handshake.auth;
   console.log('studentId', studentId);
+  console.log(
+    'topic here',
+    topic,
+    subject,
+    name,
+    level,
+    convoId,
+    documentId,
+    firebaseId
+  );
   const event = 'chat response';
 
   const currentChatBalance = await getAItutorChatBalance(firebaseId);
@@ -449,6 +454,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   let systemPrompt = await getSystemPrompt(documentId);
 
   let conversationId = convoId;
+  console.log('conversationId', conversationId);
   let isNewChat;
 
   if (!convoId) {
@@ -494,10 +500,8 @@ homeworkHelpNamespace.on('connection', async (socket) => {
         }
       );
       const mappedChatHistory = chats.map((history: any) => history).reverse();
-      console.log('MAPPED HISTORY', mappedChatHistory);
       socket.emit('chat_history', JSON.stringify(mappedChatHistory));
     } catch (error: any) {
-      console.log(error);
       socket.emit('fetch_history_error', { message: error.message });
     }
   });
@@ -575,6 +579,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       ]);
     }
   });
+  console.log('socket is ready', studentId);
   socket.emit('ready', true);
 });
 

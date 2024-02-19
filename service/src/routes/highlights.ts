@@ -90,8 +90,6 @@ highlight.post(
         storedDocument.documentId
       );
 
-      console.log(document);
-
       const getDocs = (vectorStore: any) =>
         vectorStore.similaritySearch(highlightText, topK);
 
@@ -198,7 +196,6 @@ highlight.post(
         highlight
       });
     } catch (e: any) {
-      console.log(e);
       next({
         message:
           'Failed to save the comment. Please make sure you are correctly supplying the highlightId and the comment.'
