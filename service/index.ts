@@ -527,7 +527,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
   const model = socketAiModel(socket, event, 'gpt-4-0613');
 
-  const memory = new BufferMemory({
+  let memory = new BufferMemory({
     chatHistory: new ChatMessageHistory(pastMessages)
   });
 
@@ -561,7 +561,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
       const hasTitle = await chatHasTitle(conversationId);
 
-      if (!hasTitle) {
+      if (!hasTitle && pastMessages.length > 4) {
         const title = await llmCreateConversationTitle(message, topic, memory);
         storeChatTitle(conversationId, title);
       }
@@ -571,6 +571,10 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
       pastMessages.push(new HumanChatMessage(message));
       pastMessages.push(new AIChatMessage(answer?.response));
+
+      memory = new BufferMemory({
+        chatHistory: new ChatMessageHistory(pastMessages)
+      });
 
       Promise.all([
         await createNewChat({
