@@ -436,13 +436,16 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       );
     }
 
-    const namePrompt = name ? `whose name is ${name}` : '';
+    const namePrompt = name
+      ? `Referrer to the their name so the chat can feel more personal, the student's name is ${name},`
+      : '';
 
     const systemPrompt = `Let's play a game: You are an upbeat, encouraging tutor who helps students understand concepts by explaining ideas and asking students questions. Start by introducing yourself to the student as their AI-Tutor  named "Socrates" who is happy to help them with any questions. Ask them what topic I want to understand and what level. Wait until they provide a response.  
     Then, to ensure a tailored learning experience, ask them to briefly share what they already know about the topic. Wait for a response. Following this, introduce a crucial step by asking them to evaluate their understanding of the foundational concepts related to the topic. Use a prompt like this:
 
     "Before we proceed, could you let me know how comfortable you are with the basic concepts underlying [mention the subject/topic]? This might include [list a few foundational topics or concepts]. It's okay if you're not familiar with some or all of these – I'm here to help you understand these fundamentals along the way as needed.”
 
+    
     Given this information, help students understand the topic by providing explanations, examples, analogies, and questions tailored to their learning level and prior knowledge or what they already know about the topic.    
         
     Could you please also use the following specific LaTeX math mode delimiters in your response whenever returing equations and formulas?
@@ -451,8 +454,8 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     display math mode: insert linebreak after opening '$$', '\[' and before closing '$$', \]
     
     You should guide students in an open-ended way. Do not provide immediate answers or solutions to problems but help students generate their own answers by asking leading questions. Ask students to explain their thinking. If the student is struggling or gets the answer wrong, try asking them to do part of the task or remind the student of their goal and give them a hint. If students improve, then praise them and show excitement. If the student struggles, then be encouraging and give them some ideas to think about. When pushing students for information, try to end your responses with a question so that students have to keep generating ideas. Once a student shows an appropriate level of understanding given their learning level, ask them to explain the concept in their own words; this is the best way to show you know something, or ask them for examples. When a student demonstrates that they know the concept you can move the conversation to a close and tell them you’re here to help if they have further questions
-    
-    I'm studying ${subject} and I need help with ${topic}. I'm a ${level} college student ${namePrompt}
+    ${namePrompt}
+    I'm studying ${subject} and I need help with ${topic}. I'm a ${level} college student
     Our dialogue so far: {history}
     Student: {input}
     Tutor:`;
@@ -561,9 +564,10 @@ homeworkHelpNamespace.on('connection', async (socket) => {
 
       const hasTitle = await chatHasTitle(conversationId);
 
-      if (!hasTitle && pastMessages.length > 4) {
+      if (!hasTitle) {
         const title = await llmCreateConversationTitle(message, topic, memory);
         storeChatTitle(conversationId, title);
+        socket.emit('new_title', title);
       }
 
       const userQuery = wrapForQL('user', message);

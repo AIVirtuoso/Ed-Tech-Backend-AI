@@ -250,28 +250,28 @@ notes.get(
 
       let chatHistory = await fetchSpecificStudentChat(conversationId);
 
-      const hasTitle = await chatHasTitle(conversationId);
-      if (!hasTitle) {
-        const pastMessages: any[] = [];
+      // const hasTitle = await chatHasTitle(conversationId);
+      // if (!hasTitle) {
+      //   const pastMessages: any[] = [];
 
-        const mappedChatHistory = chatHistory
-          .map((history: Chats) => history.log)
-          .reverse();
+      //   const mappedChatHistory = chatHistory
+      //     .map((history: Chats) => history.log)
+      //     .reverse();
 
-        mappedChatHistory.forEach((message: any) => {
-          if (message.role === 'assistant')
-            pastMessages.push(new AIChatMessage(message.content));
-          if (message.role === 'user')
-            pastMessages.push(new HumanChatMessage(message.content));
-        });
+      //   mappedChatHistory.forEach((message: any) => {
+      //     if (message.role === 'assistant')
+      //       pastMessages.push(new AIChatMessage(message.content));
+      //     if (message.role === 'user')
+      //       pastMessages.push(new HumanChatMessage(message.content));
+      //   });
 
-        const memory = new BufferMemory({
-          chatHistory: new ChatMessageHistory(pastMessages)
-        });
-        const title = await llmCreateConversationTitle('', undefined, memory);
-        await storeChatTitle(conversationId, title);
-        chatHistory = await fetchSpecificStudentChat(conversationId);
-      }
+      //   const memory = new BufferMemory({
+      //     chatHistory: new ChatMessageHistory(pastMessages)
+      //   });
+      //   const title = await llmCreateConversationTitle('', undefined, memory);
+      //   await storeChatTitle(conversationId, title);
+      //   chatHistory = await fetchSpecificStudentChat(conversationId);
+      // }
 
       // const mappedChatHistory = chatHistory
       //   .map((history: Chats) => history.log)
