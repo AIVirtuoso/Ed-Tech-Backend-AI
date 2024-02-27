@@ -38,14 +38,12 @@ const checkUserSubscription = async (
           : OPENAI_MODELS.GPT_3_5_16K;
       next();
     } else {
-      console.log('Subscription information not found');
       req.gptVersion = OPENAI_MODELS.GPT_3_5_16K;
       next();
     }
   } catch (error) {
     // Sentry.captureException(error);
     // res.status(500).send('Error fetching subscription data');
-    console.log('Error fetching subscription data');
     req.gptVersion = OPENAI_MODELS.GPT_3_5_16K;
     next();
   }

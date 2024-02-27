@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import { toggleChatPin, getPinnedChats } from '../../db/models/conversationLog';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-
+import LocalPDFExtractor from '../services/localExtractor';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 import { uuid } from 'uuidv4';
@@ -18,6 +18,7 @@ import schema from '../validation/schema';
 import { OpenAIConfig } from '../types/configs';
 import Models from '../../db/models';
 import { OpenAI } from 'langchain/llms/openai';
+import { initializeApp, getApps } from 'firebase-admin/app';
 import { OPENAI_MODELS, USER_REFERENCE } from '../helpers/constants';
 import {
   retrieveDocument,
@@ -40,11 +41,22 @@ import {
   fetchSpecificStudentChat,
   handleReaction
 } from '../../db/models/conversationLog';
+import { database, credential } from 'firebase-admin';
 import { AIChatMessage, HumanChatMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import llmCreateConversationTitle from '../helpers/llmFunctions/createConversationTitle';
 import generateConversationDescription from '../helpers/llmFunctions/getConversationDescription';
 import { fetchNotes } from '../helpers/getNote';
+import serviceAccount from '../../config/serviceAccountKeys.json';
+
+if (!getApps().length) {
+  initializeApp({
+    credential: credential.cert(serviceAccount as any),
+    databaseURL: 'https://shepherd-app-382114-default-rtdb.firebaseio.com'
+  });
+}
+
+const db = database();
 
 const { DocumentModel: documents, ChatLog: chats } = Models;
 
@@ -83,6 +95,12 @@ const createDocumentAndReturnFilePath = async (
   fs.writeFileSync(filePath, docBinary, 'binary');
 
   return filePath;
+};
+
+const updateProgressLog = async (progressLogId: string, updateData: any) => {
+  const progressDbName = 'ingest-progress-log';
+  const progressDb = db.ref(progressDbName);
+  await progressDb.child(progressLogId).update(updateData);
 };
 
 const notes = express.Router();
@@ -158,10 +176,8 @@ notes.get(
       if (!studentId) throw new Error('No studentId present in request!');
 
       const env = (req.query.env || '') as string;
-      console.log(env);
 
       const isDevelopment = env?.includes('dev');
-      console.log(isDevelopment);
 
       const notes = await fetchNotes(
         studentId as string,
@@ -183,7 +199,6 @@ notes.get(
       }));
 
       const studentDocs = await getDocumentHistory(studentId as string);
-      console.log(studentDocs);
       const studentFiles = studentDocs.map((doc: any) => ({
         ...doc.dataValues,
         type: 'file'
@@ -235,28 +250,28 @@ notes.get(
 
       let chatHistory = await fetchSpecificStudentChat(conversationId);
 
-      const hasTitle = await chatHasTitle(conversationId);
-      if (!hasTitle) {
-        const pastMessages: any[] = [];
+      // const hasTitle = await chatHasTitle(conversationId);
+      // if (!hasTitle) {
+      //   const pastMessages: any[] = [];
 
-        const mappedChatHistory = chatHistory
-          .map((history: Chats) => history.log)
-          .reverse();
+      //   const mappedChatHistory = chatHistory
+      //     .map((history: Chats) => history.log)
+      //     .reverse();
 
-        mappedChatHistory.forEach((message: any) => {
-          if (message.role === 'assistant')
-            pastMessages.push(new AIChatMessage(message.content));
-          if (message.role === 'user')
-            pastMessages.push(new HumanChatMessage(message.content));
-        });
+      //   mappedChatHistory.forEach((message: any) => {
+      //     if (message.role === 'assistant')
+      //       pastMessages.push(new AIChatMessage(message.content));
+      //     if (message.role === 'user')
+      //       pastMessages.push(new HumanChatMessage(message.content));
+      //   });
 
-        const memory = new BufferMemory({
-          chatHistory: new ChatMessageHistory(pastMessages)
-        });
-        const title = await llmCreateConversationTitle('', undefined, memory);
-        await storeChatTitle(conversationId, title);
-        chatHistory = await fetchSpecificStudentChat(conversationId);
-      }
+      //   const memory = new BufferMemory({
+      //     chatHistory: new ChatMessageHistory(pastMessages)
+      //   });
+      //   const title = await llmCreateConversationTitle('', undefined, memory);
+      //   await storeChatTitle(conversationId, title);
+      //   chatHistory = await fetchSpecificStudentChat(conversationId);
+      // }
 
       // const mappedChatHistory = chatHistory
       //   .map((history: Chats) => history.log)
@@ -545,12 +560,22 @@ notes.post(
   validate(ingest),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { documentURL, studentId, title } = req.body;
+      let { documentURL, studentId, title, progressLogId } = req.body;
 
       const documentId = uuid();
+      const progressDbName = 'ingest-progress-log';
 
-      let text: string;
+      const startTime = Date.now();
+
+      if (!progressLogId) {
+        const job = db.ref(progressDbName).push();
+        progressLogId = job.key;
+      }
+
+      let text: string | null = null;
       let filePath: any | undefined;
+
+      updateProgressLog(progressLogId, { status: 'Text Extraction Started' });
 
       const pdfTextExtractor = new PDFTextExtractor(
         bucketName,
@@ -560,24 +585,40 @@ notes.post(
         snsRoleArn
       );
 
-      const jobId = await pdfTextExtractor
-        .extractTextFromPDF(documentURL, studentId, documentId)
-        .catch(() => {
-          return undefined;
-        });
+      const localTextExtractor = new LocalPDFExtractor();
+      const extractorInfo = await localTextExtractor.extractText(documentURL);
 
-      if (jobId) {
-        text = await pdfTextExtractor.getTextFromJob(jobId);
-        console.log(text);
-        await pdfTextExtractor.storeJobDetailsInDynamoDB(documentURL, text);
-      } else {
-        // Fallback mechanism to read the PDF directly
-        filePath = await createDocumentAndReturnFilePath(
-          documentURL,
-          studentId
-        );
-        const pdfdata = fs.readFileSync(filePath);
-        text = await pdf(pdfdata).then((data: any) => data.text);
+      if (extractorInfo.status === 'success') {
+        if (extractorInfo.lineCount >= 20) {
+          text = extractorInfo.text;
+        }
+      }
+
+      if (!text) {
+        updateProgressLog(progressLogId, {
+          status: 'Image Scanning Started, this may take a long time'
+        });
+        const jobId = await pdfTextExtractor
+          .extractTextFromPDF(documentURL, studentId, documentId)
+          .catch(() => {
+            return undefined;
+          });
+        if (jobId) {
+          text = await pdfTextExtractor.getTextFromJob(jobId);
+          await pdfTextExtractor.storeJobDetailsInDynamoDB(documentURL, text);
+        } else {
+          // Fallback mechanism to read the PDF directly
+          filePath = await createDocumentAndReturnFilePath(
+            documentURL,
+            studentId
+          );
+          const pdfdata = fs.readFileSync(filePath);
+          text = await pdf(pdfdata).then((data: any) => data.text);
+        }
+      }
+
+      if (!text) {
+        return res.json({ message: 'Failed to extract' });
       }
 
       const { embeddingAI: embedding, pineconeIndex } = res.app.locals;
@@ -599,7 +640,7 @@ notes.post(
       // Generate keywords using openai
       const openAImodel = new OpenAI({
         openAIApiKey: openAIconfig.apikey,
-        modelName: 'gpt-4'
+        modelName: 'gpt-3.5-turbo'
       });
 
       const prompt = `Please provide a list of at least 20 relevant keywords for the following text. 
@@ -612,13 +653,15 @@ notes.post(
       let keywords: string[];
 
       try {
+        updateProgressLog(progressLogId, {
+          status: 'Extracting Keywords'
+        });
         const response = await openAImodel.call(prompt);
+
         keywords = response.split(',').map((kw: string) => kw.trim());
       } catch (error) {
         keywords = [];
       }
-
-      console.log('Keywords', keywords);
 
       let data: any = [];
       // const { pineconeIndex, embeddingAI: embedding } = res.app.locals;
@@ -629,7 +672,6 @@ notes.post(
         namespace: studentId
       })
         .then(async () => {
-          console.log('inside pinecone store');
           data = await createOrUpdateDocument({
             reference: USER_REFERENCE.STUDENT,
             referenceId: studentId,
@@ -650,6 +692,13 @@ notes.post(
           !err && console.log('successfully deleted');
         });
       }
+
+      const endTime = Date.now();
+      const ingestDuration = Math.round((endTime - startTime) / 1000); // Duration in seconds
+      await updateProgressLog(progressLogId, {
+        jobProgress: 'completed',
+        ingestDuration: `${ingestDuration} seconds`
+      });
 
       res.send({
         message: `Successfully saved document with id ${documentId} titled '${title}' for student with id '${studentId}`,
