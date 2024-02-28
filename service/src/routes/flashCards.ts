@@ -16,6 +16,7 @@ import {
 } from '../helpers/promptTemplates';
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
+import { Languages } from 'src/types';
 
 const openAIconfig: OpenAIConfig = config.openai;
 
@@ -26,6 +27,7 @@ flashCards.post(
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const lang = req.query.lang as Languages;
       let { topic, count, subject, existingQuestions, subTopics } = req.body;
 
       let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
@@ -42,7 +44,8 @@ flashCards.post(
         subject,
         topic,
         existingQuestions,
-        subTopics
+        subTopics,
+        lang
       );
 
       const response = await model.call(flashCardPrompt);
@@ -60,6 +63,7 @@ flashCards.post(
   validate(Schema.generateFromNotesSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const lang = req.query.lang as Languages;
       const { count, noteId, existingQuestions } = req.body;
       const { env: userEnv } = req.query;
       let note;
@@ -86,7 +90,8 @@ flashCards.post(
       const flashCardsFromNotes = flashCardsFromNotesPrompt(
         noteData,
         count,
-        existingQuestions
+        existingQuestions,
+        lang
       );
       let topK = 50;
 

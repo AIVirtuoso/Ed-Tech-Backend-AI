@@ -16,6 +16,7 @@ import {
 } from '../helpers/promptTemplates';
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
+import { Languages } from 'src/types';
 
 const openAIconfig: OpenAIConfig = config.openai;
 
@@ -26,6 +27,7 @@ quizzes.post(
   validate(Schema.queryEmbeddingsSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const lang = req.query.lang as Languages;
       let { topic, count, subject, type } = req.body;
 
       let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
@@ -42,7 +44,8 @@ quizzes.post(
         count,
         difficulty,
         subject,
-        topic
+        topic,
+        lang
       );
 
       const response = await model.call(quizPrompt);
@@ -118,6 +121,7 @@ quizzes.post(
   validate(Schema.quizzesFromDocs),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const lang = req.query.lang as Languages;
       let { topic, count, studentId, documentId, type } = req.body;
 
       let additionalTopicContext = '';
@@ -168,7 +172,10 @@ quizzes.post(
       const quizzesFromDocs = quizzesFromDocsPrompt(
         JSON.stringify(docs),
         count,
-        type
+        type,
+        undefined,
+        undefined,
+        lang
       );
 
       const generateQuizzes = async (): Promise<any> => {
