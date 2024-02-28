@@ -1,3 +1,5 @@
+import { Languages } from 'src/types';
+
 type QuizType =
   | 'multipleChoiceSingle'
   | 'multipleChoiceMulti'
@@ -48,7 +50,8 @@ export const generalFlashcardPrompt = (
   subject: string,
   topic: string,
   blacklistedQuestions?: string[],
-  subTopics?: string[]
+  subTopics?: string[],
+  lang: Languages = 'English'
 ) => {
   const difficultyMap: any = {
     kindergarten: 'Easy',
@@ -70,6 +73,7 @@ export const generalFlashcardPrompt = (
       : '';
   return `You are a dedicated student tutor. Your task is to create study flashcards for your students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
  Output the flashcards in JSON format, with keys for 'question', 'answer', and 'explanation'.
+
  # Here is the Student Request Information:
  Subject: ${subject}
  Topic:  ${topic}
@@ -92,7 +96,7 @@ export const generalFlashcardPrompt = (
  - Hard: Frame questions that involve analysis or synthesis of information. These can include interpreting data, comparing and contrasting concepts, or explaining complex processes in detail.
  - Very Hard: Pose questions that require Require advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
  - Mixed: Include questions that focus on mixed difficulty level from Easy to Very Hard. These questions should range from the fundamental concepts, definitions, or simple processes to advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
- Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:\n\
+ Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself, where the value in the key-value pair MUST be in this language and this language only: ${lang}. no extra information:\n\
  {
    \"flashcards\": [
      {\"front\": \"...\", \"back\": \"...\", \"explainer\": \"...\", helpful reading: \"...\"}
@@ -161,7 +165,8 @@ export const chatWithNotePrompt = (note: string) => {
 export const flashCardsFromNotesPrompt = (
   note: string,
   count: number,
-  blacklistedQuestions?: string[]
+  blacklistedQuestions?: string[],
+  lang: Languages = 'English'
 ) => {
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
@@ -186,6 +191,8 @@ export const flashCardsFromNotesPrompt = (
     "explainer": "ELI5-type explanation of the answer that disambiguates the topic further",
     "helpful reading": "If there's related reading in the notes, include them. If not, omit this field."
   }
+
+  where the value in the key-value pair MUST be in this language and this language only: ${lang}.
   
   Finally, wrap the generated flashcards in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
@@ -304,16 +311,22 @@ export const generalQuizPrompt = (
   count: string,
   level: string,
   subject: string,
-  topic: string
+  topic: string,
+  lang: Languages = 'English'
 ) => {
   const optionsStructure = generateOptionsStructure(type);
 
   const basePrompt = `You are a quiz creator of highly diagnostic quizzes. You will make good low-stakes tests and diagnostics. 
     You will then ask ${count} questions for the ${topic} topic under ${subject}. Ensure the questions quiz the college student at a ${level} on that topic and are highly relevant, going beyond just facts.
-   At the end of the quiz, provide an answer key and explain the right answer. `;
+   At the end of the quiz, provide an answer key and explain the right answer.
+
+   `;
 
   return `${basePrompt} 
     ${optionsStructure}
+    
+    where the value in the key-value pair MUST be in this language and this language only: ${lang}.
+  
     Wrap the total flashcards generated in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
@@ -327,7 +340,8 @@ export const quizzesFromDocsPrompt = (
   count: number,
   type: QuizType = 'mixed',
   blacklistedQuestions?: string[],
-  subTopics?: string[]
+  subTopics?: string[],
+  lang: Languages = 'English'
 ) => {
   const optionsStructure = generateOptionsStructure(type);
 
@@ -349,10 +363,13 @@ export const quizzesFromDocsPrompt = (
   
   Make sure to formulate questions and options (if applicable) based on the information present in the document. Ensure that the quizzes are relevant, clear, and concise.
 
+  
   Use the following structures for each quiz type:
 
   ${optionsStructure}
 
+  where the value in the key-value pair MUST be in this language and this language only: ${lang}.
+  
   Wrap the total quizzes generated in an object, like this, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
