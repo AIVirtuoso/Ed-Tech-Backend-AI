@@ -37,6 +37,7 @@
     "@sentry/node": "^7.65.0",
     "@types/pdf-parse": "^1.1.4",
     "aws-sdk": "^2.1403.0",
+    "axios": "^1.6.7",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.12",
     "completions": "^2.7.0",
