@@ -59,7 +59,8 @@
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.2",
     "socket.io-stream": "^0.9.1",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/config": "^3.3.0",
