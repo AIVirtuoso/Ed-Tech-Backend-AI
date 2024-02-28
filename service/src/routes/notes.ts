@@ -589,7 +589,10 @@ notes.post(
       const extractorInfo = await localTextExtractor.extractText(documentURL);
 
       if (extractorInfo.status === 'success') {
-        if (extractorInfo.lineCount >= 20) {
+        if (extractorInfo.lineCount >= 20 && extractorInfo.wordCount >= 100) {
+          updateProgressLog(progressLogId, {
+            status: `This document has ${extractorInfo.wordCount}, and ${extractorInfo.lineCount} lines`
+          });
           text = extractorInfo.text;
         }
       }

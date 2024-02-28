@@ -6,6 +6,7 @@ class LocalPDFExtractor {
     status: string;
     lineCount: number;
     text: string;
+    wordCount: number;
     error?: string;
   }> {
     try {
@@ -19,10 +20,13 @@ class LocalPDFExtractor {
 
       // Count the number of lines
       const lineCount = text.split(/\r\n|\r|\n/).length;
+      const wordCount = text.replace(/\r\n|\r|\n/, '').trim().length;
+      console.log('Word count:', wordCount);
 
       return {
         status: 'success',
         lineCount: lineCount,
+        wordCount: wordCount,
         text: text
       };
     } catch (error: any) {
@@ -30,6 +34,7 @@ class LocalPDFExtractor {
       return {
         status: 'error',
         lineCount: 0,
+        wordCount: 0,
         text: '',
         error: error.message
       };
