@@ -2,6 +2,7 @@ const languages = [
   'English',
   'Spanish',
   'French',
+  'Mandarin',
   'Portuguese',
   'Ukranian',
   'Arabic',
