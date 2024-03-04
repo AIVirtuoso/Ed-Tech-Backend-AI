@@ -12,15 +12,90 @@ import { FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalQuizPrompt,
   quizzesFromDocsPrompt,
-  flashCardsFromNotesPrompt
+  flashCardsFromNotesPrompt,
+  quizzesCSVPrompt
 } from '../helpers/promptTemplates';
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
 import { Languages } from 'src/types';
+import { String } from 'aws-sdk/clients/cloudsearch';
 
 const openAIconfig: OpenAIConfig = config.openai;
 
 const quizzes = express.Router();
+
+type QuizType =
+  | 'multipleChoiceSingle'
+  | 'multipleChoiceMulti'
+  | 'trueFalse'
+  | 'openEnded';
+
+interface Option {
+  content: string;
+  isCorrect: boolean;
+}
+
+interface Quiz {
+  question: string;
+  type: QuizType;
+  options?: Option[];
+  answer?: string; // For openEnded questions
+}
+
+interface QuizzesContainer {
+  quizzes: Quiz[];
+}
+
+function csvToJson(csvString: string): QuizzesContainer {
+  const lines = csvString
+    .trim()
+    .split('\n')
+    .filter((line) => line);
+  const quizzes: Quiz[] = lines.map((line) => {
+    // Splitting while considering CSV specifics, ignoring commas inside quotes
+    const [question_id, type, question, optionsString, answer_index] = line
+      .split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
+      .map((item) => item.replace(/^"|"$/g, ''));
+
+    let options: Option[] = [];
+
+    if (type === 'multipleChoiceSingle' || type === 'multipleChoiceMulti') {
+      const optionsArray = optionsString.split('|');
+      options = optionsArray.map((option, index) => {
+        const isCorrect =
+          type === 'multipleChoiceMulti'
+            ? answer_index.split('|').map(Number).includes(index)
+            : Number(answer_index) === index;
+        return { content: option, isCorrect };
+      });
+    } else if (type === 'trueFalse') {
+      options = [
+        { content: 'True', isCorrect: answer_index === '0' },
+        { content: 'False', isCorrect: answer_index === '1' }
+      ];
+    }
+
+    const quiz: Quiz = {
+      question,
+      type: type as QuizType
+    };
+
+    if (
+      ['multipleChoiceSingle', 'multipleChoiceMulti', 'trueFalse'].includes(
+        type
+      )
+    ) {
+      quiz.options = options;
+    } else if (type === 'openEnded') {
+      // Assuming the answer might be directly in the answer_index for openEnded types
+      quiz.answer = answer_index;
+    }
+
+    return quiz;
+  });
+
+  return { quizzes: quizzes.slice(1) };
+}
 
 quizzes.post(
   '/students/:studentId',
@@ -39,7 +114,7 @@ quizzes.post(
       });
 
       // Replace with your quiz genewration logic based on the flashcard logic.
-      const quizPrompt = generalQuizPrompt(
+      const quizPrompt = quizzesCSVPrompt(
         type,
         count,
         difficulty,
@@ -49,7 +124,9 @@ quizzes.post(
       );
 
       const response = await model.call(quizPrompt);
-      res.send(JSON.parse(response));
+      console.log(response);
+      const result = csvToJson(response);
+      res.send(result);
       res.end();
     } catch (e) {
       next(e);
