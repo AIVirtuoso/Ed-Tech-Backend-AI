@@ -421,6 +421,6 @@ export const quizzesCSVPrompt = (
   3,"multipleChoiceMulti","Select all the properties of water.","Polar molecule|High specific heat|Non-polar molecule|Acts as a solvent for ionic substances","0|1|2"
   4,"openEnded","Explain why water is a universal solvent.","","Water's polarity allows it to effectively dissolve both ionic compounds and other polar molecules, making it an exceptionally versatile solvent."
   
-  Now, based on the user's quiz style and the specified parameters, generate ${count} ${type} type quiz questions and answers on the topic of ${topic} in ${lang}, each adhering to the designated type.
+  Now, based on the user's quiz style and the specified parameters, generate ${count} ${type} type quiz questions and answers on the topic of ${topic} , each adhering to the designated type. Where the value for question, options, and answer_index must be MUST be in this language and this language only: ${lang}.
   `;
 };

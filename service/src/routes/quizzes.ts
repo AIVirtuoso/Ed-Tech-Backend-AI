@@ -15,10 +15,10 @@ import {
   flashCardsFromNotesPrompt,
   quizzesCSVPrompt
 } from '../helpers/promptTemplates';
+import { getTrueFalseWordsInLanguage } from '../helpers/languageHelpers';
 import extractTextFromJson from '../helpers/parseNote';
 import fetchNote from '../helpers/getNote';
-import { Languages } from 'src/types';
-import { String } from 'aws-sdk/clients/cloudsearch';
+import { Languages } from '../types';
 
 const openAIconfig: OpenAIConfig = config.openai;
 
@@ -46,7 +46,10 @@ interface QuizzesContainer {
   quizzes: Quiz[];
 }
 
-function csvToJson(csvString: string): QuizzesContainer {
+function csvToJson(
+  csvString: string,
+  language: Languages = 'English'
+): QuizzesContainer {
   const lines = csvString
     .trim()
     .split('\n')
@@ -69,9 +72,10 @@ function csvToJson(csvString: string): QuizzesContainer {
         return { content: option, isCorrect };
       });
     } else if (type === 'trueFalse') {
+      const { trueWord, falseWord } = getTrueFalseWordsInLanguage(language);
       options = [
-        { content: 'True', isCorrect: answer_index === '0' },
-        { content: 'False', isCorrect: answer_index === '1' }
+        { content: trueWord, isCorrect: answer_index === '0' },
+        { content: falseWord, isCorrect: answer_index === '1' }
       ];
     }
 
@@ -124,8 +128,7 @@ quizzes.post(
       );
 
       const response = await model.call(quizPrompt);
-      console.log(response);
-      const result = csvToJson(response);
+      const result = csvToJson(response, lang);
       res.send(result);
       res.end();
     } catch (e) {
