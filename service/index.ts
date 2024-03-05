@@ -267,7 +267,7 @@ docChatNamespace.on('connection', async (socket) => {
 
     let chain = docChatChain(event, topK);
 
-    const question = `Using context from the PDF document supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, exciting and informative. Be charming and have a personality.
+    const question = `Using context from the PDF document supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, concise, academic and warm.
     
     Suggest follow-up discussions based on the information, and format them in bullet points of three discussions.
     
