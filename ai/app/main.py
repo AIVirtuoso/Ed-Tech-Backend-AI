@@ -1,10 +1,13 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from .dependencies.auth import check_shepherd_header
+from .dependencies.auth import ShepherdHeaderMiddleware
 from .routers import items
 from .db.database import create_db_and_tables
+from dotenv import load_dotenv, find_dotenv
 
-app = FastAPI(depends=[Depends(check_shepherd_header)])
+load_dotenv(find_dotenv()) 
+
+app = FastAPI()
 
 origins = [
     "*"
@@ -17,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(ShepherdHeaderMiddleware)
 
 app.include_router(items.router)
 

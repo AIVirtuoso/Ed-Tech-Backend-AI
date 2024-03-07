@@ -1,1 +1,4 @@
 .env.*
+.env
+# Ignore __pycache__ folders from all subfolders
+**/__pycache__/
