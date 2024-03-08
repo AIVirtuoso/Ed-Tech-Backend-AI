@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from .dependencies.auth import ShepherdHeaderMiddleware
-from .routers import items
+from .routers import items, maths
 from .db.database import create_db_and_tables
 from dotenv import load_dotenv, find_dotenv
 
@@ -24,7 +24,7 @@ app.add_middleware(
 app.add_middleware(ShepherdHeaderMiddleware)
 
 app.include_router(items.router)
-
+app.include_router(maths.router)
 # @app.on_event("startup")
 # def on_startup():
 #     create_db_and_tables()
