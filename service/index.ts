@@ -122,6 +122,7 @@ const socketAiModel = (socket: any, event: string, model?: string) => {
   return new ChatOpenAI({
     openAIApiKey: apikey,
     modelName: model || modelName,
+    frequencyPenalty: 0.15,
     streaming: true,
     callbacks: [
       {
@@ -181,7 +182,8 @@ docChatNamespace.on('connection', async (socket) => {
     const model = socketAiModel(socket, event);
 
     const llm = new ChatOpenAI({
-      openAIApiKey: apikey
+      openAIApiKey: apikey,
+      frequencyPenalty: 0.15
     });
 
     const chain = ConversationalRetrievalQAChain.fromLLM(
@@ -267,7 +269,7 @@ docChatNamespace.on('connection', async (socket) => {
 
     let chain = docChatChain(event, topK);
 
-    const question = `Using context from the PDF document supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief, concise, academic and warm.
+    const question = `Using context from the PDF document supplied and the chat history provided, answer any questions the user asks — never make one up outside of the information provided. Make your answers brief and informative. Use a serious and concise tone.
     
     Suggest follow-up discussions based on the information, and format them in bullet points of three discussions.
     
