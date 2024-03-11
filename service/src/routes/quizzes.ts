@@ -107,7 +107,7 @@ quizzes.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const lang = req.query.lang as Languages;
-      let { topic, count, subject, type } = req.body;
+      let { topic, count, subject, type, grade } = req.body;
 
       let difficulty = req.body?.difficulty || FLASHCARD_DIFFICULTY.COLLEGE;
 
@@ -124,7 +124,8 @@ quizzes.post(
         difficulty,
         subject,
         topic,
-        lang
+        lang,
+        grade
       );
 
       const response = await model.call(quizPrompt);

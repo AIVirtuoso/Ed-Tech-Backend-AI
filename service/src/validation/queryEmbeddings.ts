@@ -9,7 +9,7 @@ const queryEmbeddingsSchema = z.object({
       subject: z.string({
         required_error: 'Subject required'
       }),
-
+      grade: z.string({}).optional(),
       difficulty: z
         .enum([
           'kindergarten',

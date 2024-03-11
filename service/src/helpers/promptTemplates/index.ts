@@ -51,7 +51,8 @@ export const generalFlashcardPrompt = (
   topic: string,
   blacklistedQuestions?: string[],
   subTopics?: string[],
-  lang: Languages = 'English'
+  lang: Languages = 'English',
+  grade?: string
 ) => {
   const difficultyMap: any = {
     kindergarten: 'Easy',
@@ -71,7 +72,7 @@ export const generalFlashcardPrompt = (
           ','
         )}, you should only ask questions that relate to the subtopics`
       : '';
-  return `You are a dedicated student tutor. Your task is to create study flashcards for your students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
+  return `You are a dedicated student tutor. Your task is to create study flashcards for your ${`${grade} grade`} students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
  Output the flashcards in JSON format, with keys for 'question', 'answer', and 'explanation'.
 
  # Here is the Student Request Information:
@@ -390,7 +391,8 @@ export const quizzesCSVPrompt = (
   level: string,
   subject: string,
   topic: string,
-  lang: Languages = 'English'
+  lang: Languages = 'English',
+  grade?: string
 ) => {
   const difficultyMap: any = {
     kindergarten: 'Easy',
@@ -402,7 +404,9 @@ export const quizzesCSVPrompt = (
   };
   level = difficultyMap[level] || level;
   return `
-  Your task is to construct a well-structured set of ${count} quiz questions and answers to assist a student in their exam preparation for ${topic} in ${subject}. Ensure the questions quiz the are highly relevant to the topic, going beyond just facts and are at ${level} difficulty.
+  Your task is to construct a well-structured set of ${count} quiz questions and answers to assist a ${
+    grade || ''
+  } student in their exam preparation for ${topic} in ${subject}. Ensure the questions quiz the are highly relevant to the topic, going beyond just facts and are at ${level} difficulty.
 Adhere to the output format below and follow these guidelines:
   - Create a variety of question types according to the specified quiz type
   - Do not ask the exact same questions in the users quiz.
