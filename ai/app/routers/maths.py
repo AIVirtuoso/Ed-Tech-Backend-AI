@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from enum import Enum
@@ -6,7 +6,7 @@ import os
 import requests
 from xml.etree import ElementTree as ET
 from urllib.parse import quote
-
+from ..dependencies.fermata import get_aitutor_chat_balance
 
 class Languages(Enum):
     ENGLISH = "English"
@@ -39,7 +39,7 @@ class StudentConversation(BaseModel):
 router = APIRouter(
     prefix="/maths",
     tags=["maths"],
-    responses={404: {"description": "Not found"}},
+    responses={404: {"description": "Not found"}}
 )
 def stream_chunks(text: str, chunk_size: int = 50):
     """Generator function to chunk text into smaller parts."""
