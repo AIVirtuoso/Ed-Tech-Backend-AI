@@ -1,12 +1,14 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from enum import Enum
 import os 
 import requests
 from xml.etree import ElementTree as ET
+from typing import List, Optional, Dict, Union
 from urllib.parse import quote
 from ..dependencies.fermata import get_aitutor_chat_balance
+from ..dependencies.check_subscription import ShepherdSubscriptionMiddleware
 
 class Languages(Enum):
     ENGLISH = "English"
@@ -35,12 +37,15 @@ class StudentConversation(BaseModel):
     documentId: str
     firebaseId: str
     language: Languages
+    messages: List[Dict[str, Union[Optional[str], str]]]
 
 router = APIRouter(
     prefix="/maths",
     tags=["maths"],
     responses={404: {"description": "Not found"}}
 )
+
+
 def stream_chunks(text: str, chunk_size: int = 50):
     """Generator function to chunk text into smaller parts."""
     for i in range(0, len(text), chunk_size):
