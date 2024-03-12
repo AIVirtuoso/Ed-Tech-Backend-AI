@@ -1,6 +1,7 @@
 import urllib
 import requests
 from xml.etree import ElementTree as ET
+from fastapi import HTTPException
 
 def call_wolfram(eqn):
     appid = "64H4TG-A5ULUU5E7X"
@@ -27,7 +28,8 @@ def call_wolfram(eqn):
       if solution_pod is not None:
         #print('here')
         solution_text = solution_pod.text
+        return solution_text if solution_text else "No solution found."
       else:
-        print("Solution pod not found in response")
-
-    return solution_text
+        raise HTTPException(status_code=400, detail="Solution pod not found in response")
+    else: 
+     raise HTTPException(status_code=400, detail=f"Error fetching: {response.status_code}")   
