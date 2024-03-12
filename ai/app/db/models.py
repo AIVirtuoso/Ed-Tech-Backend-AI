@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, SQLModel, Relationship, JSON, Column
 from typing import List, Optional
 from datetime import datetime
 
@@ -15,19 +15,21 @@ class Conversations(SQLModel, table=True):
     reference: str = Field(default="document", enum=["student", "document", "note"], nullable=False)
     referenceId: str = Field(default=None, nullable=False)
 
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updated_at: datetime | None = Field(default=None, nullable=True)
-    deleted_at: datetime | None = Field(default=None, nullable=True)
+    createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    updatedAt: datetime | None = Field(default=None, nullable=True)
+    deletedAt: datetime | None = Field(default=None, nullable=True)
 
 class ChatLog(SQLModel, table=True):
     __tablename__ = "ChatLog"
     studentId: str = Field(default=None, nullable=False)
-    log: dict = Field(default=None, nullable=False)
     liked: bool = Field(default=False)
     disliked: bool = Field(default=False)
     isPinned: bool = Field(default=False)
     conversationId: Optional[int] = Field(default=None, foreign_key="Conversations.id")
     conversation: Conversations = Relationship(backpopulates="ChatLog")
+    log: dict = Field(default={}, sa_column=Column(JSON))
+    
+  
 
 
 class Document(SQLModel, table=True):
