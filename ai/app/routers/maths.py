@@ -61,6 +61,7 @@ async def wolfram_maths_response(body: StudentConversation):
     print(body)
     # may be worth creating like an add_msgs list that;s the tc response and user query to save to db
     # as well as ChatGPT responses or have the user pass that ? 
+    # ideally to save stream response just have a variable and += before yielding 
     messages =  [] if len(body.messages) == 0  else body.messages
     steps = ''
     # first chat initiation 
