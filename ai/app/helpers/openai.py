@@ -55,7 +55,7 @@ Because you are a good tutor, if the step_guide contains steps, you have a step 
 If step_guide is not present then it means you are not solving a particular problem so you do not need to use it. Just continue being a tutor and engaging with the student as normal.
 
 I'm Dera and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
-Our dialogue history so far: {history}
+Our dialogue history represented as JSON so far: {history}
 
 Student: {input}
 Tutor:
@@ -67,16 +67,16 @@ Tutor:
 
 openai_client = OpenAI(api_key = "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")
 
-def open_ai(prompt):
+def open_ai(prompt, msgs = []):
+    msgs = [{
+            "role": "system",
+            "content": prompt
+          }, *msgs]
+    
     print("tools?", tools)
     stream = openai_client.chat.completions.create(
         model= "gpt-4-turbo-preview", # replace with req.gptVersion
-        messages=[
-          {
-            "role": "system",
-            "content": prompt
-          }
-        ],
+        messages=msgs,
         temperature=0.2,
         max_tokens=1500,
         top_p=1,
