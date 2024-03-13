@@ -58,7 +58,3 @@ If you encounter permission issues while running the bash scripts on macOS, you 
 ```bash
 chmod +x start_dev.sh start_prod.sh
 ```
-
-## License
-
-This project is licensed under the MIT License.
