@@ -39,7 +39,7 @@ class StudentConversation(BaseModel):
     firebaseId: str
     language: Languages
     messages: List[Dict[str, Union[Optional[str], str]]]
-    current_msg: str
+    
 
 router = APIRouter(
     prefix="/maths",
@@ -72,7 +72,7 @@ async def wolfram_maths_response(body: StudentConversation):
     # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
     async def stream_generator():
       
-      prompt = sys_prompt(body.topic, body.level, body.messages, body.current_msg, steps)
+      prompt = sys_prompt(body.topic, body.level, body.messages, body.query, steps)
       stream = open_ai(prompt, body.messages)
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
@@ -109,7 +109,8 @@ async def wolfram_maths_response(body: StudentConversation):
         #   # keep going?
         #   pass
       # may be as simple as just going through other stream?
-      stream = open_ai(prompt, messages)
+      updated_prompt = sys_prompt(body.topic, body.level, messages, body.query, steps)
+      stream = open_ai(updated_prompt, messages)
       for chunk in stream:
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
