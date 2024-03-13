@@ -17,12 +17,16 @@ Before running the FastAPI server, ensure that you have the following installed:
 - Docker
 - Docker Compose
 
+I would recommend [Orbstack](https://orbstack.dev), it's lightweight and requires only installation.
+
+For API consumption I would recommend, [HTTPie](https://httpie.io).
+
 ## Getting Started
 
 ### Development Environment
 
 To start the FastAPI server in the development environment, run the following command:
-./start_dev.sh
+`./start_dev.sh`
 
 This command will use Docker Compose to build the development Docker image and start the server. The server will be accessible at http://localhost:8000.
 
