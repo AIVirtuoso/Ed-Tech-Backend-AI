@@ -21,19 +21,33 @@ I would recommend [Orbstack](https://orbstack.dev), it's lightweight and require
 
 For API consumption I would recommend, [HTTPie](https://httpie.io).
 
+> API calls must come with an X-Shepherd-Header.
+
 ## Getting Started
 
 ### Development Environment
 
-To start the FastAPI server in the development environment, run the following command:
-`./start_dev.sh`
+To start the FastAPI server in the development environment, first fill in the environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Then run the following command:
+
+```bash
+./start_dev.sh
+```
 
 This command will use Docker Compose to build the development Docker image and start the server. The server will be accessible at http://localhost:8000.
 
 ### Production Environment
 
 To start the FastAPI server in the production environment, run the following command:
+
+```bash
 ./start_prod.sh
+```
 
 This command will use Docker Compose to build the production Docker image and start the server. The server will be accessible at http://localhost:80.
 
