@@ -59,6 +59,8 @@ def stream_openai_chunks(chunks: str):
 @router.post("/")
 async def wolfram_maths_response(body: StudentConversation): 
     print(body)
+    # may be worth creating like an add_msgs list that;s the tc response and user query to save to db
+    # as well as ChatGPT responses or have the user pass that ? 
     messages =  [] if len(body.messages) == 0  else body.messages
     steps = ''
     # first chat initiation 
@@ -70,18 +72,18 @@ async def wolfram_maths_response(body: StudentConversation):
       return StreamingResponse(stream_openai_chunks(stream), media_type="text/event-stream")
 
     # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
-    async def stream_generator():
-      
+    async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       prompt = sys_prompt(body.topic, body.level, body.messages, body.query, steps)
+      print("PROMPT –", prompt)
       stream = open_ai(prompt, body.messages)
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
       tool_call_id = None
       for chunk in stream: 
-        if chunk.choices[0].delta.content:
+        if chunk.choices[0].delta.content is not None:
+          print(chunk.choices[0].delta.content, end="", flush=True)
           yield chunk.choices[0].delta.content
         if chunk.choices[0].delta.tool_calls:
-          print("placeholder")
           for tc in chunk.choices[0].delta.tool_calls:
                 if tc.id:  # New tool call detected here
                     tool_call_id = tc.id
@@ -105,19 +107,18 @@ async def wolfram_maths_response(body: StudentConversation):
                 except json.JSONDecodeError:
                     # Incomplete JSON; continue accumulating
                     pass
-        # else: 
-        #   # keep going?
-        #   pass
+       
       # may be as simple as just going through other stream?
       updated_prompt = sys_prompt(body.topic, body.level, messages, body.query, steps)
       stream = open_ai(updated_prompt, messages)
       for chunk in stream:
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
+              print("outeer chunk")
               print(chunk.choices[0].delta.content, end="", flush=True)
               yield current_content
     
-    return StreamingResponse(stream_generator, media_type="text/event-stream")
+    return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
       
         
       

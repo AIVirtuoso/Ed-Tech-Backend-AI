@@ -73,7 +73,7 @@ def open_ai(prompt, msgs = []):
             "content": prompt
           }, *msgs]
     
-    print("tools?", tools)
+    
     stream = openai_client.chat.completions.create(
         model= "gpt-4-turbo-preview", # replace with req.gptVersion
         messages=msgs,
@@ -85,7 +85,7 @@ def open_ai(prompt, msgs = []):
         tools=tools,
         stream=True
       )
-    print("THE FUCKING STREAM",stream)
+    
     return stream
 
 
