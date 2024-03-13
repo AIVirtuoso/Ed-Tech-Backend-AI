@@ -5,10 +5,8 @@ from enum import Enum
 import json
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
-from urllib.parse import quote
 from ..dependencies.fermata import get_aitutor_chat_balance
-from ..dependencies.check_subscription import ShepherdSubscriptionMiddleware
-from ..helpers.openai import open_ai, steps_agent, sys_prompt
+from ..helpers.openai import open_ai, sys_prompt
 from ..helpers.wolfram import call_wolfram
 
 class Languages(Enum):
