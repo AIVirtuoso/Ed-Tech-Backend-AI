@@ -21,7 +21,7 @@ I would recommend [Orbstack](https://orbstack.dev), it's lightweight and require
 
 For API consumption I would recommend, [HTTPie](https://httpie.io).
 
-> API calls must come with an X-Shepherd-Header.
+> API calls must come with an X-Shepherd-Header whose value is in the .env
 
 ## Getting Started
 
