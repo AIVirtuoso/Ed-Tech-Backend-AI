@@ -54,7 +54,10 @@ This command will use Docker Compose to build the production Docker image and st
 ## Note for macOS Users
 
 If you encounter permission issues while running the bash scripts on macOS, you may need to give executable permissions to the scripts. You can do this by running the following commands:
+
+```bash
 chmod +x start_dev.sh start_prod.sh
+```
 
 ## License
 
