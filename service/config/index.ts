@@ -1,4 +1,8 @@
 const config = {
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
+  },
   openai: {
     apikey: process.env.OPENAI_APIKEY as string,
     model: process.env.OPENAI_MODEL as string
