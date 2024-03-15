@@ -9,6 +9,7 @@
     "test": "ava",
     "start": "node build/index.js",
     "dev": "cross-env NODE_ENV=development npx nodemon",
+    "migrate": "cross-env NODE_ENV=development npx sequelize db:migrate",
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
