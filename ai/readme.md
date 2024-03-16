@@ -25,12 +25,24 @@ For API consumption I would recommend, [HTTPie](https://httpie.io).
 
 ## Getting Started
 
-### Development Environment
-
-To start the FastAPI server in the development environment, first fill in the environment variables:
+Clone the repository via:
 
 ```bash
-cp .env.example .env
+git clone https://github.com/shepherdtutors/shepherd-ai.git
+```
+
+### Development Environment
+
+Checkout to the `rebuild-ai-wolf` branch and pull changes as it contains the FastAPI server:
+
+```bash
+git checkout rebuild-ai-wolf && git pull origin rebuild-ai-wolf
+```
+
+To start the FastAPI server in the development environment, first go to the AI folder & fill in the environment variables:
+
+```bash
+cd ai && cp .env.example .env
 ```
 
 Then run the following command:
