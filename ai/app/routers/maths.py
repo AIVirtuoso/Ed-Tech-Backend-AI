@@ -128,10 +128,10 @@ async def wolfram_maths_response(body: StudentConversation):
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
-      if len(assistant_resp) is not 0 and assistant_resp is not None: 
+      if len(assistant_resp) != 0 and assistant_resp is not None: 
         assistant_msg = wrap_for_ql('assistant', assistant_resp)
       
-      if len(assistant_resp_for_tc) is not 0 and assistant_resp_for_tc is not None: 
+      if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
         assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc)
       
       if tc.get("role") == "function":
