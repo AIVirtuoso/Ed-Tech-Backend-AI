@@ -3,6 +3,7 @@ import { initializeApp, getApps } from 'firebase-admin/app';
 import config from '../../config/index';
 import { OpenAI } from 'langchain/llms/openai';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
+import LocalPDFExtractor from './localExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalFlashcardPrompt,
@@ -74,6 +75,19 @@ class ProcessStudyPlanService {
         if (fileUrl) {
           console.log('Has file url');
           try {
+            const localExtractor = new LocalPDFExtractor();
+
+            const extractorInfo = await localExtractor.extractText(fileUrl);
+
+            if (extractorInfo.status === 'success') {
+              if (
+                extractorInfo.lineCount >= 20 &&
+                extractorInfo.wordCount >= 100
+              ) {
+                supportingText = extractorInfo.text;
+              }
+            }
+
             const url = new URL(fileUrl);
             const pathSegments = url.pathname
               .split('/')
@@ -95,8 +109,8 @@ class ProcessStudyPlanService {
             const jobId = await pdfTextExtractor.extractTextFromPDF(fileUrl);
 
             const text = await pdfTextExtractor.getTextFromJob(jobId);
-            console.log(text);
             await pdfTextExtractor.storeJobDetailsInDynamoDB(fileUrl, text);
+            supportingText = text;
           } catch (error: any) {
             console.log(error);
             await this.db.ref(`study-plan-resource-queue/${jobId}`).update({
