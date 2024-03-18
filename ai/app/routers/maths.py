@@ -82,29 +82,36 @@ async def wolfram_maths_response(body: StudentConversation):
     # i.e. pls don't append the new message to the list before sending, can do it after
     async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       last_system_message = messages[-1]
-      if last_system_message["is_solved"] == 'False':
+      if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
+        print("last system message", last_system_message)
         assistant_resp_for_tc = ''
         # grab the steps from messages 
         tc = find_tc_in_messages(messages)
-        steps = tc["func_response"]
+        steps = tc["content"]
+        updated_messages = [{k: v for k, v in d.items() if k != 'is_solved'} for d in messages]
+        print(updated_messages)
+        print("the steps", steps)
         if len(steps) != 0:
-          updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps)
-          stream = open_ai(updated_prompt, messages)
+          updated_prompt = math_prompt(body.topic, body.level, updated_messages, body.query, steps)
+          stream = open_ai(updated_prompt, updated_messages)
           for chunk in stream:
               current_content = chunk.choices[0].delta.content
               if current_content is not None:
-                print("outeer chunk")
-                print(chunk.choices[0].delta.content, end="", flush=True)
+                # print("outeer chunk")
+                # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tc += chunk.choices[0].delta.content
                 yield current_content
         # below save all to db 
        
         user_msg = wrap_for_ql('user', body.query)  
-       
+        print(user_msg)
         if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
           history = build_chat_history(assistant_resp_for_tc, body.query)
-          is_solved = steps_agent(history, steps)
+          updated_messages.append(user_msg)
+          updated_messages.append({"role": "assistant", "content": assistant_resp_for_tc})
+          is_solved = steps_agent(updated_messages, steps)
           assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+          print(assistant_msg)
         return
       
       assistant_resp = ''
@@ -130,6 +137,7 @@ async def wolfram_maths_response(body: StudentConversation):
                 # When the accumulated JSON string seems complete then:
                 try:
                     func_args = json.loads(tool_call_accumulator)
+                    print("ARGS", func_args)
                     function_name = tc.function.name if tc.function.name else "get_math_solution"
                     # Call the corresponding function that we defined and matches what is in the available functions
                     func_response = json.dumps(available_functions[function_name](**func_args))
@@ -155,16 +163,17 @@ async def wolfram_maths_response(body: StudentConversation):
         for chunk in stream:
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
-              print("outeer chunk")
-              print(chunk.choices[0].delta.content, end="", flush=True)
+              #print("outeer chunk")
+              #print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
+      print(user_msg)
       if tc.get("role") == "function":
         # save tc 
-        print(tc)
+        print("tool call",tc)
       
       if len(assistant_resp) != 0 and assistant_resp is not None: 
         assistant_msg = wrap_for_ql('assistant', assistant_resp)
@@ -173,6 +182,7 @@ async def wolfram_maths_response(body: StudentConversation):
         history = build_chat_history(assistant_resp_for_tc, body.query)
         is_solved = steps_agent(history, steps)
         assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+        print(assistant_msg)
       
         
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")

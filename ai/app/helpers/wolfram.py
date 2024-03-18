@@ -3,9 +3,9 @@ import requests
 from xml.etree import ElementTree as ET
 from fastapi import HTTPException
 
-def call_wolfram(eqn):
+def call_wolfram(equation: str):
     appid = "64H4TG-A5ULUU5E7X"
-    query = urllib.parse.quote_plus(eqn)
+    query = urllib.parse.quote_plus(equation)
     #print(query)
     query_url = f"http://api.wolframalpha.com/v2/query?" \
                 f"appid={appid}" \
