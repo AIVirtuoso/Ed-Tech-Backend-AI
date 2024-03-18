@@ -6,9 +6,9 @@ import json
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance
-from ..helpers.openai import open_ai, sys_prompt
+from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent
 from ..helpers.wolfram import call_wolfram
-from ..helpers.wrap import wrap_for_ql
+from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
 
 class Languages(Enum):
     ENGLISH = "English"
@@ -54,29 +54,63 @@ def stream_openai_chunks(chunks: str):
             if current_content is not None:
               yield current_content
 
+def chunk_text(text: str, chunk_size=50):
+    """Generator function to chunk text into smaller parts."""
+    for i in range(0, len(text), chunk_size):
+        yield text[i:i + chunk_size]
+
 # idea would be GET to get the conversation id and then route and post. 
 @router.post("/")
+
 async def wolfram_maths_response(body: StudentConversation): 
     print(body)
-    # may be worth creating like an add_msgs list that;s the tc response and user query to save to db
-    # as well as ChatGPT responses or have the user pass that ? 
-    # ideally to save stream response just have a variable and += before yielding 
+
     messages =  [] if len(body.messages) == 0  else body.messages
     steps = ''
     # first chat initiation 
     if len(body.messages) == 0: 
-      prompt = sys_prompt(body.topic, body.level,body.messages, '', steps)
+      prompt = sys_prompt(body.topic, body.level,body.messages, '')
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
       return StreamingResponse(stream_openai_chunks(stream), media_type="text/event-stream")
 
     # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
+    # messages is from the user and is always the updated messages from BE, we could leverage TS Query, once the POST
+    # stream is done, SWR the messages 
+    # or much simply just ensure the FE sends messages minus users last 
+    # i.e. pls don't append the new message to the list before sending, can do it after
     async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
+      last_system_message = messages[-1]
+      if last_system_message["is_solved"] == 'False':
+        assistant_resp_for_tc = ''
+        # grab the steps from messages 
+        tc = find_tc_in_messages(messages)
+        steps = tc["func_response"]
+        if len(steps) != 0:
+          updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps)
+          stream = open_ai(updated_prompt, messages)
+          for chunk in stream:
+              current_content = chunk.choices[0].delta.content
+              if current_content is not None:
+                print("outeer chunk")
+                print(chunk.choices[0].delta.content, end="", flush=True)
+                assistant_resp_for_tc += chunk.choices[0].delta.content
+                yield current_content
+        # below save all to db 
+       
+        user_msg = wrap_for_ql('user', body.query)  
+       
+        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
+          history = build_chat_history(assistant_resp_for_tc, body.query)
+          is_solved = steps_agent(history, steps)
+          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+        return
+      
       assistant_resp = ''
       assistant_resp_for_tc = ''
-      tc_func = dict()
-      prompt = sys_prompt(body.topic, body.level, body.messages, body.query, steps)
+      
+      prompt = sys_prompt(body.topic, body.level, body.messages, body.query)
       print("PROMPT –", prompt)
       stream = open_ai(prompt, body.messages)
       available_functions = {"get_math_solution": call_wolfram}
@@ -107,7 +141,7 @@ async def wolfram_maths_response(body: StudentConversation):
                         "name": function_name,
                         "content": func_response,
                     }
-                    tc_func = new_msg
+                    
                     messages.append(new_msg)
                     tool_call_accumulator = ""  # Reset for the next tool call
                 except json.JSONDecodeError:
@@ -115,8 +149,8 @@ async def wolfram_maths_response(body: StudentConversation):
                     pass
        
       # may be as simple as just going through other stream?
-      if len(steps) is not 0:
-        updated_prompt = sys_prompt(body.topic, body.level, messages, body.query, steps)
+      if len(steps) != 0:
+        updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps)
         stream = open_ai(updated_prompt, messages)
         for chunk in stream:
             current_content = chunk.choices[0].delta.content
@@ -128,15 +162,18 @@ async def wolfram_maths_response(body: StudentConversation):
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
+      if tc.get("role") == "function":
+        # save tc 
+        print(tc)
+      
       if len(assistant_resp) != 0 and assistant_resp is not None: 
         assistant_msg = wrap_for_ql('assistant', assistant_resp)
       
       if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-        assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc)
+        history = build_chat_history(assistant_resp_for_tc, body.query)
+        is_solved = steps_agent(history, steps)
+        assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
       
-      if tc.get("role") == "function":
-        # save tc 
-        print(tc)
         
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
       
