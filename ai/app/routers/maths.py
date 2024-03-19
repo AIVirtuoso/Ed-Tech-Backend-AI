@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
+from sqlmodel import Session
 from enum import Enum
 import json
 from xml.etree import ElementTree as ET
@@ -9,7 +10,8 @@ from ..dependencies.fermata import get_aitutor_chat_balance
 from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
-
+from ..db.database import create_engine
+from ..db.models import ChatLog, Conversations
 class Languages(Enum):
     ENGLISH = "English"
     SPANISH = "Spanish"
@@ -102,16 +104,16 @@ async def wolfram_maths_response(body: StudentConversation):
                 assistant_resp_for_tc += chunk.choices[0].delta.content
                 yield current_content
         # below save all to db 
-       
-        user_msg = wrap_for_ql('user', body.query)  
+        user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
-        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-          history = build_chat_history(assistant_resp_for_tc, body.query)
-          updated_messages.append(user_msg)
-          updated_messages.append({"role": "assistant", "content": assistant_resp_for_tc})
-          is_solved = steps_agent(updated_messages, steps)
-          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-          print(assistant_msg)
+        with Session(engine) as session:
+            if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
+              history = build_chat_history(assistant_resp_for_tc, body.query)
+              updated_messages.append(user_msg)
+              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tc})
+              is_solved = steps_agent(updated_messages, steps)
+              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+              print(assistant_msg)
         return
       
       assistant_resp = ''
