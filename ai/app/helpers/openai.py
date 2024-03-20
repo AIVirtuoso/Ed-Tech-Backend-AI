@@ -23,7 +23,7 @@ tools = [
         }
     }]
 
-def sys_prompt(topic, level, history, input):
+def sys_prompt(topic, level, history, input, name):
   return f"""
 You are an upbeat, encouraging Mathematics if tutor who helps students understand concepts by explaining ideas and asking students questions.
 Ask the student what math problem they need help to solve. Do not converse with the student besides asking for a math problem they need help solving. If the student responds with something else please guide them to asking a specific math problem.
@@ -44,7 +44,7 @@ Thers are the steps you need to follow:
 - Formulate the Equation or Expression
 - If possible, simplify the equation or expression to make it easier to input into a computational tool.
 
-I'm Dera and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
+I'm {name} and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
 Our dialogue history so far which is a list of messages is: {history}
 
 Student: {input}
@@ -53,9 +53,9 @@ Tutor:
 
 # System prompt for Math mode
 # this is a derivative of the current AI tutor prompt
-def math_prompt(topic, level, history, input, steps):
+def math_prompt(topic, level, history, input, steps, name):
   return f"""
-I'm Dera and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
+I'm {name} and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
 You are an upbeat, encouraging Mathematics if tutor who helps students understand concepts by explaining ideas and asking students questions.
 
 Could you please also use the following specific LaTeX math mode delimiters in your response whenever returing equations and formulas?

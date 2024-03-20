@@ -98,7 +98,7 @@ async def wolfram_maths_response(body: StudentConversation):
     
     # first chat initiation 
     if len(body.messages) == 0: 
-      prompt = sys_prompt(body.topic, body.level,body.messages, '')
+      prompt = sys_prompt(body.topic, body.level,body.messages, '', body.name)
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
@@ -121,7 +121,7 @@ async def wolfram_maths_response(body: StudentConversation):
         print(updated_messages)
         print("the steps", steps)
         if len(steps) != 0:
-          updated_prompt = math_prompt(body.topic, body.level, updated_messages, body.query, steps)
+          updated_prompt = math_prompt(body.topic, body.level, updated_messages, body.query, steps, body.name)
           stream = open_ai(updated_prompt, updated_messages)
           for chunk in stream:
               current_content = chunk.choices[0].delta.content
@@ -153,7 +153,7 @@ async def wolfram_maths_response(body: StudentConversation):
       assistant_resp = ''
       assistant_resp_for_tc = ''
       
-      prompt = sys_prompt(body.topic, body.level, body.messages, body.query)
+      prompt = sys_prompt(body.topic, body.level, body.messages, body.query, body.name)
       print("PROMPT –", prompt)
       stream = open_ai(prompt, body.messages)
       available_functions = {"get_math_solution": call_wolfram}
@@ -194,7 +194,7 @@ async def wolfram_maths_response(body: StudentConversation):
        
       # may be as simple as just going through other stream?
       if len(steps) != 0:
-        updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps)
+        updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps, body.name)
         stream = open_ai(updated_prompt, messages)
         for chunk in stream:
             current_content = chunk.choices[0].delta.content
