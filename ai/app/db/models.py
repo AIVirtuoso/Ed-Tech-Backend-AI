@@ -11,7 +11,7 @@ class Conversations(SQLModel, table=True):
     level: str | None = Field(default=None)
     language: str = Field(default="English")
 
-    ChatLog: List["ChatLog"] = Relationship(back_populates="Conversations")
+    ChatLog: List["ConversationLogs"] = Relationship(back_populates="Conversations")
     reference: str = Field(default="document", enum=["student", "document", "note"], nullable=False)
     referenceId: str = Field(default=None, nullable=False)
 
@@ -19,14 +19,14 @@ class Conversations(SQLModel, table=True):
     updatedAt: datetime | None = Field(default=None, nullable=True)
     deletedAt: datetime | None = Field(default=None, nullable=True)
 
-class ChatLog(SQLModel, table=True):
-    __tablename__ = "ChatLog"
+class ConversationLogs(SQLModel, table=True):
+    __tablename__ = "ConversationLogs"
     studentId: str = Field(default=None, nullable=False)
     liked: bool = Field(default=False)
     disliked: bool = Field(default=False)
     isPinned: bool = Field(default=False)
     conversationId: Optional[int] = Field(default=None, foreign_key="Conversations.id")
-    conversation: Optional[Conversations] = Relationship(backpopulates="ChatLog")
+    conversation: Optional[Conversations] = Relationship(backpopulates="ConversationLogs")
     log: dict = Field(default={}, sa_column=Column(JSON))
     
   

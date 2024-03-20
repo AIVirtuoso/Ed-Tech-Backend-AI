@@ -10,8 +10,8 @@ from ..dependencies.fermata import get_aitutor_chat_balance
 from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
-from ..db.database import create_engine
-from ..db.models import ChatLog, Conversations
+from ..db.database import  engine
+from ..db.models import ConversationLogs, Conversations
 class Languages(Enum):
     ENGLISH = "English"
     SPANISH = "Spanish"
@@ -107,6 +107,9 @@ async def wolfram_maths_response(body: StudentConversation):
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
         with Session(engine) as session:
+            user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(user_msg))  
+            session.add(user_message)
+            session.commit()
             if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
               history = build_chat_history(assistant_resp_for_tc, body.query)
               updated_messages.append(user_msg)
@@ -114,6 +117,9 @@ async def wolfram_maths_response(body: StudentConversation):
               is_solved = steps_agent(updated_messages, steps)
               assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
               print(assistant_msg)
+              bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+              session.add(bot_message)
+              session.commit()
         return
       
       assistant_resp = ''
@@ -173,18 +179,30 @@ async def wolfram_maths_response(body: StudentConversation):
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
       print(user_msg)
-      if tc.get("role") == "function":
-        # save tc 
-        print("tool call",tc)
-      
-      if len(assistant_resp) != 0 and assistant_resp is not None: 
-        assistant_msg = wrap_for_ql('assistant', assistant_resp)
-      
-      if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-        history = build_chat_history(assistant_resp_for_tc, body.query)
-        is_solved = steps_agent(history, steps)
-        assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-        print(assistant_msg)
+      with Session(engine) as session:
+        user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(user_msg))  
+        session.add(user_message)
+        session.commit()
+        if tc.get("role") == "function":
+          # save tc 
+          print("tool call",tc)
+          user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(tc))  
+          session.add(user_message)
+          session.commit()
+        if len(assistant_resp) != 0 and assistant_resp is not None: 
+          assistant_msg = wrap_for_ql('assistant', assistant_resp)
+          bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+          session.add(bot_message)
+          session.commit()
+        
+        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
+          history = build_chat_history(assistant_resp_for_tc, body.query)
+          is_solved = steps_agent(history, steps)
+          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+          bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+          session.add(bot_message)
+          session.commit()
+          print(assistant_msg)
       
         
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
