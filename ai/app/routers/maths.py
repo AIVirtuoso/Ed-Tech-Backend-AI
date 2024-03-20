@@ -81,6 +81,7 @@ def stream_openai_chunks(chunks: str, body: StudentConversation):
     
     save_initial_message(initial_message, body)
     create_conversation_title(initial_message, body)
+    yield "done with stream"
 
 def chunk_text(text: str, chunk_size=50):
     """Generator function to chunk text into smaller parts."""
@@ -147,6 +148,7 @@ async def wolfram_maths_response(body: StudentConversation):
               bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
               session.add(bot_message)
               session.commit()
+        yield "done with stream"
         return
       
       assistant_resp = ''
@@ -230,7 +232,7 @@ async def wolfram_maths_response(body: StudentConversation):
           session.add(bot_message)
           session.commit()
           print(assistant_msg)
-      
+      yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body.firebaseId)):
        return JSONResponse(  status_code=400,
