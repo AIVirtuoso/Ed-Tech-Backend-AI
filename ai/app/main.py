@@ -10,7 +10,9 @@ load_dotenv(find_dotenv())
 app = FastAPI()
 
 origins = [
-    "*"
+   "https://dev--shepherd-tutors.netlify.app",
+   "http://localhost:3000",
+   "http://localhost:3001"
 ]
 
 app.add_middleware(
