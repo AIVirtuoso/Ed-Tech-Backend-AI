@@ -15,6 +15,9 @@ origins = [
    "http://localhost:3001"
 ]
 
+
+app.add_middleware(ShepherdHeaderMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -22,9 +25,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.add_middleware(ShepherdHeaderMiddleware)
-
 app.include_router(conversations.router)
 app.include_router(maths.router)
 
