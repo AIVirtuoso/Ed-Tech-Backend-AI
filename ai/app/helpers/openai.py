@@ -146,3 +146,40 @@ def steps_agent(history, steps):
         presence_penalty=0
       )
     return response.choices[0].message.content
+  
+TITLE_AGENT = """
+Given the context and conversation below, generate an appropriate title that summarizes the main theme and interaction. it shouldn't be more than 50 characters long.
+
+Context: In this conversation, an AI tutor named Socrates is guiding a student to understand a topic. The AI uses a Socratic method, asking questions to tease out the student's knowledge and guide them towards comprehension.
+If no sufficient context is provided, the AI will generate a title of the topic of the conversation.
+
+Conversation:
+Topic: {}
+
+Latest Message:
+
+Socrates: {}
+
+Generate a title. Only the title, nothing else. 
+"""
+
+def title_agent(topic: str, message: str):
+    """
+    ChatGPT Agent that is responsible for creating the title of a conversation.
+    """
+   
+    response = openai_client.chat.completions.create(
+        model= "gpt-3.5-turbo-0613", #"replace with req",
+        messages=[
+          {
+            "role": "system",
+            "content": TITLE_AGENT.format(topic, message)
+          },
+        ],
+        temperature=0,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+      )
+    return response.choices[0].message.content

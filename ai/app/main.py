@@ -25,9 +25,10 @@ app.add_middleware(ShepherdHeaderMiddleware)
 
 app.include_router(conversations.router)
 app.include_router(maths.router)
-# @app.on_event("startup")
-# def on_startup():
-#     create_db_and_tables()
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
     
 @app.get("/")
 async def root():

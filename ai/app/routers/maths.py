@@ -1,17 +1,18 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
-from sqlmodel import Session
+from sqlmodel import Session, select
 from enum import Enum
 import json
+import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance
-from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent
+from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
 from ..db.database import  engine
-from ..db.models import ConversationLogs
+from ..db.models import ConversationLogs, Conversations
 class Languages(Enum):
     ENGLISH = "English"
     SPANISH = "Spanish"
@@ -47,14 +48,39 @@ router = APIRouter(
     tags=["maths"],
     responses={404: {"description": "Not found"}}
 )
+# once the stream is done, wait 1 second and refetch chat messages
+def create_conversation_title(initial_message: str, body: StudentConversation):
+  title = title_agent(body.topic, initial_message)
+  with Session(engine) as session:
+        statement = select(Conversations).where(Conversations.id == body.conversationId)  
+        results = session.exec(statement)  
+        convo = results.one()  
+        
 
+        convo.title = title  
+        session.add(convo)  
+        session.commit()  
+        session.refresh(convo)  
+        print("Updated title:", convo) 
+  
+def save_initial_message(initial_message, body: StudentConversation):
+  assistant_message = wrap_for_ql('assistant', initial_message)
+  with Session(engine) as session:
+        bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_message))  
+        session.add(bot_message)
+        session.commit()
 
-def stream_openai_chunks(chunks: str):
+def stream_openai_chunks(chunks: str, body: StudentConversation):
     """Generator function to stream openai chunks"""
+    initial_message=''
     for chunk in chunks:
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
+              initial_message += current_content
               yield current_content
+    
+    save_initial_message(initial_message, body)
+    create_conversation_title(initial_message, body)
 
 def chunk_text(text: str, chunk_size=50):
     """Generator function to chunk text into smaller parts."""
@@ -69,13 +95,14 @@ async def wolfram_maths_response(body: StudentConversation):
 
     messages =  [] if len(body.messages) == 0  else body.messages
     steps = ''
+    
     # first chat initiation 
     if len(body.messages) == 0: 
       prompt = sys_prompt(body.topic, body.level,body.messages, '')
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
-      return StreamingResponse(stream_openai_chunks(stream), media_type="text/event-stream")
+      return StreamingResponse(stream_openai_chunks(stream, body), media_type="text/event-stream")
 
     # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
     # messages is from the user and is always the updated messages from BE, we could leverage TS Query, once the POST
@@ -204,7 +231,10 @@ async def wolfram_maths_response(body: StudentConversation):
           session.commit()
           print(assistant_msg)
       
-        
+    chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
+    if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body.firebaseId)):
+       return JSONResponse(  status_code=400,
+                content={"message": "AI Tutor chat Limit reached"},)   
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
       
         

@@ -2,7 +2,7 @@ import os
 import requests
 import base64
 from firebase_admin import db
-from fastapi import Body
+
 
 def get_account_balance(account_id: str, denomination: str, company_id: str, api_key: str) -> int:
     url = f"https://api.gofermata.com/v1/accounts/{account_id}/balance/{denomination}"
@@ -30,20 +30,22 @@ def push_event(account_id: str, event_type: str, event_cost: int, event_denomina
     response.raise_for_status()
     return response.json().get('data')
 
-def get_docchat_balance(firebase_id: str) -> int:
-    fermata_customer_id = db().ref(f'user-subscriptions/{firebase_id}/fermataCustomerId').get().val()
+def get_docchat_balance(firebase_id: str) -> bool:
+    ref = db.reference(f'user-subscriptions/{firebase_id}/fermataCustomerId')
+    fermata_customer_id = ref.get()
     if fermata_customer_id:
         try:
             chat_limit = get_account_balance(fermata_customer_id, 'docchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
-            return  not chat_limit or chat_limit < 1
+            return not chat_limit or chat_limit < 1
         except Exception as e:
             print(f'Error getting docchat balance: {e}')
-            return 0
+            return True
     else:
         raise ValueError('fermataCustomerId is null')
 
 def set_docchat_balance(firebase_id: str) -> int:
-    fermata_customer_id = db().ref(f'user-subscriptions/{firebase_id}/fermataCustomerId').get().val()
+    ref = db.reference(f'user-subscriptions/{firebase_id}/fermataCustomerId')
+    fermata_customer_id = ref.get()
     if fermata_customer_id:
         try:
             chat_limit = push_event(fermata_customer_id, 'CHAT', 1, 'docchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
@@ -55,19 +57,21 @@ def set_docchat_balance(firebase_id: str) -> int:
         raise ValueError('fermataCustomerId is null')
 
 def get_aitutor_chat_balance(firebase_id: str) -> bool:
-    fermata_customer_id = db().ref(f'user-subscriptions/{firebase_id}/fermataCustomerId').get().val()
+    ref = db.reference(f'user-subscriptions/{firebase_id}/fermataCustomerId')
+    fermata_customer_id = ref.get()
     if fermata_customer_id:
         try:
             chat_limit = get_account_balance(fermata_customer_id, 'aitutorchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
             return not chat_limit or chat_limit < 1
         except Exception as e:
             print(f'Error getting aitutor chat balance: {e}')
-            return False
+            return True
     else:
         raise ValueError('fermataCustomerId is null')
 
 def set_aitutor_chat_balance(firebase_id: str) -> int:
-    fermata_customer_id = database().ref(f'user-subscriptions/{firebase_id}/fermataCustomerId').get().val()
+    ref = db.reference(f'user-subscriptions/{firebase_id}/fermataCustomerId')
+    fermata_customer_id = ref.get()
     if fermata_customer_id:
         try:
             chat_limit = push_event(fermata_customer_id, 'CHAT', 1, 'aitutorchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
@@ -77,3 +81,5 @@ def set_aitutor_chat_balance(firebase_id: str) -> int:
             return 0
     else:
         raise ValueError('fermataCustomerId is null')
+
+# maybe order_by_key().get()
