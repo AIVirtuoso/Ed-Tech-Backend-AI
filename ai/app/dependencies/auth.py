@@ -10,6 +10,9 @@ class ShepherdHeaderMiddleware(BaseHTTPMiddleware):
         x_shepherd = request.headers.get('X-Shepherd-Header')
         print(x_shepherd)
         print(os.environ.get("SHEP_API_KEY"))
+        if "access-control-request-method" in request.headers:
+            response = await call_next(request)
+            return response
         if x_shepherd is None or x_shepherd != os.environ.get("SHEP_API_KEY"):
             return JSONResponse(
                 status_code=401,
