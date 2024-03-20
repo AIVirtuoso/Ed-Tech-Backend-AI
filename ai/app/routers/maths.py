@@ -37,7 +37,6 @@ class StudentConversation(BaseModel):
     name: str
     level: str
     conversationId: str
-    documentId: str
     firebaseId: str
     language: Languages
     messages: List[Dict[str, Union[Optional[str], str]]]
