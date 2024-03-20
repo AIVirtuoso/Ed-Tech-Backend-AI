@@ -37,6 +37,7 @@ class ConversationModel(BaseModel):
 
 @router.post("/")
 async def create_conversation(body: ConversationModel):
+    print(body)
     with Session(engine) as session:
         conversation = Conversations(referenceId=body.referenceId, reference="student", topic=body.topic, subject=body.subject, language=body.language)
         session.add(conversation)
