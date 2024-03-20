@@ -11,7 +11,7 @@ from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
 from ..db.database import  engine
-from ..db.models import ConversationLogs, Conversations
+from ..db.models import ConversationLogs
 class Languages(Enum):
     ENGLISH = "English"
     SPANISH = "Spanish"
