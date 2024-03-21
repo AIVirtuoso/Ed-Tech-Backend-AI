@@ -36,12 +36,7 @@ class Conversations(SQLModel, table=True):
 
 class ConversationLogs(SQLModel, table=True):
     __tablename__ = "ConversationLogs"
-    id: uuid_pkg.UUID = Field(
-        default_factory=uuid_pkg.uuid4,
-        primary_key=True,
-        index=True,
-        nullable=False,
-    )
+    id: Optional[int] = Field(default=None, primary_key=True)
     studentId: str = Field(default=None, nullable=False)
     liked: bool = Field(default=False)
     disliked: bool = Field(default=False)
