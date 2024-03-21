@@ -26,7 +26,7 @@ class Conversations(SQLModel, table=True):
     level: str | None = Field(default=None)
     language: str = Field(default="English")
 
-    ChatLog: List["ConversationLogs"] = Relationship(back_populates="Conversations")
+    #ChatLog: List["ConversationLogs"] = Relationship(back_populates="Conversations")
     reference: Reference =  Field(sa_column=Column(Enum(Reference), nullable=False, default="document"))
     referenceId: str = Field(default=None, nullable=False)
 
