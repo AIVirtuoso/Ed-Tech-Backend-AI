@@ -47,7 +47,7 @@ class ConversationLogs(SQLModel, table=True):
     disliked: bool = Field(default=False)
     isPinned: bool = Field(default=False)
     conversationId: Optional[int] = Field(default=None, foreign_key="conversations.id")
-    conversation: Optional[Conversations] = Relationship(back_populates="ConversationLogs")
+    # conversation: Optional[Conversations] = Relationship(back_populates="ConversationLogs")
     log: dict = Field(default={}, sa_column=Column(JSON))
     
   
