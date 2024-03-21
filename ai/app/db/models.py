@@ -30,8 +30,8 @@ class Conversations(SQLModel, table=True):
     reference: Reference =  Field(sa_column=Column(Enum(Reference), nullable=False, default="document"))
     referenceId: str = Field(default=None, nullable=False)
 
-    createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updatedAt: datetime | None = Field(default=None, nullable=True)
+    createdAt: datetime = Field(default_factory=datetime.now(datetime.UTC), nullable=False)
+    updatedAt: datetime | None = Field(default_factory=datetime.now(datetime.UTC), nullable=True)
     deletedAt: datetime | None = Field(default=None, nullable=True)
 
 class ConversationLogs(SQLModel, table=True):
