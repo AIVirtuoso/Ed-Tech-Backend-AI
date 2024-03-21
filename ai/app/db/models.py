@@ -44,6 +44,8 @@ class ConversationLogs(SQLModel, table=True):
     conversationId: Optional[uuid_pkg.UUID] = Field(default=None, foreign_key="Conversations.id")
     #conversation: Optional[Conversations] = Relationship(back_populates="ConversationLogs")
     log: dict = Field(default={}, sa_column=Column(JSON))
+    createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    updatedAt: datetime | None = Field(default_factory=datetime.utcnow, nullable=True)
     
   
 
