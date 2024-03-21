@@ -2,6 +2,7 @@ import { database, credential } from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import config from '../../config/index';
 import { OpenAI } from 'langchain/llms/openai';
+import axios from 'axios';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
 import LocalPDFExtractor from './localExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
@@ -58,6 +59,15 @@ class ProcessStudyPlanService {
     this.db = database();
     this.retryInterval = 15 * 60 * 1000; // 15 minutes
     this.maxRetries = 5;
+  }
+
+  public async notifyMainServiceOfResourceGeneration(
+    jobId: string
+  ): Promise<void> {
+    const url = `${process.env.MAIN_SERVICE_API_URL}/extractStudyPlanResource/${jobId}`;
+    await axios.post(url, {
+      jobId
+    });
   }
 
   public async init(): Promise<void> {
@@ -136,7 +146,7 @@ class ProcessStudyPlanService {
           status: 'done',
           resource
         });
-        console.log(`Job ${jobId} processed successfully`);
+        await this.notifyMainServiceOfResourceGeneration(jobId);
       }
     } catch (error) {
       console.error(`Error processing job ${jobId}:`, error);
