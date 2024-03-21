@@ -209,7 +209,6 @@ async def wolfram_maths_response(body: StudentConversation):
       user_msg = wrap_for_ql('user', body.query)
       log = json.dumps(user_msg)
       print(user_msg)
-      print(log)
       with Session(engine) as session:
         user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=user_msg)  
         session.add(user_message)
@@ -227,6 +226,8 @@ async def wolfram_maths_response(body: StudentConversation):
           session.commit()
         
         if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
+          print("basically outside steps")
+          print(assistant_resp_for_tc)
           history = build_chat_history(assistant_resp_for_tc, body.query)
           is_solved = steps_agent(history, steps)
           assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
