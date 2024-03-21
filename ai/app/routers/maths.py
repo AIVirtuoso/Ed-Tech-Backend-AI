@@ -214,6 +214,7 @@ async def wolfram_maths_response(body: StudentConversation):
               #print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+              await asyncio.sleep(0)
         except asyncio.CancelledError:
           print("caught cancelled error")
           raise GeneratorExit
