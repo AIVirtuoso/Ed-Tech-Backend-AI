@@ -133,7 +133,7 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
 
 # idea would be GET to get the conversation id and then route and post. 
 @router.post("/")
-async def wolfram_maths_response(body: StudentConversation): 
+async def wolfram_maths_response(body: StudentConversation,  background_tasks: BackgroundTasks): 
     print("COMPLETE BODY")
     print(body)
 
@@ -179,7 +179,7 @@ async def wolfram_maths_response(body: StudentConversation):
           
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
-        BackgroundTasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
+        background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
         print(user_msg)
         yield "done with stream"
         return
@@ -245,7 +245,7 @@ async def wolfram_maths_response(body: StudentConversation):
       user_msg = wrap_for_ql('user', body.query)
       log = json.dumps(user_msg)
       print(user_msg)
-      BackgroundTasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
+      background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
       
       yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
