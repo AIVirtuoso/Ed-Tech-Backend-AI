@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from sqlmodel import Session, select
+from uuid import UUID
 from enum import Enum
 import json
 import os
@@ -65,7 +66,7 @@ def create_conversation_title(initial_message: str, body: StudentConversation):
 def save_initial_message(initial_message, body: StudentConversation):
   assistant_message = wrap_for_ql('assistant', initial_message)
   with Session(engine) as session:
-        bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_message))  
+        bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(assistant_message))  
         session.add(bot_message)
         session.commit()
 
@@ -134,7 +135,7 @@ async def wolfram_maths_response(body: StudentConversation):
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
         with Session(engine) as session:
-            user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(user_msg))  
+            user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(user_msg))  
             session.add(user_message)
             session.commit()
             if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
@@ -144,7 +145,7 @@ async def wolfram_maths_response(body: StudentConversation):
               is_solved = steps_agent(updated_messages, steps)
               assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
               print(assistant_msg)
-              bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+              bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(assistant_msg))
               session.add(bot_message)
               session.commit()
         yield "done with stream"
@@ -208,18 +209,18 @@ async def wolfram_maths_response(body: StudentConversation):
       user_msg = wrap_for_ql('user', body.query)
       print(user_msg)
       with Session(engine) as session:
-        user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(user_msg))  
+        user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(user_msg))  
         session.add(user_message)
         session.commit()
         if tc.get("role") == "function":
           # save tc 
           print("tool call",tc)
-          user_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(tc))  
+          user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(tc))  
           session.add(user_message)
           session.commit()
         if len(assistant_resp) != 0 and assistant_resp is not None: 
           assistant_msg = wrap_for_ql('assistant', assistant_resp)
-          bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+          bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(assistant_msg))
           session.add(bot_message)
           session.commit()
         
@@ -227,7 +228,7 @@ async def wolfram_maths_response(body: StudentConversation):
           history = build_chat_history(assistant_resp_for_tc, body.query)
           is_solved = steps_agent(history, steps)
           assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-          bot_message = ConversationLogs(studentId=body.studentId, conversationId=body.conversationId, log=json.dumps(assistant_msg))
+          bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=json.dumps(assistant_msg))
           session.add(bot_message)
           session.commit()
           print(assistant_msg)
