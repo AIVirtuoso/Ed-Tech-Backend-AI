@@ -181,7 +181,7 @@ async def wolfram_maths_response(body: StudentConversation,  background_tasks: B
         user_msg = wrap_for_ql('user', body.query)
         background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
         print(user_msg)
-        yield "done with stream"
+        #yield "done with stream"
         return
       
       assistant_resp = ''
@@ -247,7 +247,7 @@ async def wolfram_maths_response(body: StudentConversation,  background_tasks: B
       print(user_msg)
       background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
       
-      yield "done with stream"
+      #yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body.firebaseId)):
        return JSONResponse(  status_code=400,
