@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel, Relationship, JSON, Column, Enum
 from typing import List, Optional
 import enum
 import uuid as uuid_pkg
-from datetime import datetime, timezone
+from datetime import datetime
 class Reference(str, enum.Enum):
     student = "student"
     document = "document"
@@ -30,8 +30,8 @@ class Conversations(SQLModel, table=True):
     reference: Reference =  Field(sa_column=Column(Enum(Reference), nullable=False, default="document"))
     referenceId: str = Field(default=None, nullable=False)
 
-    createdAt: datetime = Field(default_factory=datetime.now(timezone.utc), nullable=False)
-    updatedAt: datetime | None = Field(default_factory=datetime.now(timezone.utc), nullable=True)
+    createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    updatedAt: datetime | None = Field(default_factory=datetime.utcnow, nullable=True)
     deletedAt: datetime | None = Field(default=None, nullable=True)
 
 class ConversationLogs(SQLModel, table=True):
@@ -47,7 +47,7 @@ class ConversationLogs(SQLModel, table=True):
     disliked: bool = Field(default=False)
     isPinned: bool = Field(default=False)
     conversationId: Optional[int] = Field(default=None, foreign_key="conversations.id")
-    # conversation: Optional[Conversations] = Relationship(back_populates="ConversationLogs")
+    #conversation: Optional[Conversations] = Relationship(back_populates="ConversationLogs")
     log: dict = Field(default={}, sa_column=Column(JSON))
     
   
