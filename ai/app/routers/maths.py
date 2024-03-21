@@ -92,6 +92,7 @@ def chunk_text(text: str, chunk_size=50):
 @router.post("/")
 
 async def wolfram_maths_response(body: StudentConversation): 
+    print("COMPLETE BODY")
     print(body)
 
     messages =  [] if len(body.messages) == 0  else body.messages
