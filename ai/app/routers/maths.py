@@ -5,6 +5,7 @@ from sqlmodel import Session, select
 from uuid import UUID
 from enum import Enum
 import json
+import asyncio
 import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
@@ -125,13 +126,18 @@ async def wolfram_maths_response(body: StudentConversation):
         if len(steps) != 0:
           updated_prompt = math_prompt(body.topic, body.level, updated_messages, body.query, steps, body.name)
           stream = open_ai(updated_prompt, updated_messages)
-          for chunk in stream:
+          try: 
+            for chunk in stream:
               current_content = chunk.choices[0].delta.content
               if current_content is not None:
                 # print("outeer chunk")
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
+                await asyncio.sleep(0)
+          except asyncio.CancelledError:
+             print("caught cancelled error")
+             raise GeneratorExit
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
@@ -200,13 +206,17 @@ async def wolfram_maths_response(body: StudentConversation):
       if len(steps) != 0:
         updated_prompt = math_prompt(body.topic, body.level, messages, body.query, steps, body.name)
         stream = open_ai(updated_prompt, messages)
-        for chunk in stream:
+        try:
+          for chunk in stream:
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
               #print("outeer chunk")
               #print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+        except asyncio.CancelledError:
+          print("caught cancelled error")
+          raise GeneratorExit
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)

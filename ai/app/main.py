@@ -20,7 +20,7 @@ origins = [
 ]
 
 
-# app.add_middleware(ShepherdHeaderMiddleware)
+app.add_middleware(ShepherdHeaderMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
