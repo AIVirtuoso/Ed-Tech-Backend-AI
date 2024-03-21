@@ -114,7 +114,7 @@ async def wolfram_maths_response(body: StudentConversation):
       last_system_message = messages[-1]
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
-        assistant_resp_for_tc = ''
+        assistant_resp_for_tool_call = ''
         # grab the steps from messages 
         tc = find_tc_in_messages(messages)
         steps = tc["content"]
@@ -129,7 +129,7 @@ async def wolfram_maths_response(body: StudentConversation):
               if current_content is not None:
                 # print("outeer chunk")
                 # print(chunk.choices[0].delta.content, end="", flush=True)
-                assistant_resp_for_tc += chunk.choices[0].delta.content
+                assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
@@ -138,12 +138,14 @@ async def wolfram_maths_response(body: StudentConversation):
             user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=user_msg)  
             session.add(user_message)
             session.commit()
-            if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-              history = build_chat_history(assistant_resp_for_tc, body.query)
+            if len(assistant_resp_for_tool_call) != 0 and assistant_resp_for_tool_call is not None: 
+              print("ASSISTANT IN THE OTHER FIRST ONE")
+              print(assistant_resp_for_tool_call)
+              history = build_chat_history(assistant_resp_for_tool_call, body.query)
               updated_messages.append(user_msg)
-              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tc})
+              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
               is_solved = steps_agent(updated_messages, steps)
-              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
               print(assistant_msg)
               bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_msg)
               session.add(bot_message)
