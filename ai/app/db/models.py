@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel, Relationship, JSON, Column, Enum
 from typing import List, Optional
 import enum
 import uuid as uuid_pkg
-from datetime import datetime
+from datetime import datetime, timezone
 class Reference(str, enum.Enum):
     student = "student"
     document = "document"
@@ -30,8 +30,8 @@ class Conversations(SQLModel, table=True):
     reference: Reference =  Field(sa_column=Column(Enum(Reference), nullable=False, default="document"))
     referenceId: str = Field(default=None, nullable=False)
 
-    createdAt: datetime = Field(default_factory=datetime.now(datetime.UTC), nullable=False)
-    updatedAt: datetime | None = Field(default_factory=datetime.now(datetime.UTC), nullable=True)
+    createdAt: datetime = Field(default_factory=datetime.now(timezone.utc), nullable=False)
+    updatedAt: datetime | None = Field(default_factory=datetime.now(timezone.utc), nullable=True)
     deletedAt: datetime | None = Field(default=None, nullable=True)
 
 class ConversationLogs(SQLModel, table=True):
