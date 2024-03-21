@@ -46,6 +46,7 @@ class ProcessStudyPlanService {
   private db: database.Database;
   private retryInterval: number;
   private maxRetries: number;
+  private notificationRetry: { [key: string]: number } = {};
 
   constructor() {
     console.log('Initializing ProcessStudyPlanService');
@@ -64,10 +65,20 @@ class ProcessStudyPlanService {
   public async notifyMainServiceOfResourceGeneration(
     jobId: string
   ): Promise<void> {
-    const url = `${process.env.MAIN_SERVICE_API_URL}/extractStudyPlanResource/${jobId}`;
-    await axios.post(url, {
-      jobId
-    });
+    try {
+      if (!this.notificationRetry[jobId]) {
+        this.notificationRetry[jobId] = 0;
+      }
+      if (this.notificationRetry[jobId] < 4) {
+        const url = `${process.env.MAIN_SERVICE_API_URL}/extractStudyPlanResource/${jobId}`;
+        await axios.post(url, {
+          jobId
+        });
+      }
+    } catch (error) {
+      this.notificationRetry[jobId] = this.notificationRetry[jobId] + 1;
+      setTimeout(() => this.notifyMainServiceOfResourceGeneration(jobId), 3000);
+    }
   }
 
   public async init(): Promise<void> {
