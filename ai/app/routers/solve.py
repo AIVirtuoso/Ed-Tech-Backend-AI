@@ -132,7 +132,7 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
               session.commit()
 
 # idea would be GET to get the conversation id and then route and post. 
-@router.get("/")
+@router.get("/{studentId}")
 async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: List[Dict[str, Optional[str]]]): 
     body = {
         "studentId": studentId,
