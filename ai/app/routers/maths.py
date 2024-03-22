@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from sqlmodel import Session, select
@@ -49,6 +49,54 @@ router = APIRouter(
     tags=["maths"],
     responses={404: {"description": "Not found"}}
 )
+def write_to_db(body,user_msg, steps, tc, assistant_resp, assistant_resp_for_tc):
+  print("background job 1 fires")
+  with Session(engine) as session:
+        user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
+        session.add(user_message)
+        session.commit()
+        if tc.get("role") == "function":
+          # save tc 
+          print("tool call",tc)
+          user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=tc)  
+          session.add(user_message)
+          session.commit()
+        if len(assistant_resp) != 0 and assistant_resp is not None: 
+          assistant_msg = wrap_for_ql('assistant', assistant_resp)
+          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+          session.add(bot_message)
+          session.commit()
+        
+        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
+          print("basically outside steps")
+          print(assistant_resp_for_tc)
+          history = build_chat_history(assistant_resp_for_tc, body["query"])
+          is_solved = steps_agent(history, steps)
+          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
+          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+          session.add(bot_message)
+          session.commit()
+          print(assistant_msg)
+  
+def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_resp_for_tool_call):
+    print("background job 2 fires")
+    with Session(engine) as session:
+            user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
+            session.add(user_message)
+            session.commit()
+            if len(assistant_resp_for_tool_call) != 0 and assistant_resp_for_tool_call is not None: 
+              print("ASSISTANT IN THE OTHER FIRST ONE")
+              print(assistant_resp_for_tool_call)
+              history = build_chat_history(assistant_resp_for_tool_call, body["query"])
+              updated_messages.append(user_msg)
+              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
+              is_solved = steps_agent(updated_messages, steps)
+              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
+              print(assistant_msg)
+              bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+              session.add(bot_message)
+              session.commit()
+
 # once the stream is done, wait 1 second and refetch chat messages
 def create_conversation_title(initial_message: str, body: StudentConversation):
   title = title_agent(body.topic, initial_message)
@@ -92,7 +140,7 @@ def chunk_text(text: str, chunk_size=50):
 # idea would be GET to get the conversation id and then route and post. 
 @router.post("/")
 
-async def wolfram_maths_response(body: StudentConversation): 
+async def wolfram_maths_response(body: StudentConversation, background_tasks: BackgroundTasks): 
     print(body)
 
     messages =  [] if len(body.messages) == 0  else body.messages
@@ -136,20 +184,7 @@ async def wolfram_maths_response(body: StudentConversation):
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
-        with Session(engine) as session:
-            user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=user_msg)  
-            session.add(user_message)
-            session.commit()
-            if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-              history = build_chat_history(assistant_resp_for_tc, body.query)
-              updated_messages.append(user_msg)
-              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tc})
-              is_solved = steps_agent(updated_messages, steps)
-              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-              print(assistant_msg)
-              bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_msg)
-              session.add(bot_message)
-              session.commit()
+        background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tc)
         yield "done with stream"
         return
       
@@ -213,32 +248,8 @@ async def wolfram_maths_response(body: StudentConversation):
       user_msg = wrap_for_ql('user', body.query)
       log = json.dumps(user_msg)
       print(user_msg)
-      with Session(engine) as session:
-        user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=user_msg)  
-        session.add(user_message)
-        session.commit()
-        if tc.get("role") == "function":
-          # save tc 
-          print("tool call",tc)
-          user_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=tc)  
-          session.add(user_message)
-          session.commit()
-        if len(assistant_resp) != 0 and assistant_resp is not None: 
-          assistant_msg = wrap_for_ql('assistant', assistant_resp)
-          bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_msg)
-          session.add(bot_message)
-          session.commit()
-        
-        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-          print("basically outside steps")
-          print(assistant_resp_for_tc)
-          history = build_chat_history(assistant_resp_for_tc, body.query)
-          is_solved = steps_agent(history, steps)
-          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-          bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_msg)
-          session.add(bot_message)
-          session.commit()
-          print(assistant_msg)
+      background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
+     
       yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body.firebaseId)):
