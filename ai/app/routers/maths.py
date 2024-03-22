@@ -1,6 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel
+#from pydantic import BaseModel
 from sqlmodel import Session, select
 from uuid import UUID
 from enum import Enum
@@ -31,17 +31,17 @@ class Languages(Enum):
     SWAHILI = "Swahili"
     POLISH = "Polish"
 
-class StudentConversation(BaseModel):
-    studentId: str
-    topic: str
-    subject: str
-    query: str
-    name: str
-    level: str
-    conversationId: str
-    firebaseId: str
-    language: Languages
-    messages: List[Dict[str, Optional[str]]]
+# class StudentConversation(BaseModel):
+#     studentId: str
+#     topic: str
+#     subject: str
+#     query: str
+#     name: str
+#     level: str
+#     conversationId: str
+#     firebaseId: str
+#     language: Languages
+#     messages: List[Dict[str, Optional[str]]]
     
 
 router = APIRouter(
@@ -64,14 +64,14 @@ def create_conversation_title(initial_message: str, body):
         session.refresh(convo)  
         print("Updated title:", convo) 
   
-def save_initial_message(initial_message, body: StudentConversation):
+def save_initial_message(initial_message, body):
   assistant_message = wrap_for_ql('assistant', initial_message)
   with Session(engine) as session:
         bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_message)  
         session.add(bot_message)
         session.commit()
 
-def stream_openai_chunks(chunks: str, body: StudentConversation):
+def stream_openai_chunks(chunks: str, body):
     """Generator function to stream openai chunks"""
     initial_message=''
     for chunk in chunks:
@@ -133,16 +133,7 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
 
 # idea would be GET to get the conversation id and then route and post. 
 @router.get("/")
-async def wolfram_maths_response(studentId: str,
-    topic: str,
-    subject: str,
-    query: str,
-    name: str,
-    level: str,
-    conversationId: str,
-    firebaseId: str,
-    language: Languages,
-    messages: List[Dict[str, Optional[str]]]): 
+async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: List[Dict[str, Optional[str]]]): 
     body = {
         "studentId": studentId,
         "topic": topic,
