@@ -160,7 +160,7 @@ async def wolfram_maths_response(body: StudentConversation, background_tasks: Ba
     # stream is done, SWR the messages 
     # or much simply just ensure the FE sends messages minus users last 
     # i.e. pls don't append the new message to the list before sending, can do it after
-    async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
+    def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       last_system_message = messages[-1]
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
