@@ -311,9 +311,9 @@ async def wolfram_maths_response(studentId: str,
           print(assistant_msg)
       yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
-    if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body["firebaseId"])):
-       return JSONResponse(  status_code=400,
-                content={"message": "AI Tutor chat Limit reached"},)   
+    # if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body["firebaseId"])):
+    #    return JSONResponse(  status_code=400,
+    #             content={"message": "AI Tutor chat Limit reached"},)   
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
       
         
