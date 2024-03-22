@@ -160,7 +160,7 @@ async def wolfram_maths_response(body: StudentConversation, background_tasks: Ba
     # stream is done, SWR the messages 
     # or much simply just ensure the FE sends messages minus users last 
     # i.e. pls don't append the new message to the list before sending, can do it after
-    async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
+    def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       last_system_message = messages[-1]
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
@@ -181,12 +181,12 @@ async def wolfram_maths_response(body: StudentConversation, background_tasks: Ba
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tc += chunk.choices[0].delta.content
                 yield current_content
-                await asyncio.sleep(0)
+                # await asyncio.sleep(0)
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
         background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tc)
-        #yield "done with stream"
+        yield "done with stream"
         return
       
       assistant_resp = ''
@@ -243,7 +243,7 @@ async def wolfram_maths_response(body: StudentConversation, background_tasks: Ba
               #print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
-              await asyncio.sleep(0)
+              # await asyncio.sleep(0)
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
@@ -251,7 +251,7 @@ async def wolfram_maths_response(body: StudentConversation, background_tasks: Ba
       print(user_msg)
       background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
      
-      #yield "done with stream"
+      yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body.firebaseId)):
        return JSONResponse(  status_code=400,
