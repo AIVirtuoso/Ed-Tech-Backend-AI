@@ -6,6 +6,7 @@ from uuid import UUID
 from enum import Enum
 import json
 import os
+import time
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance
@@ -110,7 +111,7 @@ async def wolfram_maths_response(body: StudentConversation):
     # stream is done, SWR the messages 
     # or much simply just ensure the FE sends messages minus users last 
     # i.e. pls don't append the new message to the list before sending, can do it after
-    async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
+    def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       last_system_message = messages[-1]
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
@@ -131,6 +132,7 @@ async def wolfram_maths_response(body: StudentConversation):
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tc += chunk.choices[0].delta.content
                 yield current_content
+                time.sleep(0.1)
         # below save all to db 
         user_msg = wrap_for_ql('user', body.query)
         print(user_msg)
@@ -165,6 +167,7 @@ async def wolfram_maths_response(body: StudentConversation):
           print(chunk.choices[0].delta.content, end="", flush=True)
           assistant_resp += chunk.choices[0].delta.content
           yield chunk.choices[0].delta.content
+          # time.sleep(0.1)
         if chunk.choices[0].delta.tool_calls:
           for tc in chunk.choices[0].delta.tool_calls:
                 if tc.id:  # New tool call detected here
@@ -204,6 +207,7 @@ async def wolfram_maths_response(body: StudentConversation):
               #print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+              time.sleep(0.1)
       # below save all to db 
       tc = messages[-1]
       user_msg = wrap_for_ql('user', body.query)
