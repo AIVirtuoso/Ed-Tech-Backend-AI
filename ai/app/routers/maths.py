@@ -70,7 +70,7 @@ def write_to_db(body: StudentConversation,user_msg, steps, tc, assistant_resp, a
         if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
           print("basically outside steps")
           print(assistant_resp_for_tc)
-          history = build_chat_history(assistant_resp_for_tc, body["query"])
+          history = build_chat_history(assistant_resp_for_tc, body.query)
           is_solved = steps_agent(history, steps)
           assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
           bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_msg)
