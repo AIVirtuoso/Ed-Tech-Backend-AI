@@ -135,7 +135,7 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
 @router.get("/")
 async def wolfram_maths_response(body: str, studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: List[Dict[str, Optional[str]]]): 
     print("no f way", body)
-    body = {
+    bodyy = {
         "studentId": studentId,
         "topic": topic,
         "subject": subject,
@@ -148,9 +148,9 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
         "messages": messages,
     }
     print("COMPLETE BODY")
-    print(body)
+    print(bodyy)
 
-    messages =  [] if len(body["messages"]) == 0  else body["messages"]
+    messages =  [] if len(bodyy["messages"]) == 0  else bodyy["messages"]
     steps = ''
     
     # first chat initiation 
@@ -159,7 +159,7 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
-      return StreamingResponse(stream_openai_chunks(stream, body), media_type="text/event-stream")
+      return StreamingResponse(stream_openai_chunks(stream, bodyy), media_type="text/event-stream")
 
     # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
     # messages is from the user and is always the updated messages from BE, we could leverage TS Query, once the POST
@@ -178,7 +178,7 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
         print(updated_messages)
         print("the steps", steps)
         if len(steps) != 0:
-          updated_prompt = math_prompt(body["topic"], body["level"], updated_messages, body["query"], steps, body["name"])
+          updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], updated_messages, bodyy["query"], steps, bodyy["name"])
           stream = open_ai(updated_prompt, updated_messages)
          
           for chunk in stream:
@@ -191,22 +191,22 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
                 
           
         # below save all to db 
-        user_msg = wrap_for_ql('user', body["query"])
+        user_msg = wrap_for_ql('user', bodyy["query"])
         #background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
         with Session(engine) as session:
-            user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
+            user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=user_msg)  
             session.add(user_message)
             session.commit()
             if len(assistant_resp_for_tool_call) != 0 and assistant_resp_for_tool_call is not None: 
               print("ASSISTANT IN THE OTHER FIRST ONE")
               print(assistant_resp_for_tool_call)
-              history = build_chat_history(assistant_resp_for_tool_call, body["query"])
+              history = build_chat_history(assistant_resp_for_tool_call, bodyy["query"])
               updated_messages.append(user_msg)
               updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
               is_solved = steps_agent(updated_messages, steps)
               assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
               print(assistant_msg)
-              bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+              bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
               session.add(bot_message)
               session.commit()
         print(user_msg)
@@ -216,9 +216,9 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
       assistant_resp = ''
       assistant_resp_for_tc = ''
       
-      prompt = sys_prompt(body["topic"], body["level"], body["messages"], body["query"], body["name"])
+      prompt = sys_prompt(bodyy["topic"], bodyy["level"], bodyy["messages"], bodyy["query"], bodyy["name"])
       print("PROMPT –", prompt)
-      stream = open_ai(prompt, body["messages"])
+      stream = open_ai(prompt, bodyy["messages"])
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
       tool_call_id = None
@@ -257,7 +257,7 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
        
       # may be as simple as just going through other stream?
       if len(steps) != 0:
-        updated_prompt = math_prompt(body["topic"], body["level"], messages, body["query"], steps, body["name"])
+        updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], steps, bodyy["name"])
         stream = open_ai(updated_prompt, messages)
       
         for chunk in stream:
@@ -271,39 +271,39 @@ async def wolfram_maths_response(body: str, studentId: str, topic: str, subject:
       
       # below save all to db 
       tc = messages[-1]
-      user_msg = wrap_for_ql('user', body["query"])
+      user_msg = wrap_for_ql('user', bodyy["query"])
       log = json.dumps(user_msg)
       print(user_msg)
       #background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
       with Session(engine) as session:
-        user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
+        user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=user_msg)  
         session.add(user_message)
         session.commit()
         if tc.get("role") == "function":
           # save tc 
           print("tool call",tc)
-          user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=tc)  
+          user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=tc)  
           session.add(user_message)
           session.commit()
         if len(assistant_resp) != 0 and assistant_resp is not None: 
           assistant_msg = wrap_for_ql('assistant', assistant_resp)
-          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+          bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
           session.add(bot_message)
           session.commit()
         
         if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
           print("basically outside steps")
           print(assistant_resp_for_tc)
-          history = build_chat_history(assistant_resp_for_tc, body["query"])
+          history = build_chat_history(assistant_resp_for_tc, bodyy["query"])
           is_solved = steps_agent(history, steps)
           assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
+          bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
           session.add(bot_message)
           session.commit()
           print(assistant_msg)
       yield "done with stream"
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
-    if(chat_limit_check != "disabled" and get_aitutor_chat_balance(body["firebaseId"])):
+    if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
        return JSONResponse(  status_code=400,
                 content={"message": "AI Tutor chat Limit reached"},)   
     return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
