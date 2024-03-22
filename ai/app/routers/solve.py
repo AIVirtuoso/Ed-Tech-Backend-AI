@@ -1,6 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import JSONResponse, StreamingResponse
-#from pydantic import BaseModel
+from pydantic import BaseModel
 from sqlmodel import Session, select
 from uuid import UUID
 from enum import Enum
@@ -31,17 +31,17 @@ class Languages(Enum):
     SWAHILI = "Swahili"
     POLISH = "Polish"
 
-# class StudentConversation(BaseModel):
-#     studentId: str
-#     topic: str
-#     subject: str
-#     query: str
-#     name: str
-#     level: str
-#     conversationId: str
-#     firebaseId: str
-#     language: Languages
-#     messages: List[Dict[str, Optional[str]]]
+class StudentConversation(BaseModel):
+    studentId: str
+    topic: str
+    subject: str
+    query: str
+    name: str
+    level: str
+    conversationId: str
+    firebaseId: str
+    language: Languages
+    messages: List[Dict[str, Optional[str]]]
     
 
 router = APIRouter(
@@ -132,8 +132,9 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
               session.commit()
 
 # idea would be GET to get the conversation id and then route and post. 
-@router.get("/{studentId}")
-async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: List[Dict[str, Optional[str]]]): 
+@router.get("/")
+async def wolfram_maths_response(bod: StudentConversation, studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: List[Dict[str, Optional[str]]]): 
+    print("no f way", bod)
     body = {
         "studentId": studentId,
         "topic": topic,
