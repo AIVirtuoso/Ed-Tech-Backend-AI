@@ -151,7 +151,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
     }
   
 
-    messages =  [] if len(bodyy["messages"]) == 0  else bodyy["messages"]
+    messages =  [] if len(messages) == 0  else messages
     steps = ''
     
     # first chat initiation 
@@ -167,7 +167,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
     # stream is done, SWR the messages 
     # or much simply just ensure the FE sends messages minus users last 
     # i.e. pls don't append the new message to the list before sending, can do it after
-    async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
+    async def stream_generator(old_steps: str, messages: List[Dict[str, str | None]]):
+      steps = old_steps
       last_system_message = messages[-1]
       print("LAST SYSTEM MESSAGE")
       print(last_system_message)
@@ -260,6 +261,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                     pass
        
       # may be as simple as just going through other stream?
+      print("the steps")
+      print(steps)
       if len(steps) != 0:
         updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], steps, bodyy["name"])
         stream = open_ai(updated_prompt, messages)
