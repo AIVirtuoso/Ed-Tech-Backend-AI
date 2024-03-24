@@ -188,6 +188,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
+          yield "done with stream"
                 
           
         # below save all to db 
@@ -210,7 +211,6 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               session.add(bot_message)
               session.commit()
         print(user_msg)
-        yield "done with stream"
         return
       
       assistant_resp = ''
@@ -264,9 +264,10 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
               #print("outeer chunk")
-              #print(chunk.choices[0].delta.content, end="", flush=True)
+              print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+        yield "done with stream"
               
       
       # below save all to db 
@@ -301,7 +302,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           session.add(bot_message)
           session.commit()
           print(assistant_msg)
-      yield "done with stream"
+      
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
        return JSONResponse(  status_code=400,
