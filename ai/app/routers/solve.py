@@ -192,8 +192,9 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
+                await asyncio.sleep(0)
           yield "done with stream"
-          await asyncio.sleep(0)
+          
                 
           
         # below save all to db 
@@ -276,8 +277,9 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+              await asyncio.sleep(0)
         yield "done with stream"
-        await asyncio.sleep(0)
+        
               
       
       # below save all to db 
