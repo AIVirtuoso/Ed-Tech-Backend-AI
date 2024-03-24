@@ -135,6 +135,8 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
 @router.get("/")
 async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
+    print("MESSAGES")
+    print(messages)
     bodyy = {
         "studentId": studentId,
         "topic": topic,
@@ -147,8 +149,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
         "language": language,
         "messages": messages,
     }
-    print("COMPLETE BODY")
-    print(bodyy)
+  
 
     messages =  [] if len(bodyy["messages"]) == 0  else bodyy["messages"]
     steps = ''
@@ -168,6 +169,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
     # i.e. pls don't append the new message to the list before sending, can do it after
     async def stream_generator(steps: str, messages: List[Dict[str, str | None]]):
       last_system_message = messages[-1]
+      print("LAST SYSTEM MESSAGE")
+      print(last_system_message)
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
         assistant_resp_for_tool_call = ''
@@ -188,6 +191,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
+          yield "done with stream"
                 
           
         # below save all to db 
@@ -210,15 +214,15 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               session.add(bot_message)
               session.commit()
         print(user_msg)
-        yield "done with stream"
         return
       
+      messages = [{k: v for k, v in d.items() if k != 'is_solved'} for d in messages]
       assistant_resp = ''
       assistant_resp_for_tc = ''
       
-      prompt = sys_prompt(bodyy["topic"], bodyy["level"], bodyy["messages"], bodyy["query"], bodyy["name"])
+      prompt = sys_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], bodyy["name"])
       print("PROMPT –", prompt)
-      stream = open_ai(prompt, bodyy["messages"])
+      stream = open_ai(prompt, messages)
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
       tool_call_id = None
@@ -264,9 +268,10 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
             current_content = chunk.choices[0].delta.content
             if current_content is not None:
               #print("outeer chunk")
-              #print(chunk.choices[0].delta.content, end="", flush=True)
+              print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
+        yield "done with stream"
               
       
       # below save all to db 
@@ -301,7 +306,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           session.add(bot_message)
           session.commit()
           print(assistant_msg)
-      yield "done with stream"
+      
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
     if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
        return JSONResponse(  status_code=400,
