@@ -193,6 +193,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
           yield "done with stream"
+          await asyncio.sleep(0)
                 
           
         # below save all to db 
@@ -232,6 +233,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           print(chunk.choices[0].delta.content, end="", flush=True)
           assistant_resp += chunk.choices[0].delta.content
           yield chunk.choices[0].delta.content
+          await asyncio.sleep(0)
         if chunk.choices[0].delta.tool_calls:
           for tc in chunk.choices[0].delta.tool_calls:
                 if tc.id:  # New tool call detected here
@@ -275,6 +277,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
         yield "done with stream"
+        await asyncio.sleep(0)
               
       
       # below save all to db 
