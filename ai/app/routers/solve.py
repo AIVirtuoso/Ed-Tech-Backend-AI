@@ -6,6 +6,7 @@ from uuid import UUID
 from enum import Enum
 import json
 import asyncio
+import time
 import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
@@ -131,9 +132,18 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
               session.add(bot_message)
               session.commit()
 
+def chunk_text(text: str, chunk_size=50):
+    """Generator function to chunk text into smaller parts."""
+    print("hey")
+    for i in range(0, len(text), chunk_size):
+        yield text[i:i + chunk_size]
+        time.sleep(0.4)
+    yield "done with stream"
+
 # idea would be GET to get the conversation id and then route and post. 
 @router.get("/")
-async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
+def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
+    test_str = f"{studentId} {topic} {subject} {query} {name} {level} {conversationId} {firebaseId} {language} {messages}"
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
     print("MESSAGES")
     print(messages)
@@ -167,11 +177,13 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
     # stream is done, SWR the messages 
     # or much simply just ensure the FE sends messages minus users last 
     # i.e. pls don't append the new message to the list before sending, can do it after
-    async def stream_generator(old_steps: str, messages: List[Dict[str, str | None]]):
+    def stream_generator(old_steps: str, messages: List[Dict[str, str | None]]):
       steps = old_steps
       last_system_message = messages[-1]
       print("LAST SYSTEM MESSAGE")
       print(last_system_message)
+      print("BODY LOWKS SHOULD NOT BE ACCESSED")
+      print(bodyy)
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
         assistant_resp_for_tool_call = ''
@@ -192,7 +204,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 # print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
-                await asyncio.sleep(0)
+                time.sleep(0.1)
           yield "done with stream"
           
                 
@@ -234,7 +246,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           print(chunk.choices[0].delta.content, end="", flush=True)
           assistant_resp += chunk.choices[0].delta.content
           yield chunk.choices[0].delta.content
-          await asyncio.sleep(0)
+          time.sleep(0.1)
         if chunk.choices[0].delta.tool_calls:
           for tc in chunk.choices[0].delta.tool_calls:
                 if tc.id:  # New tool call detected here
@@ -277,7 +289,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               print(chunk.choices[0].delta.content, end="", flush=True)
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
-              await asyncio.sleep(0)
+              time.sleep(0.1)
         yield "done with stream"
         
               
@@ -316,10 +328,10 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           print(assistant_msg)
       
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
-    if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
-       return JSONResponse(  status_code=400,
-                content={"message": "AI Tutor chat Limit reached"},)   
-    return StreamingResponse(stream_generator(steps, messages), media_type="text/event-stream")
+    # if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
+    #    return JSONResponse(  status_code=400,
+    #             content={"message": "AI Tutor chat Limit reached"},)   
+    return StreamingResponse(stream_generator(steps, messages),  headers={ "Content-Type": "text/event-stream" })
       
         
       
