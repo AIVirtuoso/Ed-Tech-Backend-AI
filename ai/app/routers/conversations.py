@@ -48,7 +48,7 @@ async def create_conversation(body: ConversationModel):
 @router.get("/title")
 async def get_title(id: str):
     with Session(engine) as session:
-        statement = select(Conversations).where(Conversations.id == body["conversationId"])  
+        statement = select(Conversations).where(Conversations.id == id)  
         results = session.exec(statement)  
         convo = results.one()
         return {"data": convo.title}
