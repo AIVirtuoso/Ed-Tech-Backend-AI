@@ -57,7 +57,6 @@ def create_conversation_title(initial_message: str, body):
         statement = select(Conversations).where(Conversations.id == body["conversationId"])  
         results = session.exec(statement)  
         convo = results.one()  
-        
 
         convo.title = title  
         session.add(convo)  
@@ -80,10 +79,10 @@ def stream_openai_chunks(chunks: str, body):
             if current_content is not None:
               initial_message += current_content
               yield current_content
-    
+    yield "done with stream"
     save_initial_message(initial_message, body)
     create_conversation_title(initial_message, body)
-    yield "done with stream"
+    
 def write_to_db(body,user_msg, steps, tc, assistant_resp, assistant_resp_for_tc):
   print("background job 1 fires")
   with Session(engine) as session:
@@ -132,18 +131,10 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
               session.add(bot_message)
               session.commit()
 
-def chunk_text(text: str, chunk_size=50):
-    """Generator function to chunk text into smaller parts."""
-    print("hey")
-    for i in range(0, len(text), chunk_size):
-        yield text[i:i + chunk_size]
-        time.sleep(0.4)
-    yield "done with stream"
 
 # idea would be GET to get the conversation id and then route and post. 
 @router.get("/")
 def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
-    test_str = f"{studentId} {topic} {subject} {query} {name} {level} {conversationId} {firebaseId} {language} {messages}"
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
     print("MESSAGES")
     print(messages)
@@ -170,14 +161,12 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
-      return StreamingResponse(stream_openai_chunks(stream, bodyy), media_type="text/event-stream")
+      return StreamingResponse(stream_openai_chunks(stream, bodyy), headers={ "Content-Type": "text/event-stream" })
 
-    # we have existing messages i.e. not the first time initiating convo so now establish maths stuff 
-    # messages is from the user and is always the updated messages from BE, we could leverage TS Query, once the POST
-    # stream is done, SWR the messages 
-    # or much simply just ensure the FE sends messages minus users last 
-    # i.e. pls don't append the new message to the list before sending, can do it after
     def stream_generator(old_steps: str, messages: List[Dict[str, str | None]]):
+      """
+      Sync generator function for solving maths questions with steps or just doing word problems.
+      """
       steps = old_steps
       last_system_message = messages[-1]
       print("LAST SYSTEM MESSAGE")
@@ -331,7 +320,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
     # if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
     #    return JSONResponse(  status_code=400,
     #             content={"message": "AI Tutor chat Limit reached"},)   
-    return StreamingResponse(stream_generator(steps, messages),  headers={ "Content-Type": "text/event-stream" })
+    return StreamingResponse(stream_generator(steps, messages), headers={ "Content-Type": "text/event-stream" })
       
         
       
