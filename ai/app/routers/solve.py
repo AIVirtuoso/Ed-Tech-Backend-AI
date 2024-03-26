@@ -79,9 +79,10 @@ def stream_openai_chunks(chunks: str, body):
             if current_content is not None:
               initial_message += current_content
               yield current_content
-    yield "done with stream"
+              time.sleep(0.1)
     save_initial_message(initial_message, body)
     create_conversation_title(initial_message, body)
+    yield "done with stream"
     
 def write_to_db(body,user_msg, steps, tc, assistant_resp, assistant_resp_for_tc):
   print("background job 1 fires")
