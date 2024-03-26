@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
-from sqlmodel import Session
+from sqlmodel import Session, select
 from enum import Enum
 from ..db.database import engine
 from ..db.models import Conversations
@@ -44,6 +44,15 @@ async def create_conversation(body: ConversationModel):
         session.commit()
         session.refresh(conversation)
         return {"data": conversation.id}
+    
+@router.get("/title")
+async def get_title(id: str):
+    with Session(engine) as session:
+        statement = select(Conversations).where(Conversations.id == body["conversationId"])  
+        results = session.exec(statement)  
+        convo = results.one()
+        return {"data": convo.title}
+    
 
 
 
