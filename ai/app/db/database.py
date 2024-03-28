@@ -12,10 +12,8 @@ db_password = os.getenv('POSTGRES_PASSWORD')
 db_host = os.getenv('POSTGRES_HOST')
 db_name = os.getenv('POSTGRES_DATABASE')
 
-print("DB USERNAME", db_username)
-
 db_url = f"postgresql://{db_username}:{db_password}@{db_host}:5432/{db_name}"
-print(db_url)
+
 engine = create_engine(db_url, echo=True)
 
 

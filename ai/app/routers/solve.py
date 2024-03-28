@@ -173,8 +173,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       last_system_message = messages[-1]
       print("LAST SYSTEM MESSAGE")
       print(last_system_message)
-      print("BODY LOWKS SHOULD NOT BE ACCESSED")
-      print(bodyy)
+
       if last_system_message.get("is_solved") is not None and last_system_message["is_solved"] == 'False':
         print("last system message", last_system_message)
         assistant_resp_for_tool_call = ''
@@ -227,7 +226,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       assistant_resp_for_tc = ''
       
       prompt = sys_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], bodyy["name"])
-      print("PROMPT –", prompt)
+      
       stream = open_ai(prompt, messages)
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
@@ -247,7 +246,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
                 # When the accumulated JSON string seems complete then:
                 try:
                     func_args = json.loads(tool_call_accumulator)
-                    print("ARGS", func_args)
+                    print("ARGS i.e. equation", func_args)
                     function_name = tc.function.name if tc.function.name else "get_math_solution"
                     # Call the corresponding function that we defined and matches what is in the available functions
                     func_response = json.dumps(available_functions[function_name](**func_args))
@@ -267,7 +266,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
                     pass
        
       # may be as simple as just going through other stream?
-      print("the steps")
+      print("the steps:")
       print(steps)
       if len(steps) != 0:
         updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], steps, bodyy["name"])
@@ -297,18 +296,19 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
         session.commit()
         if tc.get("role") == "function":
           # save tc 
-          print("tool call",tc)
+          print("tool call:",tc)
           user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=tc)  
           session.add(user_message)
           session.commit()
         if len(assistant_resp) != 0 and assistant_resp is not None: 
           assistant_msg = wrap_for_ql('assistant', assistant_resp)
+          print("assistant response meaning no TC:")
           bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
           session.add(bot_message)
           session.commit()
         
         if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-          print("basically outside steps")
+          print("assistant response based off of the tool call:")
           print(assistant_resp_for_tc)
           history = build_chat_history(assistant_resp_for_tc, bodyy["query"])
           is_solved = steps_agent(history, steps)
