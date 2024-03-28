@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from .dependencies.auth import ShepherdHeaderMiddleware
-from .routers import conversations, maths,solve
+from .routers import conversations, solve
 from .db.database import create_db_and_tables
 from dotenv import load_dotenv, find_dotenv
 
@@ -30,7 +30,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(conversations.router)
-app.include_router(maths.router)
 app.include_router(solve.router)
 @app.on_event("startup")
 def on_startup():
