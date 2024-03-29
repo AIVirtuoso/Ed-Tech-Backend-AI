@@ -12,7 +12,8 @@ const languages = [
   'Turkish',
   'Vietnamese',
   'Swahili',
-  'Polish'
+  'Polish',
+  'Japanese'
 ] as const;
 
 export type Languages = (typeof languages)[number];
