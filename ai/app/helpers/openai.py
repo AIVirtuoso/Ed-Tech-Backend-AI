@@ -81,6 +81,26 @@ Here are some guidelines in interacting with the user:
 
 openai_client = OpenAI(api_key = os.environ.get("OPENAI_APIKEY"))
 
+def open_ai_math(prompt, msgs = []):
+    msgs = [{
+            "role": "system",
+            "content": prompt
+          }]
+    
+    
+    stream = openai_client.chat.completions.create(
+        model= "gpt-4-turbo-preview", # replace with req.gptVersion
+        messages=msgs,
+        temperature=0.2,
+        max_tokens=1500,
+        top_p=1,
+        frequency_penalty=0.15,
+        presence_penalty=0,
+        stream=True
+      )
+    
+    return stream
+
 def open_ai(prompt, msgs = []):
     msgs = [{
             "role": "system",

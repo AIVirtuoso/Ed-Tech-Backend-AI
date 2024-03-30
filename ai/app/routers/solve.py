@@ -11,7 +11,7 @@ import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance
-from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent
+from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent, open_ai_math
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation
 from ..db.database import  engine
@@ -275,7 +275,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       if len(steps) != 0:
         updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(messages), bodyy["query"], steps, bodyy["name"])
         print("from first time:", updated_prompt)
-        stream = open_ai(updated_prompt, messages)
+        stream = open_ai_math(updated_prompt, messages)
       
         for chunk in stream:
             current_content = chunk.choices[0].delta.content
