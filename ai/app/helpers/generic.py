@@ -23,3 +23,18 @@ def build_chat_history(tutor: str, student: str, history: List = []):
     chat = f"Student: {student}\nTutor: {tutor}"
     history.append(chat)
     return history
+
+
+def convert_to_conversation(messages: list[Dict[str, str | None]]):
+    conversation = ""
+    for message in messages:
+        role = message['role']
+        content = message['content']
+        if role == 'user':
+            conversation += f"user: {content}\n"
+        elif role == 'assistant':
+            conversation += f"assistant: {content}\n"
+        # Handles cases where the dictionary might have other roles or specific handling is needed
+        else:
+            conversation += f"{role}: {content}\n"
+    return conversation.strip()

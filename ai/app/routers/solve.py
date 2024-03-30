@@ -13,7 +13,7 @@ from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance
 from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent
 from ..helpers.wolfram import call_wolfram
-from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history
+from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation
 from ..db.database import  engine
 from ..db.models import ConversationLogs, Conversations
 class Languages(Enum):
@@ -187,7 +187,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
         print(updated_messages)
         print("the steps", steps)
         if len(steps) != 0:
-          updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], updated_messages, bodyy["query"], steps, bodyy["name"])
+          updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(updated_messages), bodyy["query"], steps, bodyy["name"])
           print("For subsequently:", updated_prompt)
           stream = open_ai(updated_prompt, updated_messages)
          
@@ -273,7 +273,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       print("the steps:")
       print(steps)
       if len(steps) != 0:
-        updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], steps, bodyy["name"])
+        updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(messages), bodyy["query"], steps, bodyy["name"])
         print("from first time:", updated_prompt)
         stream = open_ai(updated_prompt, messages)
       
