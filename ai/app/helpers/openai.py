@@ -85,7 +85,7 @@ def open_ai(prompt, msgs = []):
     msgs = [{
             "role": "system",
             "content": prompt
-          }, *msgs]
+          }]
     
     
     stream = openai_client.chat.completions.create(
