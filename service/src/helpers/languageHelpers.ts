@@ -14,7 +14,8 @@ const translations: Record<Languages, { true: string; false: string }> = {
   Turkish: { true: 'Doğru', false: 'Yanlış' },
   Vietnamese: { true: 'Đúng', false: 'Sai' },
   Swahili: { true: 'Kweli', false: 'Si kweli' },
-  Polish: { true: 'Prawda', false: 'Fałsz' }
+  Polish: { true: 'Prawda', false: 'Fałsz' },
+  Japanese: { true: '真実', false: '間違い' }
 };
 
 // Function to get true or false words in the specified language
