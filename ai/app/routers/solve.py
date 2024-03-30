@@ -140,6 +140,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
     print("MESSAGES")
     print(messages)
+    print(len(messages))
     bodyy = {
         "studentId": studentId,
         "topic": topic,
@@ -155,11 +156,13 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
   
 
     messages =  [] if len(messages) == 0  else messages
+    print(messages)
     steps = ''
     
     # first chat initiation 
     if len(messages) == 0: 
-      prompt = sys_prompt(topic, level, messages, '', name)
+      print("len is 0")
+      prompt = sys_prompt(topic, level, '', name)
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
@@ -185,13 +188,14 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
         print("the steps", steps)
         if len(steps) != 0:
           updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], updated_messages, bodyy["query"], steps, bodyy["name"])
+          print("For subsequently:", updated_prompt)
           stream = open_ai(updated_prompt, updated_messages)
          
           for chunk in stream:
               current_content = chunk.choices[0].delta.content
               if current_content is not None:
                 # print("outeer chunk")
-                # print(chunk.choices[0].delta.content, end="", flush=True)
+                print(chunk.choices[0].delta.content, end="", flush=True)
                 assistant_resp_for_tool_call += chunk.choices[0].delta.content
                 yield current_content
                 time.sleep(0.1)
@@ -226,7 +230,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       assistant_resp_for_tc = ''
       
       prompt = sys_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], bodyy["name"])
-      
+      print("initial prompt", prompt)
       stream = open_ai(prompt, messages)
       available_functions = {"get_math_solution": call_wolfram}
       tool_call_accumulator = ""  # Accumulator for JSON fragments of tool call arguments
@@ -270,6 +274,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       print(steps)
       if len(steps) != 0:
         updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], steps, bodyy["name"])
+        print("from first time:", updated_prompt)
         stream = open_ai(updated_prompt, messages)
       
         for chunk in stream:
