@@ -229,7 +229,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
       assistant_resp = ''
       assistant_resp_for_tc = ''
       
-      prompt = sys_prompt(bodyy["topic"], bodyy["level"], messages, bodyy["query"], bodyy["name"])
+      prompt = sys_prompt(bodyy["topic"], bodyy["level"], bodyy["query"], bodyy["name"])
       print("initial prompt", prompt)
       stream = open_ai(prompt, messages)
       available_functions = {"get_math_solution": call_wolfram}
