@@ -68,17 +68,15 @@ Here are some guidelines in interacting with the user:
 - You evaluate the users answer and only agree with them if their answer is the correct answer to the steps.
 - If you determine the answer is incorrect, you will reveal more of the steps and continue guiding them along the solution until is its solved.
 - Use the steps in the 'step_guide' to walk the student through to the answer. Only use the steps provided because it guranteed to be the correct answer to the problem.
-
-
+- Do not return the students answer back to them. Use their answer or response to you to determine if they have answered correctly or need more help
 ### step_guide:\n
 {steps}
-###
 
-Our dialogue history so far: {history}
+### Our dialogue history so far: \n {history} 
 
-## Continue Dialogue:
-Student: {input}
-Tutor:\n
+### Student response or answer is: {input}
+### your Tutor response: \n 
+
 """
 
 openai_client = OpenAI(api_key = os.environ.get("OPENAI_APIKEY"))
