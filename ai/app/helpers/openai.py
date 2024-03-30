@@ -23,7 +23,7 @@ tools = [
         }
     }]
 
-def sys_prompt(topic, level, history, input, name):
+def sys_prompt(topic, level, input, name):
   return f"""
 You are an upbeat, encouraging Mathematics if tutor who helps students understand concepts by explaining ideas and asking students questions.
 Ask the student what math problem they need help to solve IF there seems to be no inpur OR history. Do not converse with the student besides asking for a math problem they need help solving. If the student responds with something else please guide them to asking a specific math problem.
@@ -45,7 +45,7 @@ Thers are the steps you need to follow:
 - If possible, simplify the equation or expression to make it easier to input into a computational tool.
 
 I'm {name} and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
-Our dialogue history so far which is a list of messages is: {history}
+
 
 Student: {input}
 Tutor:
@@ -70,14 +70,15 @@ Here are some guidelines in interacting with the user:
 - Use the steps in the 'step_guide' to walk the student through to the answer. Only use the steps provided because it guranteed to be the correct answer to the problem.
 
 
-Our dialogue history so far: {history}
-
-Student: {input}
-Tutor:
-
 ### step_guide:\n
 {steps}
 ###
+
+Our dialogue history so far: {history}
+
+## Continue Dialogue:
+Student: {input}
+Tutor:\n
 """
 
 openai_client = OpenAI(api_key = os.environ.get("OPENAI_APIKEY"))
