@@ -1,7 +1,7 @@
 import { ai, PORT, server, embedding, pineconeIndex } from './src/routes/index';
 import { Server } from 'socket.io';
-import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { PromptTemplate } from 'langchain/prompts';
+import { PineconeStore } from '@langchain/pinecone';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { chatWithNotePrompt } from './src/helpers/promptTemplates/index';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import ChatManager from './src/helpers/chatManager';
@@ -19,7 +19,7 @@ import {
   ConversationalRetrievalQAChain,
   RetrievalQAChain
 } from 'langchain/chains';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { ChatOpenAI } from '@langchain/openai';
 import { updateDocument } from './db/models/document';
 import {
   getChatConversationId,
@@ -37,9 +37,6 @@ import {
   setAItutorChatBalance
 } from './src/middleware/fermataCheck';
 
-const NODE_ENV = process.env.NODE_ENV as string;
-const isDevelopment = NODE_ENV === 'development';
-
 const CONVERSATION_STARTER_TEXT = 'Shall we begin, Socrates?';
 // Setting up some general shit for global AI assistant usage
 const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
@@ -47,6 +44,7 @@ const wrapForQL = (role: 'user' | 'assistant', content: string) => ({
   content
 });
 const { apikey, model: modelName } = config.openai as any;
+const { keywordsAIapikey, keywordsAIbaseURL } = config.keywordsAI as any;
 
 const {
   bucketName,
@@ -71,58 +69,60 @@ const getDocumentVectorStore = async ({
   });
 };
 
-async function chatWithModel(
-  systemPrompt: string,
-  conversationId: string,
-  studentId: string,
-  socket: any,
-  event: string
-) {
-  const chats = await paginatedFind(
-    ChatLog,
-    {
-      studentId,
-      conversationId
-    },
-    { limit: 10 }
-  );
+// async function chatWithModel(
+//   systemPrompt: string,
+//   conversationId: string,
+//   studentId: string,
+//   socket: any,
+//   event: string
+// ) {
+//   const chats = await paginatedFind(
+//     ChatLog,
+//     {
+//       studentId,
+//       conversationId
+//     },
+//     { limit: 10 }
+//   );
 
-  const lastTenChats = chats.map((chat: any) => chat.log).reverse();
+//   const lastTenChats = chats.map((chat: any) => chat.log).reverse();
 
-  const pastMessages: any[] = [];
+//   const pastMessages: any[] = [];
 
-  lastTenChats.forEach((message: any) => {
-    if (message.role === 'assistant')
-      pastMessages.push(new AIChatMessage(message.content));
-    if (message.role === 'user')
-      pastMessages.push(new HumanChatMessage(message.content));
-  });
+//   lastTenChats.forEach((message: any) => {
+//     if (message.role === 'assistant')
+//       pastMessages.push(new AIChatMessage(message.content));
+//     if (message.role === 'user')
+//       pastMessages.push(new HumanChatMessage(message.content));
+//   });
 
-  const model = socketAiModel(socket, event, 'gpt-4-0613');
+//   const model = socketAiModelTest(socket, event);
 
-  const memory = new BufferMemory({
-    chatHistory: new ChatMessageHistory(pastMessages)
-  });
+//   const memory = new BufferMemory({
+//     chatHistory: new ChatMessageHistory(pastMessages)
+//   });
 
-  const prompt = new PromptTemplate({
-    template: systemPrompt,
-    inputVariables: ['history', 'input']
-  });
+//   const prompt = new PromptTemplate({
+//     template: systemPrompt,
+//     inputVariables: ['history', 'input']
+//   });
 
-  const chain = new ConversationChain({
-    llm: model,
-    memory,
-    prompt
-  });
+//   const chain = new ConversationChain({
+//     llm: model,
+//     memory,
+//     prompt
+//   });
 
-  return { chain, model, prompt };
-}
+//   return { chain, model, prompt };
+// }
 
-const socketAiModel = (socket: any, event: string, model?: string) => {
+const socketAiModel = (socket: any, event: string) => {
   return new ChatOpenAI({
-    openAIApiKey: apikey,
-    modelName: model || modelName,
-    frequencyPenalty: 0.15,
+    configuration: {
+      baseURL: keywordsAIbaseURL
+    },
+    openAIApiKey: keywordsAIapikey,
+    modelName: modelName,
     streaming: true,
     callbacks: [
       {
@@ -182,7 +182,7 @@ docChatNamespace.on('connection', async (socket) => {
     const model = socketAiModel(socket, event);
 
     const llm = new ChatOpenAI({
-      openAIApiKey: apikey,
+      openAIApiKey: keywordsAIapikey,
       frequencyPenalty: 0.15
     });
 
@@ -251,7 +251,6 @@ docChatNamespace.on('connection', async (socket) => {
       return new AIChatMessage(chat.log.content);
     if (chat.log.role === 'user') return new HumanChatMessage(chat.log.content);
   });
-
   // Client sends us a chat message
   socket.on('chat message', async (message) => {
     if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
@@ -260,7 +259,7 @@ docChatNamespace.on('connection', async (socket) => {
         socket.emit('docchat_limit_reached', true);
         return;
       }
-      console.log('currentChatBalance', chatBalance);
+      // console.log('currentChatBalance', chatBalance);
     }
     const userQuery = wrapForQL('user', message);
     const event = 'chat response';
@@ -318,6 +317,7 @@ docChatNamespace.on('connection', async (socket) => {
           ]);
         })
         .catch(async (e: any): Promise<any> => {
+          console.log("DOCCHAT ERROR: ",e)
           if (e?.response?.data?.error?.code === 'context_length_exceeded') {
             topK -= 5;
             chain = docChatChain(event, topK);
@@ -335,7 +335,7 @@ docChatNamespace.on('connection', async (socket) => {
 
   socket.on('generate summary', async () => {
     const model = new ChatOpenAI({
-      openAIApiKey: apikey,
+      openAIApiKey: keywordsAIapikey,
       modelName: modelName
     });
 
@@ -406,18 +406,17 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     firebaseId,
     language
   } = socket.handshake.auth;
-  console.log('studentId', studentId);
-  console.log(
-    'topic here',
-    topic,
-    subject,
-    name,
-    level,
-    convoId,
-    documentId,
-    firebaseId,
-    language
-  );
+  // console.log('studentId', studentId);
+  // console.log(
+  //   'topic here',
+  //   topic,
+  //   subject,
+  //   name,
+  //   level,
+  //   convoId,
+  //   documentId,
+  //   firebaseId
+  // );
   const event = 'chat response';
 
   if (process.env.CHAT_LIMIT_CHECK !== 'disabled') {
@@ -458,7 +457,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
     
     You should give a warm welcome to the student with their name if they provide it and intermittently refer to the student by their name to make them feel acknowledged. You should also only respond in ${language} language, this is paramount. You should guide students in an open-ended way. Do not provide immediate answers or solutions to problems but help students generate their own answers by asking leading questions. Ask students to explain their thinking. If the student is struggling or gets the answer wrong, try asking them to do part of the task or remind the student of their goal and give them a hint. If students improve, then praise them and show excitement. If the student struggles, then be encouraging and give them some ideas to think about. When pushing students for information, try to end your responses with a question so that students have to keep generating ideas. Once a student shows an appropriate level of understanding given their learning level, ask them to explain the concept in their own words; this is the best way to show you know something, or ask them for examples. When a student demonstrates that they know the concept you can move the conversation to a close and tell them you’re here to help if they have further questions
     
-    I'm ${name}and I'm studying ${subject} and I need help with ${topic}. I'm a ${level} college student
+    I'm ${name} and I'm studying ${subject} and I need help with ${topic}. I'm a ${level} college student
     Our dialogue so far: {history}
     Student: {input}
     Tutor:
@@ -471,7 +470,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   let systemPrompt = await getSystemPrompt(documentId);
 
   let conversationId = convoId;
-  console.log('conversationId', conversationId);
+  // console.log('conversationId', conversationId);
   let isNewChat;
 
   if (!convoId) {
@@ -490,8 +489,8 @@ homeworkHelpNamespace.on('connection', async (socket) => {
   }
 
   socket.emit('current_conversation', conversationId);
-  console.log('current_conversation', conversationId);
-  console.log('studentId', studentId);
+  // console.log('current_conversation', conversationId);
+  // console.log('studentId', studentId);
 
   const chats = await paginatedFind(
     ChatLog,
@@ -535,7 +534,8 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       pastMessages.push(new HumanChatMessage(message.content));
   });
 
-  const model = socketAiModel(socket, event, 'gpt-4-0613');
+  // const model = socketAiModel(socket, event, 'gpt-4-0613');
+  const model = socketAiModel(socket, event);
 
   let memory = new BufferMemory({
     chatHistory: new ChatMessageHistory(pastMessages)
@@ -559,14 +559,16 @@ homeworkHelpNamespace.on('connection', async (socket) => {
         socket.emit('aitutorchat_limit_reached', true);
         return;
       }
-      console.log('currentChatBalance', chatBalance);
+      // console.log('currentChatBalance', chatBalance);
     }
     const isFirstConvo = pastMessages.length === 0;
     if (
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
       (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
     ) {
-      const answer = await chain.call({ input: message });
+      const answer = await chain.call({ input: message }); //replace for call to keywordsAI
+      console.log('User message', message);
+
       socket.emit(`${event} end`, answer?.response);
 
       const hasTitle = await chatHasTitle(conversationId);
@@ -619,7 +621,7 @@ noteWorkspaceNamespace.on('connection', async (socket) => {
   let conversationId = convoId;
 
   if (!noteId) {
-    console.error('Note id is required');
+    // console.error('Note id is required');
     socket.emit('error', 'Note id is required');
     return;
   }

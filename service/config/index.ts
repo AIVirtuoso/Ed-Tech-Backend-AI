@@ -26,6 +26,10 @@ const config = {
     outputBucketName: process.env.TEXT_EXTRACTOR_OUTPUTBUCKETNAME as string,
     snsTopicArn: process.env.TEXT_EXTRACTOR_SNSTOPICARN as string,
     snsRoleArn: process.env.TEXT_EXTRACTOR_SNSROLEARN as string
+  },
+  keywordsAI: {
+    keywordsAIapikey: process.env.KEYWORDSAI_APIKEY as string,
+    keywordsAIbaseURL: process.env.KEYWORDSAI_BASEURL as string
   }
 };
 
