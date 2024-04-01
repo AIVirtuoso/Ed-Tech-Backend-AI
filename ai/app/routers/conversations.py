@@ -4,7 +4,10 @@ from pydantic import BaseModel
 from sqlmodel import Session, select
 from enum import Enum
 from ..db.database import engine
-from ..db.models import Conversations
+from ..db.models import Conversations, ConversationLogs
+from ..helpers.generic import wrap_for_ql
+from uuid import UUID
+
 router = APIRouter(
     prefix="/conversations",
     tags=["conversations"],
@@ -33,7 +36,12 @@ class ConversationModel(BaseModel):
     subject: str
     level: str
     language: Languages
-  
+
+class StudentConversation(BaseModel):
+    studentId: str
+    query: str
+    conversationId: str
+    
 
 @router.post("/")
 async def create_conversation(body: ConversationModel):
@@ -52,6 +60,17 @@ async def get_title(id: str):
         results = session.exec(statement)  
         convo = results.one()
         return {"data": convo.title}
+    
+
+@router.post("/conversation-log")
+async def create_convo_log(body: StudentConversation):
+    print(body)
+    assistant_message = wrap_for_ql('assistant', body.query, False)
+    with Session(engine) as session:
+          bot_message = ConversationLogs(studentId=body.studentId, conversationId=UUID(body.conversationId), log=assistant_message)
+          session.add(bot_message)
+          session.commit()
+          return {"data": bot_message}
     
 
 
