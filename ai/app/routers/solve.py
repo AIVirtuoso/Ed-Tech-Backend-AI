@@ -189,7 +189,7 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
         if len(steps) != 0:
           updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(updated_messages), bodyy["query"], steps, bodyy["name"])
           print("For subsequently:", updated_prompt)
-          stream = open_ai(updated_prompt, updated_messages)
+          stream = open_ai_math(updated_prompt, updated_messages)
          
           for chunk in stream:
               current_content = chunk.choices[0].delta.content
