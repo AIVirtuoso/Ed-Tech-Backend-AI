@@ -11,5 +11,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # Copy the application code
 COPY ./app /code/app
 
+COPY ./.env /code/.env
+
 # Specify the command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--h11-max-incomplete-event-size", "65535"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80",  "--reload", "--h11-max-incomplete-event-size", "65535"]
