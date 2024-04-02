@@ -3,7 +3,7 @@ requests
 psycopg2
 fastapi>=0.68.0,<0.69.0
 pydantic>=1.8.0,<2.0.0
-uvicorn>=0.15.0,<0.16.0
+uvicorn>=0.25.0,<0.26.0
 openai==1.13.3
 langchain==0.1.11
 pinecone-client==3.1.0
