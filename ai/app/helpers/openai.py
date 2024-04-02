@@ -147,7 +147,7 @@ def steps_agent(history, steps):
     """
     user_input = f"Chat History :{history}.\nMath Solution Steps: {steps}."
     response = openai_client.chat.completions.create(
-        model= "gpt-3.5-turbo-0613", #"replace with req",
+        model= "gpt-3.5-turbo-16k", #"replace with req",
         messages=[
           {
             "role": "system",
