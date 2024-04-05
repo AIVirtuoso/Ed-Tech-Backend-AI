@@ -10,7 +10,7 @@ import time
 import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
-from ..dependencies.fermata import get_aitutor_chat_balance
+from ..dependencies.fermata import get_aitutor_chat_balance,set_aitutor_chat_balance
 from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent, open_ai_math
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation
@@ -83,7 +83,19 @@ def stream_openai_chunks(chunks: str, body):
     yield "done with stream"
     save_initial_message(initial_message, body)
     create_conversation_title(initial_message, body)
-    
+
+def stream_error_generator(chunks: str):
+    """Generator function to stream openai chunks"""
+    initial_message=''
+    for chunk in chunks:
+            current_content = chunk.choices[0].delta.content
+            if current_content is not None:
+              initial_message += current_content
+              yield current_content
+              time.sleep(0.1)
+    yield "done with stream"
+  
+     
     
 def write_to_db(body,user_msg, steps, tc, assistant_resp, assistant_resp_for_tc):
   print("background job 1 fires")
@@ -136,7 +148,7 @@ def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_res
 
 # idea would be GET to get the conversation id and then route and post. 
 @router.get("/")
-def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
+async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
     print("MESSAGES")
     print(messages)
@@ -324,9 +336,11 @@ def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str,
           print(assistant_msg)
       
     chat_limit_check = os.environ.get("CHAT_LIMIT_CHECK")
-    # if(chat_limit_check != "disabled" and get_aitutor_chat_balance(bodyy["firebaseId"])):
-    #    return JSONResponse(  status_code=400,
-    #             content={"message": "AI Tutor chat Limit reached"},)   
+    if(chat_limit_check != "disabled"):
+        balance = await get_aitutor_chat_balance(bodyy["firebaseId"])
+        if balance:
+          return StreamingResponse(stream_error_generator("run out of credits"), headers={ "Content-Type": "text/event-stream" })
+        await set_aitutor_chat_balance(bodyy["firebaseId"])
     return StreamingResponse(stream_generator(steps, messages), headers={ "Content-Type": "text/event-stream" })
       
         
