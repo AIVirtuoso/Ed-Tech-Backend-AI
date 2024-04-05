@@ -76,9 +76,13 @@ def push_event(account_id: str, event_type: str, event_cost: int, event_denomina
         'cost_override_denomination': event_denomination,
         'gate_on_balance': True
     }
+    credentials = f"{company_id}:{api_key}".encode("utf-8")
+    encoded_credentials = base64.b64encode(credentials).decode("utf-8")
+    auth_header = f"Basic {encoded_credentials}"
+
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Basic {base64.b64encode(f"{company_id}:{api_key}".encode('utf-8').decode('utf-8'))}'
+        'Authorization': auth_header
     }
     response = requests.post(url, json=payload, headers=headers)
     response.raise_for_status()
