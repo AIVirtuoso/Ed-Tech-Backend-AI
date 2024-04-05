@@ -169,6 +169,7 @@ export const flashCardsFromNotesPrompt = (
   blacklistedQuestions?: string[],
   lang: Languages = 'English'
 ) => {
+  console.log('note', note);
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
       ? `Avoid creating flashcards from these existing questions: [${blacklistedQuestions.join(

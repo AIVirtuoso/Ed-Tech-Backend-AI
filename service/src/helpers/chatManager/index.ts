@@ -1,4 +1,4 @@
-import { PromptTemplate } from 'langchain';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { ConversationChain } from 'langchain/chains';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
 import { summarizeNotePrompt } from '../promptTemplates';
