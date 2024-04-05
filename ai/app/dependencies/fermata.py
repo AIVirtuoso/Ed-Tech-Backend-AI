@@ -4,7 +4,7 @@ import base64
 import firebase_admin
 from firebase_admin import db
 
-cred = firebase_admin.credentials.Certificate("./serviceAccountKey.json")
+cred = firebase_admin.credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 # Get a reference to the database
