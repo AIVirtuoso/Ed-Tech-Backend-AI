@@ -4,11 +4,17 @@ import base64
 import firebase_admin
 from firebase_admin import db
 
-cred = firebase_admin.credentials.Certificate("serviceAccountKey.json")
+file_path = os.path.abspath(__file__)
+
+# Print the full file path
+print("Full file path:", file_path)
+cred = firebase_admin.credentials.Certificate("/code/app/dependencies/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 # Get a reference to the database
-database = firebase_admin.db()
+
+database = firebase_admin.db
+
 
 async def get_fermata_customer_id(firebase_id: str) -> str:
     """
