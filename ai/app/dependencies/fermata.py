@@ -78,7 +78,7 @@ def push_event(account_id: str, event_type: str, event_cost: int, event_denomina
     }
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Basic {base64.b64encode(f"{company_id}:{api_key}".encode('utf-8')).decode('utf-8')}'
+        'Authorization': f'Basic {base64.b64encode(f"{company_id}:{api_key}".encode('utf-8').decode('utf-8'))}'
     }
     response = requests.post(url, json=payload, headers=headers)
     response.raise_for_status()
