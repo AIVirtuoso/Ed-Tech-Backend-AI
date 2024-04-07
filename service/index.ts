@@ -123,6 +123,7 @@ const socketAiModel = (socket: any, event: string) => {
     },
     openAIApiKey: keywordsAIapikey,
     modelName: modelName,
+    frequencyPenalty: 0.15,
     streaming: true,
     callbacks: [
       {
@@ -566,7 +567,7 @@ homeworkHelpNamespace.on('connection', async (socket) => {
       (!isFirstConvo && message !== CONVERSATION_STARTER_TEXT) ||
       (isFirstConvo && message === CONVERSATION_STARTER_TEXT)
     ) {
-      const answer = await chain.call({ input: message }); //replace for call to keywordsAI
+      const answer = await chain.call({ input: message });
       console.log('User message', message);
 
       socket.emit(`${event} end`, answer?.response);
