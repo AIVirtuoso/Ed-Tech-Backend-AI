@@ -11,7 +11,7 @@ import os
 from xml.etree import ElementTree as ET
 from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance,set_aitutor_chat_balance
-from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent, open_ai_math
+from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent, open_ai_math, solution_check_agent, solution_check_prompt
 from ..helpers.wolfram import call_wolfram
 from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation
 from ..db.database import  engine
@@ -285,6 +285,17 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       print("the steps:")
       print(steps)
       if len(steps) != 0:
+        prompt = solution_check_prompt(bodyy["query"], steps)
+        is_steps_complete = solution_check_agent(prompt)
+        if is_steps_complete == False:
+          response = "We can tell that this query is complex and we suggest using a human tutor for better understanding of the subject matter."
+          with Session(engine) as session:
+            bot = wrap_for_ql('assistant', response)
+            msg = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=bot)  
+            session.add(msg)
+            session.commit()
+          yield response
+          return
         updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(messages), bodyy["query"], steps, bodyy["name"])
         print("from first time:", updated_prompt)
         stream = open_ai_math(updated_prompt, messages)

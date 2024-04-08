@@ -202,3 +202,47 @@ def title_agent(topic: str, message: str):
         presence_penalty=0
       )
     return response.choices[0].message.content
+  
+
+def solution_check_prompt(question: str, steps: str):
+  return f"""
+You are a highly accuract agent that checks that whether the step-by-step solution is complete. You would be provided the mathematical question to be solved as well as the step-by-step solution returned.
+Your job is to Understand the Problem and ensure you have the complete steps. Return 'True' if the steps are complete otherwise return 'False'
+
+Here are some guidelines to help you identify complete step-by-step solutions:
+- Your response is only 'True' or 'False'
+- Complete steps do not make assumptions without prior knowledge or simplify for brevity without explicit statements.
+- Complete steps have a logical transitions between each step. A sudden jump in the process might indicate a skipped explanation or step
+- The solution should start with the given information and end with the problem's requirement being fulfilled. If the final answer does not directly address the question posed, there may be missing steps.
+
+###
+step-by-step solution:
+{steps}
+###
+
+Here is the question it is answering: {question}
+
+Is the step-by-step solution provided complete to answer the question True/False:\n
+"""
+
+def solution_check_agent(prompt: str):
+    """
+    ChatGPT Agent that is responsible for checking if the solution (steps) given are complete and wholly solve the problem.
+    """
+   
+    response = openai_client.chat.completions.create(
+        model= "gpt-3.5-turbo-16k", #"replace with req",
+        messages=[
+          {
+            "role": "system",
+            "content": prompt
+          },
+        ],
+        temperature=0,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+      )
+    return response.choices[0].message.content
+ 
