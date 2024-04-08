@@ -287,6 +287,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       if len(steps) != 0:
         prompt = solution_check_prompt(bodyy["query"], steps)
         is_steps_complete = solution_check_agent(prompt)
+        print("is_steps_complete prompt", prompt)
+        print("are steps full or correct", is_steps_complete)
         if is_steps_complete == False:
           response = "We can tell that this query is complex and we suggest using a human tutor for better understanding of the subject matter."
           with Session(engine) as session:
