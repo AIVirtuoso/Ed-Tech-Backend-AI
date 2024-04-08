@@ -231,7 +231,7 @@ def solution_check_agent(prompt: str):
     """
    
     response = openai_client.chat.completions.create(
-        model= "gpt-3.5-turbo-16k", #"replace with req",
+        model= "gpt-3.5-turbo", #"replace with req",
         messages=[
           {
             "role": "system",
