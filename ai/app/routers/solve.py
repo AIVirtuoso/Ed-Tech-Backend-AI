@@ -13,7 +13,7 @@ from typing import List, Optional, Dict, Union
 from ..dependencies.fermata import get_aitutor_chat_balance,set_aitutor_chat_balance
 from ..helpers.openai import open_ai, sys_prompt, math_prompt, steps_agent, title_agent, open_ai_math, solution_check_agent, solution_check_prompt
 from ..helpers.wolfram import call_wolfram
-from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation
+from ..helpers.generic import wrap_for_ql, find_tc_in_messages, build_chat_history, convert_to_conversation, check_and_cast_value
 from ..db.database import  engine
 from ..db.models import ConversationLogs, Conversations
 class Languages(Enum):
@@ -286,11 +286,14 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       print(steps)
       if len(steps) != 0:
         prompt = solution_check_prompt(bodyy["query"], steps)
-        is_steps_complete = solution_check_agent(prompt)
+        is_steps = solution_check_agent(prompt)
+        is_steps_complete = check_and_cast_value(is_steps)
         print("is_steps_complete prompt", prompt)
         print("are steps full or correct", is_steps_complete)
         if is_steps_complete == False:
+          print("False, made it")
           response = "We can tell that this query is complex and we suggest using a human tutor for better understanding of the subject matter."
+          print(response)
           with Session(engine) as session:
             bot = wrap_for_ql('assistant', response)
             msg = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=bot)  
