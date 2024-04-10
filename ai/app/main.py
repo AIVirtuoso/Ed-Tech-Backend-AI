@@ -17,8 +17,9 @@ origins = [
    "https://dev--shepherd-tutors.netlify.app",
    "http://localhost:3000",
    "http://localhost:3001",
+   "https://deploy-preview-839--shepherd-tutors.netlify.app",
    "https://deploy-preview-*.shepherd-tutors.netlify.app",
-    "https://deploy-preview-*--keen-phoenix-727261.netlify.app"
+   "https://deploy-preview-*--keen-phoenix-727261.netlify.app"
 ]
 
 
