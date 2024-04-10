@@ -84,15 +84,11 @@ def stream_openai_chunks(chunks: str, body):
     save_initial_message(initial_message, body)
     create_conversation_title(initial_message, body)
 
-def stream_error_generator(chunks: str):
-    """Generator function to stream error chunks"""
-    initial_message=''
-    for chunk in chunks:
-            current_content = chunk.choices[0].delta.content
-            if current_content is not None:
-              initial_message += current_content
-              yield current_content
-              time.sleep(0.1)
+def stream_error_generator(text: str, chunk_size=30):
+    """Generator function to chunk error text into smaller parts."""
+    for i in range(0, len(text), chunk_size):
+        yield text[i:i + chunk_size]
+        time.sleep(0.2)
     yield "done with stream"
   
      
@@ -285,7 +281,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       print("the steps:")
       print(steps)
       if len(steps) != 0:
-        prompt = solution_check_prompt(bodyy["query"], steps)
+        user_query = bodyy["query"]
+        prompt = solution_check_prompt(user_query, steps)
         is_steps = solution_check_agent(prompt)
         is_steps_complete = check_and_cast_value(is_steps)
         print("is_steps_complete prompt", prompt)
@@ -297,7 +294,10 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           stream_error_generator(response)
           with Session(engine) as session:
             bot = wrap_for_ql('assistant', response)
-            msg = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=bot)  
+            user = wrap_for_ql('user', user_query)
+            msg = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=bot)
+            umsg = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=user)  
+            session.add(umsg)
             session.add(msg)
             session.commit()
           return
