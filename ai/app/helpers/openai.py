@@ -46,7 +46,7 @@ Here are the steps you need to follow:
 - Formulate the Equation or Expression
 - If possible, simplify the equation or expression to make it easier to input into a computational tool.
 
-I'm Dera and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
+I'm {name} and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
 Student: {input}
 Tutor:
 """
