@@ -21,7 +21,7 @@ origins = [
    "https://deploy-preview-*--keen-phoenix-727261.netlify.app"
 ]
 
-app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(HTTPSRedirectMiddleware)
 
 app.add_middleware(ShepherdHeaderMiddleware)
 
