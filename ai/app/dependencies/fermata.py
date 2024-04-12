@@ -54,6 +54,7 @@ def get_account_balance(
     url = f"https://api.gofermata.com/v1/accounts/{account_id}/balance/{denomination}"
     print("url is", url)
     # Encode credentials 
+    print("Credentials", f"{company_id}:{api_key}")
     credentials = f"{company_id}:{api_key}".encode("utf-8")
     encoded_credentials = base64.b64encode(credentials).decode("utf-8")
     auth_header = f"Basic {encoded_credentials}"
@@ -63,6 +64,7 @@ def get_account_balance(
     session = requests.Session()  
     response = session.get(url, headers=headers)
     print("response", response)
+    print(response.text())
     if response.ok:
         data = response.json()
         print("data is:",data)
