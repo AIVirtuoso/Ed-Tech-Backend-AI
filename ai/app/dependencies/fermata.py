@@ -62,7 +62,7 @@ def get_account_balance(
     print("headers are", headers)
     session = requests.Session()  
     response = session.get(url, headers=headers)
-
+    print("response", response)
     if response.ok:
         data = response.json()
         print("data is:",data)
