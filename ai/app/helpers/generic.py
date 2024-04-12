@@ -38,3 +38,20 @@ def convert_to_conversation(messages: list[Dict[str, str | None]]):
         else:
             conversation += f"{role}: {content}\n"
     return conversation.strip()
+
+def check_and_cast_value(value):
+    # Check if the value is a string
+    if isinstance(value, str):
+        # Convert "True" and "False" strings to their boolean equivalents
+        if value == "True":
+            return True
+        elif value == "False":
+            return False
+        else:
+            # Return the original string if it's not "True" or "False"
+            return value
+    else:
+        # If the value is not a string (e.g., already a boolean or any other type), just return it as is
+        return value
+   
+  

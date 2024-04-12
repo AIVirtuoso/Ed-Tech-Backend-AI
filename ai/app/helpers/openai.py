@@ -9,7 +9,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "get_math_solution",
-            "description": "Get the mathematical solution, If the user asks how to solve or asks to calculate a mathematical question or equation. Only use if math_solution does not contain steps. It reduces the question into the smallest possible format to be sent to wolfram alpha",
+            "description": "Get the mathematical solution, If the user asks how to solve or asks to calculate a mathematical question or equation.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -25,8 +25,10 @@ tools = [
 
 def sys_prompt(topic, level, input, name):
   return f"""
-You are an upbeat, encouraging Mathematics if tutor who helps students understand concepts by explaining ideas and asking students questions.
-Ask the student what math problem they need help to solve IF there seems to be no inpur OR history. Do not converse with the student besides asking for a math problem they need help solving. If the student responds with something else please guide them to asking a specific math problem.
+You are an upbeat, encouraging Mathematics tutor Socrates who helps students understand concepts.
+Ask the student what math problem they need help to solve IF there seems to be no input OR history. 
+Do not converse with the student besides asking for a math problem they need help solving. Do not explain concepts or provide answers to any questions.
+If the student responds with something other than a request to solve a math problem, please guide them towards asking a specific math problem.
 
 Here is the information about the Tools you have access to:
 - There is a get_math_solution tool that returns a step by step solution to the given equation.
@@ -37,7 +39,7 @@ Here is the information about the Tools you have access to:
 - The equation you input to get_math_solution is a reduced version of the students question that can be interpreted by wolfram alpha.
 
 If the user enters a word problem to you, your goal is to break down math word problems into clear, solvable formulas. These formulas should be precise enough to be input directly into computational tools like Wolfram Alpha for solving.
-Thers are the steps you need to follow:
+Here are the steps you need to follow:
 - Identify the key components of the problem, such as the quantities involved, the relationships between these quantities, and the ultimate question being asked.
 - Identify Variables and Constants. Determine which elements of the problem are variables, and assign them symbolic representations (e.g., x, y, z).
 - Determine the Operations Required
@@ -45,8 +47,6 @@ Thers are the steps you need to follow:
 - If possible, simplify the equation or expression to make it easier to input into a computational tool.
 
 I'm {name} and I'm studying Mathematics and I need help with {topic}. I'm a {level} student.
-
-
 Student: {input}
 Tutor:
 """
@@ -111,7 +111,7 @@ def open_ai(prompt, msgs = []):
     stream = openai_client.chat.completions.create(
         model= "gpt-4-turbo-preview", # replace with req.gptVersion
         messages=msgs,
-        temperature=0.2,
+        temperature=0,
         max_tokens=1500,
         top_p=1,
         frequency_penalty=0.15,
@@ -202,3 +202,47 @@ def title_agent(topic: str, message: str):
         presence_penalty=0
       )
     return response.choices[0].message.content
+  
+
+def solution_check_prompt(question: str, steps: str):
+  return f"""
+You are a highly accuract agent that checks that whether the step-by-step solution is complete. You would be provided the mathematical question to be solved as well as the step-by-step solution returned.
+Your job is to Understand the Problem and ensure you have the complete steps. Return 'True' if the steps are complete otherwise return 'False'
+
+Here are some guidelines to help you identify complete step-by-step solutions:
+- Your response is only 'True' or 'False'
+- Complete steps do not make assumptions without prior knowledge or simplify for brevity without explicit statements.
+- Complete steps have a logical transitions between each step. A sudden jump in the process might indicate a skipped explanation or step
+- The solution should start with the given information and end with the problem's requirement being fulfilled. If the final answer does not directly address the question posed, there may be missing steps.
+
+###
+step-by-step solution:
+{steps}
+###
+
+Here is the question it is answering: {question}
+
+Is the step-by-step solution provided complete to answer the question True/False:\n
+"""
+
+def solution_check_agent(prompt: str):
+    """
+    ChatGPT Agent that is responsible for checking if the solution (steps) given are complete and wholly solve the problem.
+    """
+   
+    response = openai_client.chat.completions.create(
+        model= "gpt-3.5-turbo", #"replace with req",
+        messages=[
+          {
+            "role": "system",
+            "content": prompt
+          },
+        ],
+        temperature=0,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+      )
+    return response.choices[0].message.content
+ 
