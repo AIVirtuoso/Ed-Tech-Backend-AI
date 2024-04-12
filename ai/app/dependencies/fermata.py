@@ -64,7 +64,9 @@ def get_account_balance(
     session = requests.Session()  
     response = session.get(url, headers=headers)
     print("response", response)
-    print(response.text())
+    print(response.status_code)
+    if response.status_code == 500:
+        return None
     if response.ok:
         data = response.json()
         print("data is:",data)
