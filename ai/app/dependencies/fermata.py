@@ -52,14 +52,14 @@ def get_account_balance(
     """
 
     url = f"https://api.gofermata.com/v1/accounts/{account_id}/balance/{denomination}"
-
+    print("url is", url)
     # Encode credentials 
     credentials = f"{company_id}:{api_key}".encode("utf-8")
     encoded_credentials = base64.b64encode(credentials).decode("utf-8")
     auth_header = f"Basic {encoded_credentials}"
 
     headers = {"Content-Type": "application/json", "Authorization": auth_header}
-
+    print("headers are", headers)
     session = requests.Session()  
     response = session.get(url, headers=headers)
 
@@ -106,7 +106,7 @@ async def get_docchat_balance(firebase_id: str) -> bool:
         bool: False if there's an error, True if the user has insufficient docchat balance.
     """
     fermata_customer_id = await get_fermata_customer_id(firebase_id)
-    if not fermata_customer_id:
+    if not fermata_customer_id or (fermata_customer_id and not isinstance(fermata_customer_id, str)):
         raise ValueError('fermataCustomerId is null')
     try:
             chat_limit = get_account_balance(fermata_customer_id, 'docchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
@@ -118,7 +118,7 @@ async def get_docchat_balance(firebase_id: str) -> bool:
 
 async def set_docchat_balance(firebase_id: str) -> int:
     fermata_customer_id = await get_fermata_customer_id(firebase_id)
-    if not fermata_customer_id:
+    if not fermata_customer_id or (fermata_customer_id and not isinstance(fermata_customer_id, str)):
         raise ValueError('fermataCustomerId is null')
     try:
             chat_limit = push_event(fermata_customer_id, 'CHAT', 1, 'docchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
@@ -140,7 +140,7 @@ async def get_aitutor_chat_balance(firebase_id: str) -> bool:
     """
     print("firebase ID from body", firebase_id)
     fermata_customer_id = await get_fermata_customer_id(firebase_id)
-    if not fermata_customer_id:
+    if not fermata_customer_id or (fermata_customer_id and not isinstance(fermata_customer_id, str)):
         raise ValueError('fermataCustomerId is null')
     try:
             chat_limit = get_account_balance(fermata_customer_id, 'aitutorchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
@@ -152,7 +152,7 @@ async def get_aitutor_chat_balance(firebase_id: str) -> bool:
 
 async def set_aitutor_chat_balance(firebase_id: str) -> int:
     fermata_customer_id = await get_fermata_customer_id(firebase_id)
-    if not fermata_customer_id:
+    if not fermata_customer_id or (fermata_customer_id and not isinstance(fermata_customer_id, str)):
         raise ValueError('fermataCustomerId is null')
     try:
             chat_limit = push_event(fermata_customer_id, 'CHAT', 1, 'aitutorchats', os.getenv('FERMATA_COMPANY_ID'), os.getenv('FERMATA_API_KEY'))
