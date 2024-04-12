@@ -8,8 +8,8 @@ file_path = os.path.abspath(__file__)
 
 # Print the full file path
 print("Full file path:", file_path)
-cred = firebase_admin.credentials.Certificate("/code/app/dependencies/serviceAccountKey.json", {'databaseURL': 'https://shepherd-app-382114-default-rtdb.firebaseio.com'})
-firebase_admin.initialize_app(cred)
+cred = firebase_admin.credentials.Certificate("/code/app/dependencies/serviceAccountKey.json")
+firebase_admin.initialize_app(cred, {'databaseURL': 'https://shepherd-app-382114-default-rtdb.firebaseio.com'})
 
 # Get a reference to the database
 
