@@ -30,8 +30,7 @@ async def get_fermata_customer_id(firebase_id: str) -> str:
     try:
         fermata_customer_ref = database.reference(f"user-subscriptions/{firebase_id}/fermataCustomerId")
         snapshot =  fermata_customer_ref.get()
-        print("snapshottt",snapshot)
-        return snapshot.val()
+        return snapshot
     except (firebase_admin.exceptions.FirebaseError, ValueError) as error:
         print(f"Error fetching Fermata customer ID: {error}")
         return None
@@ -66,6 +65,7 @@ def get_account_balance(
 
     if response.ok:
         data = response.json()
+        print("data is:",data)
         balance_data = data.get("data")  
         if balance_data:
             return balance_data.get("amount")  
