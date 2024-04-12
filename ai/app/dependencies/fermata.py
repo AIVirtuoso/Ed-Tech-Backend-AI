@@ -8,7 +8,7 @@ file_path = os.path.abspath(__file__)
 
 # Print the full file path
 print("Full file path:", file_path)
-cred = firebase_admin.credentials.Certificate("/code/app/dependencies/serviceAccountKey.json")
+cred = firebase_admin.credentials.Certificate("/code/app/dependencies/serviceAccountKey.json", {'databaseURL': 'https://shepherd-app-382114-default-rtdb.firebaseio.com'})
 firebase_admin.initialize_app(cred)
 
 # Get a reference to the database
@@ -28,6 +28,8 @@ async def get_fermata_customer_id(firebase_id: str) -> str:
     """
 
     try:
+        print("database is:", database)
+        print("firebase ID is", firebase_id)
         fermata_customer_ref = database.reference(f"user-subscriptions/{firebase_id}/fermataCustomerId")
         snapshot = await fermata_customer_ref.get_async()
         return snapshot.val()
@@ -137,6 +139,7 @@ async def get_aitutor_chat_balance(firebase_id: str) -> bool:
     Returns:
         bool: True if there's an error, True if the user has insufficient AI Chat (maths) balance.
     """
+    print("firebase ID from body", firebase_id)
     fermata_customer_id = await get_fermata_customer_id(firebase_id)
     if not fermata_customer_id:
         raise ValueError('fermataCustomerId is null')
