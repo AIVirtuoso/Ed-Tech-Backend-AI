@@ -28,10 +28,9 @@ async def get_fermata_customer_id(firebase_id: str) -> str:
     """
 
     try:
-        print("database is:", database)
-        print("firebase ID is", firebase_id)
         fermata_customer_ref = database.reference(f"user-subscriptions/{firebase_id}/fermataCustomerId")
         snapshot =  fermata_customer_ref.get()
+        print("snapshottt",snapshot)
         return snapshot.val()
     except (firebase_admin.exceptions.FirebaseError, ValueError) as error:
         print(f"Error fetching Fermata customer ID: {error}")
