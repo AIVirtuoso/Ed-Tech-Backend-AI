@@ -137,6 +137,7 @@ Here are some guidelines:
 - If the chat history suggests that there is more parts to go return False
 - If the chat history suggests that the problem has been solved correctly return True.
 - The problem could have been solved by the tutor summarizing the students answer so look out for that.
+- The tutor may say something like "Great job! Do you have any more questions on this, or is there another problem you'd like to tackle?" or very similarly along those lines which indicates the question has been solved.
 - Analyze the chat history after each student interaction to identify which steps have been explicitly covered and understood.
 - DO NOT RETURN ANY OTHER WORDS. ONLY True or False
 - If steps is not provided return False.
