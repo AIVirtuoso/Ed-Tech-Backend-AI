@@ -150,6 +150,7 @@ def steps_agent(history, steps):
     ChatGPT Agent that is responsible for figuring out if user has answered question. 
     Useful for knowing when to close the stream generator function. 
     """
+    print("Steps", STEPS_AGENT)
     print("HISTORY", history)
     user_input = f"Chat History :{history}.\nMath Solution Steps: {steps}."
     response = openai_client.chat.completions.create(
