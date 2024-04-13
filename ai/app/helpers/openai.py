@@ -142,7 +142,7 @@ Here are some guidelines:
 - DO NOT RETURN ANY OTHER WORDS. ONLY True or False
 - If steps is not provided return False.
 
-The User will now provide the chat history which is a list of messages with role and content and the steps to the math problem.
+The User will now provide the chat history and the steps to the math problem.
 """
 
 def steps_agent(history, steps):
