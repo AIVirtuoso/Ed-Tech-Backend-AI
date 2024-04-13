@@ -223,7 +223,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               updated_messages.append(user_msg)
               updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
               new_history = convert_to_conversation(updated_messages)
-              is_solved = steps_agent(new_history[:2], steps)
+              is_solved = steps_agent(new_history[-2:], steps)
               assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
               print(assistant_msg)
               bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
