@@ -208,9 +208,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
                 yield current_content
                 time.sleep(0.1)
           yield "done with stream"
-          
-                
-          
+
         # below save all to db 
         user_msg = wrap_for_ql('user', bodyy["query"])
         #background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
@@ -313,7 +311,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               assistant_resp_for_tc += chunk.choices[0].delta.content
               yield current_content
               time.sleep(0.1)
-        yield "done with stream"
+      yield "done with stream"
         
               
       
