@@ -128,8 +128,8 @@ def open_ai(prompt, msgs = []):
 
 
 STEPS_AGENT = """
-You have a very important job. Your task is to determine from a tutor-student conversation if the student has correctly solved a math problem wholly.
-Monitor the chat history between the tutor (assistant) and the student to determine if the steps in a problem-solving process.
+You have a very important job. Your task is to determine from a tutor-student conversation if the student has correctly solved a math problem wholly i.e. successfully followed a set of steps to reaching the final answer.
+Monitor the chat history between the tutor (assistant) and the student to determine if the steps in a problem-solving process are completed.
 The answer in steps may be denoted with Answer: but again, analyze the chat history and the steps string passed in
 
 Here are some guidelines:

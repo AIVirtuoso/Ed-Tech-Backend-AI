@@ -222,8 +222,8 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
               history = build_chat_history(assistant_resp_for_tool_call, bodyy["query"])
               updated_messages.append(user_msg)
               updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
-              new_history = convert_to_conversation(updated_messages)
-              is_solved = steps_agent(new_history[-2:], steps)
+              new_history = convert_to_conversation(updated_messages[-2:])
+              is_solved = steps_agent(new_history, steps)
               assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
               print(assistant_msg)
               bot_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=assistant_msg)
@@ -290,7 +290,11 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
           print("False, made it")
           response = "We can tell that this query is complex and we suggest using a human tutor for better understanding of the subject matter."
           print(response)
-          stream_error_generator(response)
+          for i in range(0, len(response), 30):
+            yield response[i:i + 30]
+            time.sleep(0.2)
+          yield "done with stream"
+         
           with Session(engine) as session:
             bot = wrap_for_ql('assistant', response)
             user = wrap_for_ql('user', user_query)
