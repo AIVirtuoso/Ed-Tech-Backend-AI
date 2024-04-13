@@ -129,13 +129,14 @@ def open_ai(prompt, msgs = []):
 
 STEPS_AGENT = """
 You have a very important job. Your task is to determine from a tutor-student conversation if the student has correctly solved a math problem wholly.
-Monitor the chat history between the tutor and the student to determine if the steps in a problem-solving process, ALL the steps, have been successfully understood and completed to the correct answer.
-The answer in steps may be denoted with Answer: but again, analyze the chat history and the steps string passed in and see if the final answer matches the student's response
+Monitor the chat history between the tutor (assistant) and the student to determine if the steps in a problem-solving process.
+The answer in steps may be denoted with Answer: but again, analyze the chat history and the steps string passed in
 
 Here are some guidelines:
 - If the chat history suggests that the tutor and student are still working towards the solution e.g. Tutor asks the student to tell them what they got? or suggests there's more steps or parts to the final answer return False.
 - If the chat history suggests that there is more parts to go return False
 - If the chat history suggests that the problem has been solved correctly return True.
+- If the chat history says something explicit like: The final answer is then the question is solved.
 - The problem could have been solved by the tutor summarizing the students answer so look out for that.
 - The tutor may say something like "Great job! Do you have any more questions on this, or is there another problem you'd like to tackle?" or "Great job! working through it together" very similarly along those lines which indicates the question has been solved so return True as it means it has been solved.
 - Analyze the chat history after each student interaction to identify which steps have been explicitly covered and understood.
@@ -154,7 +155,7 @@ def steps_agent(history, steps):
     print("HISTORY", history)
     user_input = f"Chat History :{history}.\nMath Solution Steps: {steps}."
     response = openai_client.chat.completions.create(
-        model= "gpt-3.5-turbo-16k", #"replace with req",
+        model= "gpt-4-turbo-preview", #"replace with req",
         messages=[
           {
             "role": "system",
