@@ -26,11 +26,13 @@ tools = [
 def sys_prompt(topic, level, input, name):
   return f"""
 You are an upbeat, encouraging Mathematics tutor Socrates who helps students understand concepts.
-Ask the student what math problem they need help to solve IF there seems to be no input OR history. 
-Do not converse with the student besides asking for a math problem they need help solving. Do not explain concepts or provide answers to any questions.
+Ask the student what math {topic} problem they need help to solve in a friendly tone e.g. "Hey {name}, what {topic} do you need help solving?" IF there seems to be no input OR history. 
+Do not converse with the student besides asking for a math {topic} problem they need help solving in a friendly tone e.g. "Hey {name}, what {topic} do you need help solving?" . Do not explain concepts or provide answers to any questions.
 If the student responds with something other than a request to solve a math problem, please guide them towards asking a specific math problem. Ask them what problem they need help with. The user would likely say things like 'How do I solve ....' or 'Help me integrate ...' so if they respond with anything other than that, not along those lines, please just ask them what {topic} problem they need help with.
 
 If the student seems they need help understanding a concept e.g. "explain ..." ask them to try the explain a concept feature as you only are for solving maths problems.
+
+If the student seems unsure about what to ask or explicitly asks you to recommend, only ask them to give you a math problem as your job is solely to be given maths problems to solve. Again, do not converse. please just ask them what {topic} problem they need help with in a friendly manner.
 
 Here is the information about the Tools you have access to:
 - There is a get_math_solution tool that returns a step by step solution to the given equation.
@@ -126,20 +128,22 @@ def open_ai(prompt, msgs = []):
 
 
 STEPS_AGENT = """
-You have a very important job. Your task is to determine from a tutor-student conversation if the student has correctly solved a math problem wholly.
-Monitor the chat history between the tutor and the student to determine if the steps in a problem-solving process, ALL the steps, have been successfully understood and completed to the correct answer.
-The answer in steps may be denoted with Answer: but again, analyze the chat history and the steps string passed in and see if the final answer matches the student's response
+You have a very important job. Your task is to determine from a tutor-student conversation if the student has correctly solved a math problem wholly i.e. successfully followed a set of steps to reaching the final answer.
+Monitor the chat history between the tutor (assistant) and the student to determine if the steps in a problem-solving process are completed.
+The answer in steps may be denoted with Answer: but again, analyze the chat history and the steps string passed in
 
 Here are some guidelines:
 - If the chat history suggests that the tutor and student are still working towards the solution e.g. Tutor asks the student to tell them what they got? or suggests there's more steps or parts to the final answer return False.
 - If the chat history suggests that there is more parts to go return False
 - If the chat history suggests that the problem has been solved correctly return True.
+- If the chat history says something explicit like: The final answer is then the question is solved.
 - The problem could have been solved by the tutor summarizing the students answer so look out for that.
+- The tutor may say something like "Great job! Do you have any more questions on this, or is there another problem you'd like to tackle?" or "Great job! working through it together" very similarly along those lines which indicates the question has been solved so return True as it means it has been solved.
 - Analyze the chat history after each student interaction to identify which steps have been explicitly covered and understood.
 - DO NOT RETURN ANY OTHER WORDS. ONLY True or False
 - If steps is not provided return False.
 
-The User will now provide the chat history which is a list of messages with role and content and the steps to the math problem.
+The User will now provide the chat history and the steps to the math problem.
 """
 
 def steps_agent(history, steps):
@@ -147,9 +151,11 @@ def steps_agent(history, steps):
     ChatGPT Agent that is responsible for figuring out if user has answered question. 
     Useful for knowing when to close the stream generator function. 
     """
+    print("Steps", STEPS_AGENT)
+    print("HISTORY", history)
     user_input = f"Chat History :{history}.\nMath Solution Steps: {steps}."
     response = openai_client.chat.completions.create(
-        model= "gpt-3.5-turbo-16k", #"replace with req",
+        model= "gpt-4-turbo-preview", #"replace with req",
         messages=[
           {
             "role": "system",
@@ -157,7 +163,7 @@ def steps_agent(history, steps):
           },
           {
             "role": "user",
-            "content": f'History: {history}\nSteps: {steps}'
+            "content": f'History: {history}\n Math Solution Steps: {steps}'
           }
         ],
         temperature=0,
