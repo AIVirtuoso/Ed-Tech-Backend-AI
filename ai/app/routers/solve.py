@@ -170,7 +170,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
     # first chat initiation 
     if len(messages) == 0: 
       print("len is 0")
-      prompt = sys_prompt(topic, level, '', name)
+      prompt = sys_prompt(topic, level, '', name, bodyy["language"])
       print(prompt)
         # Call open ai function
       stream = open_ai(prompt)
@@ -195,7 +195,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
         print(updated_messages)
         print("the steps", steps)
         if len(steps) != 0:
-          updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(updated_messages), bodyy["query"], steps, bodyy["name"])
+          updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(updated_messages), bodyy["query"], steps, bodyy["name"], bodyy["language"])
           print("For subsequently:", updated_prompt)
           stream = open_ai_math(updated_prompt, updated_messages)
          
@@ -236,7 +236,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       assistant_resp = ''
       assistant_resp_for_tc = ''
       
-      prompt = sys_prompt(bodyy["topic"], bodyy["level"], bodyy["query"], bodyy["name"])
+      prompt = sys_prompt(bodyy["topic"], bodyy["level"], bodyy["query"], bodyy["name"],bodyy["language"])
       print("initial prompt", prompt)
       stream = open_ai(prompt, messages)
       available_functions = {"get_math_solution": call_wolfram}
@@ -304,7 +304,7 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
             session.add(msg)
             session.commit()
           return
-        updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(messages), bodyy["query"], steps, bodyy["name"])
+        updated_prompt = math_prompt(bodyy["topic"], bodyy["level"], convert_to_conversation(messages), bodyy["query"], steps, bodyy["name"], bodyy["language"])
         print("from first time:", updated_prompt)
         stream = open_ai_math(updated_prompt, messages)
       
