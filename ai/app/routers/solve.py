@@ -91,58 +91,6 @@ def stream_error_generator(text: str, chunk_size=30):
         time.sleep(0.2)
     yield "done with stream"
   
-     
-    
-def write_to_db(body,user_msg, steps, tc, assistant_resp, assistant_resp_for_tc):
-  print("background job 1 fires")
-  with Session(engine) as session:
-        user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
-        session.add(user_message)
-        session.commit()
-        if tc.get("role") == "function":
-          # save tc 
-          print("tool call",tc)
-          user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=tc)  
-          session.add(user_message)
-          session.commit()
-        if len(assistant_resp) != 0 and assistant_resp is not None: 
-          assistant_msg = wrap_for_ql('assistant', assistant_resp)
-          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
-          session.add(bot_message)
-          session.commit()
-        
-        if len(assistant_resp_for_tc) != 0 and assistant_resp_for_tc is not None: 
-          print("basically outside steps")
-          print(assistant_resp_for_tc)
-          history = build_chat_history(assistant_resp_for_tc, body["query"])
-          is_solved = steps_agent(history, steps)
-          assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tc, is_solved)
-          bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
-          session.add(bot_message)
-          session.commit()
-          print(assistant_msg)
-  
-def write_to_db_with_steps(body,user_msg, updated_messages, steps, assistant_resp_for_tool_call):
-    print("background job 2 fires")
-    with Session(engine) as session:
-            user_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=user_msg)  
-            session.add(user_message)
-            session.commit()
-            if len(assistant_resp_for_tool_call) != 0 and assistant_resp_for_tool_call is not None: 
-              print("ASSISTANT IN THE OTHER FIRST ONE")
-              print(assistant_resp_for_tool_call)
-              history = build_chat_history(assistant_resp_for_tool_call, body["query"])
-              updated_messages.append(user_msg)
-              updated_messages.append({"role": "assistant", "content": assistant_resp_for_tool_call})
-              is_solved = steps_agent(updated_messages, steps)
-              assistant_msg = wrap_for_ql('assistant', assistant_resp_for_tool_call, is_solved)
-              print(assistant_msg)
-              bot_message = ConversationLogs(studentId=body["studentId"], conversationId=UUID(body["conversationId"]), log=assistant_msg)
-              session.add(bot_message)
-              session.commit()
-
-
-# idea would be GET to get the conversation id and then route and post. 
 @router.get("/")
 async def wolfram_maths_response(studentId: str, topic: str, subject: str, query: str, name: str, level: str, conversationId: str, firebaseId: str, language: Languages,  messages: str): 
     messages: List[Dict[str, Optional[str]]] = json.loads(messages)
@@ -211,7 +159,6 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
 
         # below save all to db 
         user_msg = wrap_for_ql('user', bodyy["query"])
-        #background_tasks.add_tasks(write_to_db_with_steps, body, user_msg, updated_messages, steps, assistant_resp_for_tool_call)
         with Session(engine) as session:
             user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=user_msg)  
             session.add(user_message)
@@ -288,10 +235,10 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
         print("are steps full or correct", is_steps_complete)
         if is_steps_complete == False:
           print("False, made it")
-          response = "We can tell that this query is complex and we suggest using a human tutor for better understanding of the subject matter."
+          response = "We suggest using a human tutor for better understanding of the subject matter."
           print(response)
-          for i in range(0, len(response), 30):
-            yield response[i:i + 30]
+          for i in range(0, len(response), 20):
+            yield response[i:i + 20]
             time.sleep(0.2)
           yield "done with stream"
          
@@ -325,7 +272,6 @@ async def wolfram_maths_response(studentId: str, topic: str, subject: str, query
       user_msg = wrap_for_ql('user', bodyy["query"])
       log = json.dumps(user_msg)
       print(user_msg)
-      #background_tasks.add_task(write_to_db, body, user_msg,steps,tc,assistant_resp, assistant_resp_for_tc)
       with Session(engine) as session:
         user_message = ConversationLogs(studentId=bodyy["studentId"], conversationId=UUID(bodyy["conversationId"]), log=user_msg)  
         session.add(user_message)
