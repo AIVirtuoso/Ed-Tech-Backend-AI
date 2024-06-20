@@ -1,4 +1,4 @@
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { ChatOpenAI } from '@langchain/openai';
 import { BufferMemory } from 'langchain/memory';
 import { PromptTemplate } from 'langchain/prompts';
 import config from '../../../config/index';
@@ -43,6 +43,7 @@ const generateConversationDescription = async (
     memory,
     prompt
   });
+
   const answer = await chain.call({ input: message });
   return answer.response;
 };
