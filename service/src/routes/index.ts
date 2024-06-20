@@ -11,16 +11,19 @@ import Middleware from '../middleware/index';
 import notes from './notes';
 import quizzes from './quizzes';
 import flashCards from './flashCards';
-import { PineconeClient } from '@pinecone-database/pinecone';
+import { Pinecone } from '@pinecone-database/pinecone';
 import mnemonics from './mnemonics';
 import highlights from './highlights';
 import studyPlan from './studyPlan';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { OpenAI } from 'langchain/llms/openai';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { OpenAI } from '@langchain/openai';
 import cors from 'cors';
 import http from 'http';
 import ProcessStudyPlanService from '../services/processStudyPlanResources';
-import { VectorOperationsApi } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
+ 
+type VectorOperationsApi = ReturnType<
+  Pinecone["index"]
+>;
 
 const ai = express();
 
@@ -91,12 +94,9 @@ const model = new OpenAI({
 let pineconeIndex: VectorOperationsApi;
 
 const preparePinecone = async () => {
-  const pinecone = new PineconeClient();
-  // @ts-ignore
-  const { apikey, environment, index } = config.pinecone;
-  await pinecone.init({
+  const { apikey, index } = config.pinecone;
+  const pinecone = new Pinecone({
     apiKey: apikey,
-    environment
   });
 
   const vectorIndex = pinecone.Index(index);

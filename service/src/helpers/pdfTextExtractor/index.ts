@@ -1,8 +1,11 @@
 import AWS from 'aws-sdk';
+import config from '../../../config/index';
+
+const { accessKeyId, secretAccessKey } = config.aws as any;
 
 AWS.config.update({
-  accessKeyId: 'AKIAUWHUFD3XCENJWZP5',
-  secretAccessKey: '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',
+  accessKeyId: accessKeyId,
+  secretAccessKey: secretAccessKey,
   region: 'us-east-2'
 });
 
@@ -36,9 +39,7 @@ class PDFTextExtractor {
     studentId?: string,
     documentId?: string
   ): Promise<string> {
-    console.log('Extracting text from PDF...');
     const pdfKey = this.extractS3KeyFromUrl(pdfUrl);
-    console.log(`PDF key extracted: ${pdfKey}`);
 
     const params = {
       DocumentLocation: { S3Object: { Bucket: this.bucketName, Name: pdfKey } },

@@ -1,4 +1,8 @@
 const config = {
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string
+  },
   openai: {
     apikey: process.env.OPENAI_APIKEY as string,
     model: process.env.OPENAI_MODEL as string
@@ -22,9 +26,11 @@ const config = {
     outputBucketName: process.env.TEXT_EXTRACTOR_OUTPUTBUCKETNAME as string,
     snsTopicArn: process.env.TEXT_EXTRACTOR_SNSTOPICARN as string,
     snsRoleArn: process.env.TEXT_EXTRACTOR_SNSROLEARN as string
+  },
+  keywordsAI: {
+    keywordsAIapikey: process.env.KEYWORDSAI_APIKEY as string,
+    keywordsAIbaseURL: process.env.KEYWORDSAI_BASEURL as string
   }
 };
-
-console.log('POSTGRES USERNAME', process.env.POSTGRES_USERNAME);
 
 export default config;

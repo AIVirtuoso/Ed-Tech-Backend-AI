@@ -1,15 +1,15 @@
-// migrations/xxxx-xx-xx-add-title-and-soft-delete-to-conversations.js
 'use strict';
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     await queryInterface.addColumn('Conversations', 'deletedAt', {
       type: Sequelize.DATE,
       allowNull: true
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn('Conversations', 'deletedAt');
   }
 };

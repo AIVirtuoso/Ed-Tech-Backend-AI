@@ -2,7 +2,9 @@ import { database, credential } from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import config from '../../config/index';
 import { OpenAI } from 'langchain/llms/openai';
+import axios from 'axios';
 import PDFTextExtractor from '../helpers/pdfTextExtractor';
+import LocalPDFExtractor from './localExtractor';
 import { OPENAI_MODELS, FLASHCARD_DIFFICULTY } from '../helpers/constants';
 import {
   generalFlashcardPrompt,
@@ -44,6 +46,7 @@ class ProcessStudyPlanService {
   private db: database.Database;
   private retryInterval: number;
   private maxRetries: number;
+  private notificationRetryCount: { [key: string]: number } = {};
 
   constructor() {
     console.log('Initializing ProcessStudyPlanService');
@@ -57,6 +60,26 @@ class ProcessStudyPlanService {
     this.db = database();
     this.retryInterval = 15 * 60 * 1000; // 15 minutes
     this.maxRetries = 5;
+  }
+
+  public async notifyMainServiceOfResourceGeneration(
+    jobId: string
+  ): Promise<void> {
+    try {
+      if (!this.notificationRetryCount[jobId]) {
+        this.notificationRetryCount[jobId] = 0;
+      }
+      if (this.notificationRetryCount[jobId] < 4) {
+        const url = `${process.env.MAIN_SERVICE_API_URL}/extractStudyPlanResource/${jobId}`;
+        await axios.post(url, {
+          jobId
+        });
+      }
+    } catch (error) {
+      this.notificationRetryCount[jobId] =
+        this.notificationRetryCount[jobId] + 1;
+      setTimeout(() => this.notifyMainServiceOfResourceGeneration(jobId), 3000);
+    }
   }
 
   public async init(): Promise<void> {
@@ -74,6 +97,19 @@ class ProcessStudyPlanService {
         if (fileUrl) {
           console.log('Has file url');
           try {
+            const localExtractor = new LocalPDFExtractor();
+
+            const extractorInfo = await localExtractor.extractText(fileUrl);
+
+            if (extractorInfo.status === 'success') {
+              if (
+                extractorInfo.lineCount >= 20 &&
+                extractorInfo.wordCount >= 100
+              ) {
+                supportingText = extractorInfo.text;
+              }
+            }
+
             const url = new URL(fileUrl);
             const pathSegments = url.pathname
               .split('/')
@@ -95,8 +131,8 @@ class ProcessStudyPlanService {
             const jobId = await pdfTextExtractor.extractTextFromPDF(fileUrl);
 
             const text = await pdfTextExtractor.getTextFromJob(jobId);
-            console.log(text);
             await pdfTextExtractor.storeJobDetailsInDynamoDB(fileUrl, text);
+            supportingText = text;
           } catch (error: any) {
             console.log(error);
             await this.db.ref(`study-plan-resource-queue/${jobId}`).update({
@@ -122,7 +158,7 @@ class ProcessStudyPlanService {
           status: 'done',
           resource
         });
-        console.log(`Job ${jobId} processed successfully`);
+        await this.notifyMainServiceOfResourceGeneration(jobId);
       }
     } catch (error) {
       console.error(`Error processing job ${jobId}:`, error);

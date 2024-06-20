@@ -1,4 +1,5 @@
 const { DataTypes, Op } = require('sequelize');
+import { Languages } from 'src/types';
 import sequelize from '../../sequelize';
 import Log from './conversationLog';
 import Document from './document';
@@ -27,6 +28,11 @@ const Conversation = sequelize.define(
     level: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    language: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'English'
     },
 
     reference: {
@@ -78,7 +84,6 @@ export const getDocumentHistory = async (studentId: string) => {
 };
 
 export const getTextNoteHistory = async (noteIds: string[]) => {
-  console.log('TEXT HISTORY NOTE', noteIds);
   // Fetch conversations where reference includes note IDs
   const chattedNotes = await Conversation.findAll({
     where: {
@@ -138,7 +143,6 @@ export const getChatConversationId = async (
   });
 
   if (!convoId && createNew) {
-    console.log('created a new link');
     convoId = await Conversation.create({
       reference,
       referenceId,
@@ -157,7 +161,8 @@ export const createNewConversation = async ({
   title,
   topic,
   subject,
-  level
+  level,
+  language
 }: {
   reference: string;
   referenceId: string;
@@ -165,6 +170,7 @@ export const createNewConversation = async ({
   topic?: string; // Adding the optional parameters
   subject?: string;
   level?: string;
+  language: Languages;
 }) => {
   const newChat = await Conversation.create({
     reference,
@@ -172,7 +178,8 @@ export const createNewConversation = async ({
     title,
     topic,
     subject,
-    level
+    level,
+    language
   }); // Including the new values in create method
   return newChat;
 };

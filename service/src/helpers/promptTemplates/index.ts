@@ -1,3 +1,5 @@
+import { Languages } from 'src/types';
+
 type QuizType =
   | 'multipleChoiceSingle'
   | 'multipleChoiceMulti'
@@ -48,7 +50,9 @@ export const generalFlashcardPrompt = (
   subject: string,
   topic: string,
   blacklistedQuestions?: string[],
-  subTopics?: string[]
+  subTopics?: string[],
+  lang: Languages = 'English',
+  grade?: string
 ) => {
   const difficultyMap: any = {
     kindergarten: 'Easy',
@@ -68,8 +72,9 @@ export const generalFlashcardPrompt = (
           ','
         )}, you should only ask questions that relate to the subtopics`
       : '';
-  return `You are a dedicated student tutor. Your task is to create study flashcards for your students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
+  return `You are a dedicated student tutor. Your task is to create study flashcards for your ${`${grade} grade`} students based on the subject, topics, number of flashcard and difficulty level provided. For each flashcard: formulate a question that tests understanding of key concepts, provide a concise answer, limited to 1-2 sentences and offer a detailed explanation to give context and enhance comprehension.
  Output the flashcards in JSON format, with keys for 'question', 'answer', and 'explanation'.
+
  # Here is the Student Request Information:
  Subject: ${subject}
  Topic:  ${topic}
@@ -92,7 +97,7 @@ export const generalFlashcardPrompt = (
  - Hard: Frame questions that involve analysis or synthesis of information. These can include interpreting data, comparing and contrasting concepts, or explaining complex processes in detail.
  - Very Hard: Pose questions that require Require advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
  - Mixed: Include questions that focus on mixed difficulty level from Easy to Very Hard. These questions should range from the fundamental concepts, definitions, or simple processes to advanced understanding, often integrating multiple areas of knowledge or requiring complex problem-solving skills.
- Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:\n\
+ Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself, where the value in the key-value pair MUST be in this language and this language only: ${lang}. no extra information:\n\
  {
    \"flashcards\": [
      {\"front\": \"...\", \"back\": \"...\", \"explainer\": \"...\", helpful reading: \"...\"}
@@ -161,8 +166,10 @@ export const chatWithNotePrompt = (note: string) => {
 export const flashCardsFromNotesPrompt = (
   note: string,
   count: number,
-  blacklistedQuestions?: string[]
+  blacklistedQuestions?: string[],
+  lang: Languages = 'English'
 ) => {
+  console.log('note', note);
   const promptForMoreQuestions =
     blacklistedQuestions && blacklistedQuestions.length > 0
       ? `Avoid creating flashcards from these existing questions: [${blacklistedQuestions.join(
@@ -186,6 +193,8 @@ export const flashCardsFromNotesPrompt = (
     "explainer": "ELI5-type explanation of the answer that disambiguates the topic further",
     "helpful reading": "If there's related reading in the notes, include them. If not, omit this field."
   }
+
+  where the value in the key-value pair MUST be in this language and this language only: ${lang}.
   
   Finally, wrap the generated flashcards in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
@@ -304,16 +313,22 @@ export const generalQuizPrompt = (
   count: string,
   level: string,
   subject: string,
-  topic: string
+  topic: string,
+  lang: Languages = 'English'
 ) => {
   const optionsStructure = generateOptionsStructure(type);
 
   const basePrompt = `You are a quiz creator of highly diagnostic quizzes. You will make good low-stakes tests and diagnostics. 
     You will then ask ${count} questions for the ${topic} topic under ${subject}. Ensure the questions quiz the college student at a ${level} on that topic and are highly relevant, going beyond just facts.
-   At the end of the quiz, provide an answer key and explain the right answer. `;
+   At the end of the quiz, provide an answer key and explain the right answer.
+
+   `;
 
   return `${basePrompt} 
     ${optionsStructure}
+    
+    where the value in the key-value pair MUST be in this language and this language only: ${lang}.
+  
     Wrap the total flashcards generated in an object, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
@@ -327,7 +342,8 @@ export const quizzesFromDocsPrompt = (
   count: number,
   type: QuizType = 'mixed',
   blacklistedQuestions?: string[],
-  subTopics?: string[]
+  subTopics?: string[],
+  lang: Languages = 'English'
 ) => {
   const optionsStructure = generateOptionsStructure(type);
 
@@ -349,10 +365,13 @@ export const quizzesFromDocsPrompt = (
   
   Make sure to formulate questions and options (if applicable) based on the information present in the document. Ensure that the quizzes are relevant, clear, and concise.
 
+  
   Use the following structures for each quiz type:
 
   ${optionsStructure}
 
+  where the value in the key-value pair MUST be in this language and this language only: ${lang}.
+  
   Wrap the total quizzes generated in an object, like this, Please structure your response in Only a JSON format without code block formatting or backticks. as shown below, your response should only contain the object itself no extra information:
   {
     quizzes: [
@@ -365,4 +384,51 @@ export const quizzesFromDocsPrompt = (
     "message": "Insufficient information in the document to generate the requested number of quizzes."
   }
 `;
+};
+
+export const quizzesCSVPrompt = (
+  type: QuizType = 'mixed',
+  count: string,
+  level: string,
+  subject: string,
+  topic: string,
+  lang: Languages = 'English',
+  grade?: string
+) => {
+  const difficultyMap: any = {
+    kindergarten: 'Easy',
+    'high school': 'Medium',
+    college: 'Hard',
+    PhD: 'Hard',
+    genius: 'Hard',
+    phd: 'Hard'
+  };
+  level = difficultyMap[level] || level;
+  return `
+  Your task is to construct a well-structured set of ${count} quiz questions and answers to assist a ${
+    grade || ''
+  } student in their exam preparation for ${topic} in ${subject}. Ensure the questions quiz the are highly relevant to the topic, going beyond just facts and are at ${level} difficulty.
+Adhere to the output format below and follow these guidelines:
+  - Create a variety of question types according to the specified quiz type
+  - Do not ask the exact same questions in the users quiz.
+  - there are five possible quiz types to generate: multipleChoiceSingle, multipleChoiceMulti, trueFalse, openEnded, mixed.
+  - Mixed quiz types can take any of the other four types.
+  - Use the users quiz to understand the style of questions.
+  - Pay attention to the subject, course and level when generating questions.
+  - Formulate answer choices that are clear and have similar content, length, and grammar to avoid providing hints through grammatical differences.
+  - Develop distractors that are plausible and represent common misconceptions that students might have.
+  - Randomize the location of the correct answer in the options.
+  - When using numeric answer options, list them in numerical order and in a consistent format (e.g., as terms or ranges).
+  - The answer should be the index of the correct answer in the options list.
+  The format for your quiz questions should be as follows in CSV format with headers:
+  question_id,type,question,options,answer_index.
+  ### Example output: 
+  question_id,type,question,options,answer_index
+  1,"multipleChoiceSingle","Which statement best describes the first ionization energy?","The energy required to remove the most loosely bound electron from a neutral atom in its ground state|The energy released when an electron is added to a neutral atom|The energy required to remove an electron from a singly charged cation|The energy required to break a mole of molecules into its constituent atoms","0"
+  2,"trueFalse","An ideal gas can be compressed to an infinite degree.","True|False","1"
+  3,"multipleChoiceMulti","Select all the properties of water.","Polar molecule|High specific heat|Non-polar molecule|Acts as a solvent for ionic substances","0|1|2"
+  4,"openEnded","Explain why water is a universal solvent.","","Water's polarity allows it to effectively dissolve both ionic compounds and other polar molecules, making it an exceptionally versatile solvent."
+  ### 
+  Now generate ${count} ${type} type quiz questions and answers on the topic of ${topic} , each adhering to the designated type. The values for question, options, and answer_index must be MUST be in this language and this language only: ${lang}.
+    `;
 };
